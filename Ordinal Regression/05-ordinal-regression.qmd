@@ -67,7 +67,7 @@ options(scipen=999)
 
 </div>
 
--   Follow along here:<https://github.com/jgeller112/PSY504-Advanced-Stats-S24/blob/main/slides/Ordinal_Regression/05-ordinal-regression.qmd>
+-   Follow along here:<https://github.com/suyoghc/PSY-504_Spring-2025/blob/main/Ordinal%20Regression/05-ordinal-regression.qmd>
 
 ## Ordinal Response Variables
 
