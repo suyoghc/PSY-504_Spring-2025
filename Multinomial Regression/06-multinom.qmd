@@ -1,7 +1,7 @@
 ---
 title: "Multinomial Regression"
 subtitle: "Princeton University"
-author: "Jason Geller, PH.D.(he/him)"
+author: "Suyog Chandramouli (adapted from materials by Jason Geller)"
 date: 'Updated:`r Sys.Date()`'
 footer: "PSY 504: Advanced Statistics"
 format: 
@@ -57,7 +57,7 @@ options(scipen=999)
 
 ```
 
--   You can follow along here: <https://github.com/jgeller112/PSY504-Advanced-Stats-S24/blob/main/slides/06-Multinom/06-multinom.qmd>
+-   You can follow along here: <https://github.com/suyoghc/PSY-504_Spring-2025/blob/main/Multinomial%20Regression/06-multinom.qmd>
 
 ## Outline
 
