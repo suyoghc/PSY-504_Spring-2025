@@ -7,11 +7,11 @@
 <link href="06-multinom_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="06-multinom_files/libs/quarto-html/light-border.css" rel="stylesheet">
 <link href="06-multinom_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
-<link href="06-multinom_files/libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.4.504">
+<link href="06-multinom_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.5.57">
 
-  <meta name="author" content="Jason Geller, PH.D.(he/him)">
-  <meta name="dcterms.date" content="2024-03-04">
+  <meta name="author" content="Suyog Chandramouli (adapted from materials by Jason Geller)">
+  <meta name="dcterms.date" content="2025-02-24">
   <title>Multinomial Regression</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -43,7 +43,7 @@
     }
     @media print {
     pre > code.sourceCode { white-space: pre-wrap; }
-    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
     }
     pre.numberSource code
       { counter-reset: source-line 0; }
@@ -57,44 +57,44 @@
         -khtml-user-select: none; -moz-user-select: none;
         -ms-user-select: none; user-select: none;
         padding: 0 4px; width: 4em;
+        color: #aaaaaa;
       }
-    pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
     div.sourceCode
-      { color: #f8f8f2;  }
+      { color: #003b4f; background-color: #f1f3f5; }
     @media screen {
     pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
     }
-    code span { color: #f8f8f2; } /* Normal */
-    code span.al { color: #f07178; background-color: #2a0f15; font-weight: bold; } /* Alert */
-    code span.an { color: #d4d0ab; } /* Annotation */
-    code span.at { color: #00e0e0; } /* Attribute */
-    code span.bn { color: #d4d0ab; } /* BaseN */
-    code span.bu { color: #abe338; } /* BuiltIn */
-    code span.cf { color: #ffa07a; font-weight: bold; } /* ControlFlow */
-    code span.ch { color: #abe338; } /* Char */
-    code span.cn { color: #ffd700; } /* Constant */
-    code span.co { color: #f8f8f2; font-style: italic; } /* Comment */
-    code span.cv { color: #ffd700; } /* CommentVar */
-    code span.do { color: #f8f8f2; } /* Documentation */
-    code span.dt { color: #ffa07a; } /* DataType */
-    code span.dv { color: #d4d0ab; } /* DecVal */
-    code span.er { color: #f07178; text-decoration: underline; } /* Error */
-    code span.ex { color: #00e0e0; font-weight: bold; } /* Extension */
-    code span.fl { color: #d4d0ab; } /* Float */
-    code span.fu { color: #ffa07a; } /* Function */
-    code span.im { color: #abe338; } /* Import */
-    code span.in { color: #d4d0ab; } /* Information */
-    code span.kw { color: #ffa07a; font-weight: bold; } /* Keyword */
-    code span.op { color: #ffa07a; } /* Operator */
-    code span.ot { color: #00e0e0; } /* Other */
-    code span.pp { color: #dcc6e0; } /* Preprocessor */
-    code span.re { color: #00e0e0; background-color: #f8f8f2; } /* RegionMarker */
-    code span.sc { color: #abe338; } /* SpecialChar */
-    code span.ss { color: #abe338; } /* SpecialString */
-    code span.st { color: #abe338; } /* String */
-    code span.va { color: #00e0e0; } /* Variable */
-    code span.vs { color: #abe338; } /* VerbatimString */
-    code span.wa { color: #dcc6e0; } /* Warning */
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="06-multinom_files/libs/revealjs/dist/theme/quarto.css">
   <link rel="stylesheet" href="slide-style.css">
@@ -555,7 +555,7 @@
   };
 
   // Store cell data
-  globalThis.qwebrCellDetails = [{"id":1,"code":"nhanes_adult <- NHANES %>%\n  #only use ages 18+\n  filter(Age >= 18) %>%\n  #select 4 vars from the full dataset\n  dplyr::select(HealthGen, Education, Age, PhysActive)  %>%\n  # get rid of nas\n  drop_na()","options":{"message":"true","context":"interactive","out-width":"700px","fig-height":5,"warning":"true","results":"markup","comment":"","fig-width":7,"classes":"","autorun":"false","out-height":"","fig-cap":"","output":"true","dpi":72,"label":"unnamed-chunk-1"}},{"id":2,"code":"library(nnet)# multinom \n\nhealth_m <- multinom(HealthGen ~ PhysActive + Age, \n                     data = nhanes_adult)\nsummary(health_m)","options":{"message":"true","context":"interactive","out-width":"700px","fig-height":5,"warning":"true","results":"markup","comment":"","fig-width":7,"classes":"","autorun":"false","out-height":"","fig-cap":"","output":"true","dpi":72,"label":"unnamed-chunk-2"}},{"id":3,"code":"model_parameters(health_m, exponentiate = FALSE)%>%  filter(Response==\"Fair\") %>%\n  kable(digits = 3, format = \"markdown\")","options":{"message":"true","context":"interactive","out-width":"700px","fig-height":5,"warning":"true","results":"markup","comment":"","fig-width":7,"classes":"","autorun":"false","out-height":"","fig-cap":"","output":"true","dpi":72,"label":"unnamed-chunk-3"}},{"id":4,"code":"model_parameters(health_m, exponentiate = TRUE)%>%  filter(Response==\"Fair\") %>%\n  kable(digits = 3, format = \"markdown\")","options":{"message":"true","context":"interactive","out-width":"700px","fig-height":5,"warning":"true","results":"markup","comment":"","fig-width":7,"classes":"","autorun":"false","out-height":"","fig-cap":"","output":"true","dpi":72,"label":"unnamed-chunk-4"}},{"id":5,"code":"model_parameters(health_m, exponentiate = FALSE)%>%  filter(Response==\"Good\") %>%\n  kable(digits = 3, format = \"markdown\")","options":{"message":"true","context":"interactive","out-width":"700px","fig-height":5,"warning":"true","results":"markup","comment":"","fig-width":7,"classes":"","autorun":"false","out-height":"","fig-cap":"","output":"true","dpi":72,"label":"unnamed-chunk-5"}},{"id":6,"code":"model_parameters(health_m, exponentiate = TRUE) %>% \n  filter(Response==\"Good\") %>%\n  kable(digits = 3, format = \"markdown\")","options":{"message":"true","context":"interactive","out-width":"700px","fig-height":5,"warning":"true","results":"markup","comment":"","fig-width":7,"classes":"","autorun":"false","out-height":"","fig-cap":"","output":"true","dpi":72,"label":"unnamed-chunk-6"}},{"id":7,"code":"\nmulti_an <- emmeans(health_m, ~ PhysActive|HealthGen) # get education \ncoefs = contrast(regrid(multi_an, \"log\"),\"trt.vs.ctrl1\", by=\"PhysActive\") # make sure logit and response vs. baseline the difference in logs odds is equal to the log of the odds\ncontrast(coefs, \"revpairwise\", by = \"contrast\") %>% kable() # This line performs additional contrasts on the results obtained from the previous step (coefs).","options":{"message":"true","context":"interactive","out-width":"700px","fig-height":5,"warning":"true","results":"markup","comment":"","fig-width":7,"classes":"","autorun":"false","out-height":"","fig-cap":"","output":"true","dpi":72,"label":"unnamed-chunk-7"}}];
+  globalThis.qwebrCellDetails = [{"options":{"fig-height":5,"warning":"true","autorun":"false","label":"unnamed-chunk-1","context":"interactive","message":"true","results":"markup","output":"true","comment":"","dpi":72,"out-height":"","fig-cap":"","fig-width":7,"out-width":"700px","classes":""},"code":"nhanes_adult <- NHANES %>%\n  #only use ages 18+\n  filter(Age >= 18) %>%\n  #select 4 vars from the full dataset\n  dplyr::select(HealthGen, Education, Age, PhysActive)  %>%\n  # get rid of nas\n  drop_na()","id":1},{"options":{"fig-height":5,"warning":"true","autorun":"false","label":"unnamed-chunk-2","context":"interactive","message":"true","results":"markup","output":"true","comment":"","dpi":72,"out-height":"","fig-cap":"","fig-width":7,"out-width":"700px","classes":""},"code":"library(nnet)# multinom \n\nhealth_m <- multinom(HealthGen ~ PhysActive + Age, \n                     data = nhanes_adult)\nsummary(health_m)","id":2},{"options":{"fig-height":5,"warning":"true","autorun":"false","label":"unnamed-chunk-3","context":"interactive","message":"true","results":"markup","output":"true","comment":"","dpi":72,"out-height":"","fig-cap":"","fig-width":7,"out-width":"700px","classes":""},"code":"model_parameters(health_m, exponentiate = FALSE)%>%  filter(Response==\"Fair\") %>%\n  kable(digits = 3, format = \"markdown\")","id":3},{"options":{"fig-height":5,"warning":"true","autorun":"false","label":"unnamed-chunk-4","context":"interactive","message":"true","results":"markup","output":"true","comment":"","dpi":72,"out-height":"","fig-cap":"","fig-width":7,"out-width":"700px","classes":""},"code":"model_parameters(health_m, exponentiate = TRUE)%>%  filter(Response==\"Fair\") %>%\n  kable(digits = 3, format = \"markdown\")","id":4},{"options":{"fig-height":5,"warning":"true","autorun":"false","label":"unnamed-chunk-5","context":"interactive","message":"true","results":"markup","output":"true","comment":"","dpi":72,"out-height":"","fig-cap":"","fig-width":7,"out-width":"700px","classes":""},"code":"model_parameters(health_m, exponentiate = FALSE)%>%  filter(Response==\"Good\") %>%\n  kable(digits = 3, format = \"markdown\")","id":5},{"options":{"fig-height":5,"warning":"true","autorun":"false","label":"unnamed-chunk-6","context":"interactive","message":"true","results":"markup","output":"true","comment":"","dpi":72,"out-height":"","fig-cap":"","fig-width":7,"out-width":"700px","classes":""},"code":"model_parameters(health_m, exponentiate = TRUE) %>% \n  filter(Response==\"Good\") %>%\n  kable(digits = 3, format = \"markdown\")","id":6},{"options":{"fig-height":5,"warning":"true","autorun":"false","label":"unnamed-chunk-7","context":"interactive","message":"true","results":"markup","output":"true","comment":"","dpi":72,"out-height":"","fig-cap":"","fig-width":7,"out-width":"700px","classes":""},"code":"\nmulti_an <- emmeans(health_m, ~ PhysActive|HealthGen) # get education \ncoefs = contrast(regrid(multi_an, \"log\"),\"trt.vs.ctrl1\", by=\"PhysActive\") # make sure logit and response vs. baseline the difference in logs odds is equal to the log of the odds\ncontrast(coefs, \"revpairwise\", by = \"contrast\") %>% kable() # This line performs additional contrasts on the results obtained from the previous step (coefs).","id":7}];
 
   </script>
   <script type="module">
@@ -1272,7 +1272,7 @@
 
   </script>
 </head>
-<body class="quarto-dark">
+<body class="quarto-light">
 <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/loader.js"></script>
 <script type="module" id="qwebr-monaco-editor-init">
 
@@ -1456,36 +1456,36 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
 <div class="quarto-title-author-name">
-Jason Geller, PH.D.(he/him) 
+Suyog Chandramouli (adapted from materials by Jason Geller) 
 </div>
 </div>
 </div>
 
-  <p class="date">2024-03-04</p>
+  <p class="date">2025-02-24</p>
 </section>
 <section id="packages" class="slide level2">
 <h2>Packages</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="fu">library</span>(easystats)</span>
-<span id="cb1-3"><a href="#cb1-3"></a><span class="fu">library</span>(marginaleffects)</span>
-<span id="cb1-4"><a href="#cb1-4"></a><span class="fu">library</span>(viridis)</span>
-<span id="cb1-5"><a href="#cb1-5"></a><span class="fu">library</span>(ggeasy)</span>
-<span id="cb1-6"><a href="#cb1-6"></a><span class="fu">library</span>(effects)</span>
-<span id="cb1-7"><a href="#cb1-7"></a><span class="fu">library</span>(ordinal)</span>
-<span id="cb1-8"><a href="#cb1-8"></a><span class="fu">library</span>(ggeffects)</span>
-<span id="cb1-9"><a href="#cb1-9"></a><span class="fu">library</span>(emmeans)</span>
-<span id="cb1-10"><a href="#cb1-10"></a><span class="fu">library</span>(foreign)</span>
-<span id="cb1-11"><a href="#cb1-11"></a><span class="fu">library</span>(car)</span>
-<span id="cb1-12"><a href="#cb1-12"></a><span class="fu">library</span>(knitr)</span>
-<span id="cb1-13"><a href="#cb1-13"></a><span class="fu">library</span>(patchwork)</span>
-<span id="cb1-14"><a href="#cb1-14"></a><span class="fu">library</span>(cowplot)</span>
-<span id="cb1-15"><a href="#cb1-15"></a><span class="fu">library</span>(MASS)</span>
-<span id="cb1-16"><a href="#cb1-16"></a></span>
-<span id="cb1-17"><a href="#cb1-17"></a><span class="fu">options</span>(<span class="at">scipen=</span><span class="dv">999</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href=""></a><span class="fu">library</span>(easystats)</span>
+<span id="cb1-3"><a href=""></a><span class="fu">library</span>(marginaleffects)</span>
+<span id="cb1-4"><a href=""></a><span class="fu">library</span>(viridis)</span>
+<span id="cb1-5"><a href=""></a><span class="fu">library</span>(ggeasy)</span>
+<span id="cb1-6"><a href=""></a><span class="fu">library</span>(effects)</span>
+<span id="cb1-7"><a href=""></a><span class="fu">library</span>(ordinal)</span>
+<span id="cb1-8"><a href=""></a><span class="fu">library</span>(ggeffects)</span>
+<span id="cb1-9"><a href=""></a><span class="fu">library</span>(emmeans)</span>
+<span id="cb1-10"><a href=""></a><span class="fu">library</span>(foreign)</span>
+<span id="cb1-11"><a href=""></a><span class="fu">library</span>(car)</span>
+<span id="cb1-12"><a href=""></a><span class="fu">library</span>(knitr)</span>
+<span id="cb1-13"><a href=""></a><span class="fu">library</span>(patchwork)</span>
+<span id="cb1-14"><a href=""></a><span class="fu">library</span>(cowplot)</span>
+<span id="cb1-15"><a href=""></a><span class="fu">library</span>(MASS)</span>
+<span id="cb1-16"><a href=""></a></span>
+<span id="cb1-17"><a href=""></a><span class="fu">options</span>(<span class="at">scipen=</span><span class="dv">999</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ul>
-<li>You can follow along here: <a href="https://github.com/jgeller112/PSY504-Advanced-Stats-S24/blob/main/slides/06-Multinom/06-multinom.qmd" class="uri">https://github.com/jgeller112/PSY504-Advanced-Stats-S24/blob/main/slides/06-Multinom/06-multinom.qmd</a></li>
+<li>You can follow along here: <a href="https://github.com/suyoghc/PSY-504_Spring-2025/blob/main/Multinomial%20Regression/06-multinom.qmd" class="uri">https://github.com/suyoghc/PSY-504_Spring-2025/blob/main/Multinomial%20Regression/06-multinom.qmd</a></li>
 </ul>
 </section>
 <section id="outline" class="slide level2">
@@ -1506,8 +1506,7 @@ Jason Geller, PH.D.(he/him)
 <p><img data-src="ordmult.jpeg" class="quarto-figure quarto-figure-center"></p>
 </figure>
 </div>
-</div>
-</div>
+</div></div>
 </section>
 <section id="multinomial-distribution" class="slide level2">
 <h2>Multinomial distribution</h2>
@@ -1611,7 +1610,7 @@ Jason Geller, PH.D.(he/him)
 <div id="qwebr-insertion-location-1"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="fu">glimpse</span>(nhanes_adult)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href=""></a><span class="fu">glimpse</span>(nhanes_adult)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 6,465
 Columns: 5
@@ -1760,9 +1759,9 @@ $ PhysActive_yes &lt;fct&gt; No, No, No, No, Yes, Yes, Yes, Yes, Yes, Yes, Yes, 
 </div>
 <p><br> <br></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>nhanes_adult <span class="sc">%&gt;%</span></span>
-<span id="cb4-2"><a href="#cb4-2"></a>  <span class="fu">mutate</span>(<span class="at">HealthGen =</span> <span class="fu">relevel</span>(<span class="fu">as.factor</span>(HealthGen), <span class="at">ref=</span> <span class="st">"Poor"</span>))</span>
-<span id="cb4-3"><a href="#cb4-3"></a><span class="co">#relevel modle to change baseline</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a>nhanes_adult <span class="sc">%&gt;%</span></span>
+<span id="cb4-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">HealthGen =</span> <span class="fu">relevel</span>(<span class="fu">as.factor</span>(HealthGen), <span class="at">ref=</span> <span class="st">"Poor"</span>))</span>
+<span id="cb4-3"><a href=""></a><span class="co">#relevel modle to change baseline</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="model" class="slide level2">
@@ -1771,10 +1770,10 @@ $ PhysActive_yes &lt;fct&gt; No, No, No, No, Yes, Yes, Yes, Yes, Yes, Yes, Yes, 
 <li>Report LRT with the <code>anova</code> function</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>car<span class="sc">::</span><span class="fu">Anova</span>(health_m) <span class="sc">%&gt;%</span> </span>
-<span id="cb5-2"><a href="#cb5-2"></a>  <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a>car<span class="sc">::</span><span class="fu">Anova</span>(health_m) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-2"><a href=""></a>  <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<table>
+<table class="caption-top">
 <thead>
 <tr class="header">
 <th style="text-align: left;"></th>
@@ -1815,11 +1814,11 @@ $ PhysActive_yes &lt;fct&gt; No, No, No, No, Yes, Yes, Yes, Yes, Yes, Yes, Yes, 
 <section id="comparisons-1" class="slide level2">
 <h2>Comparisons</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>multi_an <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(health_m, <span class="sc">~</span> PhysActive<span class="sc">|</span>HealthGen) <span class="co"># get education </span></span>
-<span id="cb6-2"><a href="#cb6-2"></a>coefs <span class="ot">=</span> <span class="fu">contrast</span>(<span class="fu">regrid</span>(multi_an, <span class="st">"log"</span>),<span class="st">"trt.vs.ctrl1"</span>, <span class="at">by=</span><span class="st">"PhysActive"</span>) <span class="co"># make sure logit and response vs. baseline</span></span>
-<span id="cb6-3"><a href="#cb6-3"></a><span class="fu">contrast</span>(coefs, <span class="st">"revpairwise"</span>, <span class="at">by =</span> <span class="st">"contrast"</span>) <span class="sc">%&gt;%</span> <span class="fu">kable</span>() <span class="co"># This line performs additional contrasts on the results obtained from the previous step (coefs).</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a>multi_an <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(health_m, <span class="sc">~</span> PhysActive<span class="sc">|</span>HealthGen) <span class="co"># get education </span></span>
+<span id="cb6-2"><a href=""></a>coefs <span class="ot">=</span> <span class="fu">contrast</span>(<span class="fu">regrid</span>(multi_an, <span class="st">"log"</span>),<span class="st">"trt.vs.ctrl1"</span>, <span class="at">by=</span><span class="st">"PhysActive"</span>) <span class="co"># make sure logit and response vs. baseline</span></span>
+<span id="cb6-3"><a href=""></a><span class="fu">contrast</span>(coefs, <span class="st">"revpairwise"</span>, <span class="at">by =</span> <span class="st">"contrast"</span>) <span class="sc">%&gt;%</span> <span class="fu">kable</span>() <span class="co"># This line performs additional contrasts on the results obtained from the previous step (coefs).</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<table style="width:100%;">
+<table class="caption-top" style="width:100%;">
 <colgroup>
 <col style="width: 13%">
 <col style="width: 24%">
@@ -1889,90 +1888,22 @@ $ PhysActive_yes &lt;fct&gt; No, No, No, No, Yes, Yes, Yes, Yes, Yes, Yes, Yes, 
 <li><p>We can use <code>marginaleffects</code> to get average effect of <code>Age</code></p></li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="fu">avg_slopes</span>(</span>
-<span id="cb7-2"><a href="#cb7-2"></a>    health_m,</span>
-<span id="cb7-3"><a href="#cb7-3"></a>    <span class="at">hypothesis =</span> <span class="st">"reference"</span>,</span>
-<span id="cb7-4"><a href="#cb7-4"></a>    <span class="at">variables =</span> <span class="fu">c</span>(<span class="st">"Age"</span>), </span>
-<span id="cb7-5"><a href="#cb7-5"></a>    <span class="at">type=</span><span class="st">"latent"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb7-6"><a href="#cb7-6"></a>  <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<table>
-<colgroup>
-<col style="width: 19%">
-<col style="width: 11%">
-<col style="width: 10%">
-<col style="width: 11%">
-<col style="width: 10%">
-<col style="width: 11%">
-<col style="width: 11%">
-<col style="width: 10%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;">term</th>
-<th style="text-align: right;">estimate</th>
-<th style="text-align: right;">std.error</th>
-<th style="text-align: right;">statistic</th>
-<th style="text-align: right;">p.value</th>
-<th style="text-align: right;">s.value</th>
-<th style="text-align: right;">conf.low</th>
-<th style="text-align: right;">conf.high</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">Fair - Excellent</td>
-<td style="text-align: right;">0.0011284</td>
-<td style="text-align: right;">0.0030235</td>
-<td style="text-align: right;">0.3732149</td>
-<td style="text-align: right;">0.7089885</td>
-<td style="text-align: right;">0.4961658</td>
-<td style="text-align: right;">-0.0047975</td>
-<td style="text-align: right;">0.0070544</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Good - Excellent</td>
-<td style="text-align: right;">-0.0030351</td>
-<td style="text-align: right;">0.0025561</td>
-<td style="text-align: right;">-1.1873657</td>
-<td style="text-align: right;">0.2350834</td>
-<td style="text-align: right;">2.0887554</td>
-<td style="text-align: right;">-0.0080450</td>
-<td style="text-align: right;">0.0019749</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Poor - Excellent</td>
-<td style="text-align: right;">0.0193309</td>
-<td style="text-align: right;">0.0050512</td>
-<td style="text-align: right;">3.8270188</td>
-<td style="text-align: right;">0.0001297</td>
-<td style="text-align: right;">12.9124827</td>
-<td style="text-align: right;">0.0094308</td>
-<td style="text-align: right;">0.0292310</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Vgood - Excellent</td>
-<td style="text-align: right;">-0.0000361</td>
-<td style="text-align: right;">0.0025945</td>
-<td style="text-align: right;">-0.0139008</td>
-<td style="text-align: right;">0.9889091</td>
-<td style="text-align: right;">0.0160901</td>
-<td style="text-align: right;">-0.0051213</td>
-<td style="text-align: right;">0.0050491</td>
-</tr>
-</tbody>
-</table>
-</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href=""></a><span class="co"># avg_slopes(</span></span>
+<span id="cb7-2"><a href=""></a><span class="co">#     health_m,</span></span>
+<span id="cb7-3"><a href=""></a><span class="co">#     hypothesis = "reference",</span></span>
+<span id="cb7-4"><a href=""></a><span class="co">#     variables = c("Age"), </span></span>
+<span id="cb7-5"><a href=""></a><span class="co">#     type="latent") %&gt;% </span></span>
+<span id="cb7-6"><a href=""></a><span class="co">#   kable()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="nhanes-predicted-probabilities-physactive" class="slide level2">
 <h2>NHANES: Predicted probabilities: <code>PhysActive</code></h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="co">#calculate predicted probabilities</span></span>
-<span id="cb8-2"><a href="#cb8-2"></a><span class="fu">ggemmeans</span>(health_m, <span class="at">terms=</span><span class="fu">c</span>(<span class="st">"PhysActive"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb8-3"><a href="#cb8-3"></a>  <span class="fu">kable</span>(<span class="at">format =</span> <span class="st">"markdown"</span>, <span class="at">digits =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a><span class="co">#calculate predicted probabilities</span></span>
+<span id="cb8-2"><a href=""></a><span class="fu">ggemmeans</span>(health_m, <span class="at">terms=</span><span class="fu">c</span>(<span class="st">"PhysActive"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb8-3"><a href=""></a>  <span class="fu">kable</span>(<span class="at">format =</span> <span class="st">"markdown"</span>, <span class="at">digits =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<table>
+<table class="caption-top">
 <thead>
 <tr class="header">
 <th style="text-align: left;">x</th>
@@ -2083,27 +2014,27 @@ $ PhysActive_yes &lt;fct&gt; No, No, No, No, Yes, Yes, Yes, Yes, Yes, Yes, Yes, 
 <section id="plot-predicted-probabilities-physactive" class="slide level2">
 <h2>Plot predicted probabilities: <code>PhysActive</code></h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a> <span class="fu">ggemmeans</span>(health_m, <span class="at">terms=</span><span class="fu">c</span>(<span class="st">"PhysActive"</span>)) <span class="sc">%&gt;%</span>   <span class="fu">ggplot</span>(., <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> predicted, <span class="at">fill =</span> response.level)) <span class="sc">+</span> </span>
-<span id="cb9-2"><a href="#cb9-2"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span> ) <span class="sc">+</span></span>
-<span id="cb9-3"><a href="#cb9-3"></a>    <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">round</span>(predicted, <span class="dv">3</span>)), <span class="at">color=</span><span class="st">"white"</span>, <span class="at">position =</span> <span class="fu">position_fill</span>(<span class="at">vjust =</span> <span class="fl">0.5</span>),<span class="at">size=</span><span class="dv">5</span>)  <span class="sc">+</span> </span>
-<span id="cb9-4"><a href="#cb9-4"></a>  <span class="fu">easy_add_legend_title</span>(<span class="st">"Response"</span>) <span class="sc">+</span> </span>
-<span id="cb9-5"><a href="#cb9-5"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="st">"Physical Health"</span>, <span class="st">"Predicted Probablity"</span>) <span class="sc">+</span> </span>
-<span id="cb9-6"><a href="#cb9-6"></a>  <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">30</span>)) <span class="sc">+</span>  </span>
-<span id="cb9-7"><a href="#cb9-7"></a>  <span class="fu">scale_fill_viridis</span>(<span class="at">discrete =</span> <span class="cn">TRUE</span>) <span class="sc">+</span> </span>
-<span id="cb9-8"><a href="#cb9-8"></a>  <span class="fu">theme_lucid</span>(<span class="at">base_size=</span><span class="dv">25</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href=""></a> <span class="fu">ggemmeans</span>(health_m, <span class="at">terms=</span><span class="fu">c</span>(<span class="st">"PhysActive"</span>)) <span class="sc">%&gt;%</span>   <span class="fu">ggplot</span>(., <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> predicted, <span class="at">fill =</span> response.level)) <span class="sc">+</span> </span>
+<span id="cb9-2"><a href=""></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span> ) <span class="sc">+</span></span>
+<span id="cb9-3"><a href=""></a>    <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">round</span>(predicted, <span class="dv">3</span>)), <span class="at">color=</span><span class="st">"white"</span>, <span class="at">position =</span> <span class="fu">position_fill</span>(<span class="at">vjust =</span> <span class="fl">0.5</span>),<span class="at">size=</span><span class="dv">5</span>)  <span class="sc">+</span> </span>
+<span id="cb9-4"><a href=""></a>  <span class="fu">easy_add_legend_title</span>(<span class="st">"Response"</span>) <span class="sc">+</span> </span>
+<span id="cb9-5"><a href=""></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="st">"Physical Health"</span>, <span class="st">"Predicted Probablity"</span>) <span class="sc">+</span> </span>
+<span id="cb9-6"><a href=""></a>  <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">30</span>)) <span class="sc">+</span>  </span>
+<span id="cb9-7"><a href=""></a>  <span class="fu">scale_fill_viridis</span>(<span class="at">discrete =</span> <span class="cn">TRUE</span>) <span class="sc">+</span> </span>
+<span id="cb9-8"><a href=""></a>  <span class="fu">theme_lucid</span>(<span class="at">base_size=</span><span class="dv">25</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
 <img data-src="06-multinom_files/figure-revealjs/unnamed-chunk-12-1.png" class="quarto-figure quarto-figure-center r-stretch" width="1152"></section>
 <section id="plot-predicted-probabilities-age" class="slide level2">
 <h2>Plot predicted probabilities: <code>Age</code></h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="fu">ggpredict</span>(health_m, <span class="at">terms=</span><span class="fu">c</span>(<span class="st">"Age"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb10-2"><a href="#cb10-2"></a><span class="fu">ggplot</span>(., <span class="fu">aes</span>(<span class="at">x=</span>x, <span class="at">y=</span>predicted, <span class="at">fill=</span>response.level)) <span class="sc">+</span> </span>
-<span id="cb10-3"><a href="#cb10-3"></a>    <span class="fu">geom_area</span>(<span class="at">alpha=</span><span class="fl">0.6</span> , <span class="at">size=</span>.<span class="dv">5</span>, <span class="at">colour=</span><span class="st">"white"</span>) <span class="sc">+</span> </span>
-<span id="cb10-4"><a href="#cb10-4"></a>    <span class="fu">labs</span>(<span class="at">x=</span><span class="st">"Age"</span>, <span class="at">y=</span><span class="st">"Predicted Probablity"</span>) <span class="sc">+</span> </span>
-<span id="cb10-5"><a href="#cb10-5"></a>    <span class="fu">scale_fill_viridis</span>(<span class="at">discrete =</span> T) <span class="sc">+</span></span>
-<span id="cb10-6"><a href="#cb10-6"></a>   <span class="fu">easy_add_legend_title</span>(<span class="st">"Response"</span>) <span class="sc">+</span> </span>
-<span id="cb10-7"><a href="#cb10-7"></a>    <span class="fu">theme_lucid</span>(<span class="at">base_size=</span><span class="dv">25</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href=""></a><span class="fu">ggpredict</span>(health_m, <span class="at">terms=</span><span class="fu">c</span>(<span class="st">"Age"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb10-2"><a href=""></a><span class="fu">ggplot</span>(., <span class="fu">aes</span>(<span class="at">x=</span>x, <span class="at">y=</span>predicted, <span class="at">fill=</span>response.level)) <span class="sc">+</span> </span>
+<span id="cb10-3"><a href=""></a>    <span class="fu">geom_area</span>(<span class="at">alpha=</span><span class="fl">0.6</span> , <span class="at">size=</span>.<span class="dv">5</span>, <span class="at">colour=</span><span class="st">"white"</span>) <span class="sc">+</span> </span>
+<span id="cb10-4"><a href=""></a>    <span class="fu">labs</span>(<span class="at">x=</span><span class="st">"Age"</span>, <span class="at">y=</span><span class="st">"Predicted Probablity"</span>) <span class="sc">+</span> </span>
+<span id="cb10-5"><a href=""></a>    <span class="fu">scale_fill_viridis</span>(<span class="at">discrete =</span> T) <span class="sc">+</span></span>
+<span id="cb10-6"><a href=""></a>   <span class="fu">easy_add_legend_title</span>(<span class="st">"Response"</span>) <span class="sc">+</span> </span>
+<span id="cb10-7"><a href=""></a>    <span class="fu">theme_lucid</span>(<span class="at">base_size=</span><span class="dv">25</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
 <img data-src="06-multinom_files/figure-revealjs/unnamed-chunk-13-1.png" class="quarto-figure quarto-figure-center r-stretch" width="1152"></section>
@@ -2131,20 +2062,20 @@ $ PhysActive_yes &lt;fct&gt; No, No, No, No, Yes, Yes, Yes, Yes, Yes, Yes, Yes, 
 <section id="add-education-to-the-model-1" class="slide level2">
 <h2>Add <code>Education</code> to the model?</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>model_red <span class="ot">&lt;-</span> <span class="fu">multinom</span>(HealthGen <span class="sc">~</span> Age <span class="sc">+</span> PhysActive, </span>
-<span id="cb11-2"><a href="#cb11-2"></a>               <span class="at">data =</span> nhanes_adult)</span>
-<span id="cb11-3"><a href="#cb11-3"></a>model_full <span class="ot">&lt;-</span> <span class="fu">multinom</span>(HealthGen <span class="sc">~</span> Age <span class="sc">+</span> PhysActive <span class="sc">+</span> </span>
-<span id="cb11-4"><a href="#cb11-4"></a>                         Education, </span>
-<span id="cb11-5"><a href="#cb11-5"></a>               <span class="at">data =</span> nhanes_adult)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href=""></a>model_red <span class="ot">&lt;-</span> <span class="fu">multinom</span>(HealthGen <span class="sc">~</span> Age <span class="sc">+</span> PhysActive, </span>
+<span id="cb11-2"><a href=""></a>               <span class="at">data =</span> nhanes_adult)</span>
+<span id="cb11-3"><a href=""></a>model_full <span class="ot">&lt;-</span> <span class="fu">multinom</span>(HealthGen <span class="sc">~</span> Age <span class="sc">+</span> PhysActive <span class="sc">+</span> </span>
+<span id="cb11-4"><a href=""></a>                         Education, </span>
+<span id="cb11-5"><a href=""></a>               <span class="at">data =</span> nhanes_adult)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="add-education-to-the-model-2" class="slide level2">
 <h2>Add <code>Education</code> to the model?</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="fu">anova</span>(model_red, model_full, <span class="at">test =</span> <span class="st">"Chisq"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb12-2"><a href="#cb12-2"></a>  <span class="fu">kable</span>(<span class="at">format =</span> <span class="st">"markdown"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href=""></a><span class="fu">anova</span>(model_red, model_full, <span class="at">test =</span> <span class="st">"Chisq"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb12-2"><a href=""></a>  <span class="fu">kable</span>(<span class="at">format =</span> <span class="st">"markdown"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<table>
+<table class="caption-top">
 <colgroup>
 <col style="width: 36%">
 <col style="width: 12%">
@@ -2193,10 +2124,10 @@ $ PhysActive_yes &lt;fct&gt; No, No, No, No, Yes, Yes, Yes, Yes, Yes, Yes, Yes, 
 <section id="full-model" class="slide level2">
 <h2>Full model</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>car<span class="sc">::</span><span class="fu">Anova</span>(model_full, <span class="at">type=</span><span class="st">"II"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb13-2"><a href="#cb13-2"></a>  <span class="fu">kable</span>(<span class="at">format =</span> <span class="st">"markdown"</span>, <span class="at">digits =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href=""></a>car<span class="sc">::</span><span class="fu">Anova</span>(model_full, <span class="at">type=</span><span class="st">"II"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb13-2"><a href=""></a>  <span class="fu">kable</span>(<span class="at">format =</span> <span class="st">"markdown"</span>, <span class="at">digits =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<table>
+<table class="caption-top">
 <thead>
 <tr class="header">
 <th style="text-align: left;"></th>
@@ -2235,9 +2166,9 @@ $ PhysActive_yes &lt;fct&gt; No, No, No, No, Yes, Yes, Yes, Yes, Yes, Yes, Yes, 
 <li>Use <code>emmeans</code> to extract the log odds coefs for comparisons of interest</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a>multi_an <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(model_full, <span class="sc">~</span> Education<span class="sc">|</span>HealthGen) <span class="co"># get education </span></span>
-<span id="cb14-2"><a href="#cb14-2"></a>coefs <span class="ot">=</span> <span class="fu">contrast</span>(<span class="fu">regrid</span>(multi_an, <span class="st">"log"</span>),<span class="st">"trt.vs.ctrl1"</span>, <span class="at">by=</span><span class="st">"Education"</span>) <span class="co"># make sure logit and response vs. baseline</span></span>
-<span id="cb14-3"><a href="#cb14-3"></a><span class="fu">contrast</span>(coefs, <span class="st">"revpairwise"</span>, <span class="at">by =</span> <span class="st">"contrast"</span>) <span class="co"># This line performs additional contrasts on the results obtained from the previous step (coefs).</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href=""></a>multi_an <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(model_full, <span class="sc">~</span> Education<span class="sc">|</span>HealthGen) <span class="co"># get education </span></span>
+<span id="cb14-2"><a href=""></a>coefs <span class="ot">=</span> <span class="fu">contrast</span>(<span class="fu">regrid</span>(multi_an, <span class="st">"log"</span>),<span class="st">"trt.vs.ctrl1"</span>, <span class="at">by=</span><span class="st">"Education"</span>) <span class="co"># make sure logit and response vs. baseline</span></span>
+<span id="cb14-3"><a href=""></a><span class="fu">contrast</span>(coefs, <span class="st">"revpairwise"</span>, <span class="at">by =</span> <span class="st">"contrast"</span>) <span class="co"># This line performs additional contrasts on the results obtained from the previous step (coefs).</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>contrast = Vgood - Excellent:
  contrast1                       estimate    SE df t.ratio p.value
@@ -2300,13 +2231,13 @@ P value adjustment: tukey method for comparing a family of 5 estimates </code></
 <section id="predicted-probabilities-education" class="slide level2">
 <h2>Predicted Probabilities: <code>Education</code></h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>plot_edu <span class="ot">&lt;-</span> <span class="fu">ggemmeans</span>(model_full, <span class="at">terms=</span><span class="fu">c</span>(<span class="st">"Education"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb16-2"><a href="#cb16-2"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> predicted, <span class="at">fill =</span> response.level))  <span class="sc">+</span>  </span>
-<span id="cb16-3"><a href="#cb16-3"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span> ) <span class="sc">+</span> </span>
-<span id="cb16-4"><a href="#cb16-4"></a>   <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">round</span>(predicted, <span class="dv">3</span>)), <span class="at">color=</span><span class="st">"white"</span>, <span class="at">position =</span> <span class="fu">position_fill</span>(<span class="at">vjust =</span> <span class="fl">0.5</span>),<span class="at">size=</span><span class="dv">5</span>) <span class="sc">+</span> </span>
-<span id="cb16-5"><a href="#cb16-5"></a>  <span class="fu">easy_add_legend_title</span>(<span class="st">"Response"</span>) <span class="sc">+</span> </span>
-<span id="cb16-6"><a href="#cb16-6"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="st">"Education"</span>, <span class="st">"Predicted Probablity"</span>) <span class="sc">+</span> </span>
-<span id="cb16-7"><a href="#cb16-7"></a>  <span class="fu">scale_fill_viridis</span>(<span class="at">discrete =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href=""></a>plot_edu <span class="ot">&lt;-</span> <span class="fu">ggemmeans</span>(model_full, <span class="at">terms=</span><span class="fu">c</span>(<span class="st">"Education"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb16-2"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> predicted, <span class="at">fill =</span> response.level))  <span class="sc">+</span>  </span>
+<span id="cb16-3"><a href=""></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span> ) <span class="sc">+</span> </span>
+<span id="cb16-4"><a href=""></a>   <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">round</span>(predicted, <span class="dv">3</span>)), <span class="at">color=</span><span class="st">"white"</span>, <span class="at">position =</span> <span class="fu">position_fill</span>(<span class="at">vjust =</span> <span class="fl">0.5</span>),<span class="at">size=</span><span class="dv">5</span>) <span class="sc">+</span> </span>
+<span id="cb16-5"><a href=""></a>  <span class="fu">easy_add_legend_title</span>(<span class="st">"Response"</span>) <span class="sc">+</span> </span>
+<span id="cb16-6"><a href=""></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="st">"Education"</span>, <span class="st">"Predicted Probablity"</span>) <span class="sc">+</span> </span>
+<span id="cb16-7"><a href=""></a>  <span class="fu">scale_fill_viridis</span>(<span class="at">discrete =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 <img data-src="06-multinom_files/figure-revealjs/unnamed-chunk-20-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:50.0%"></section></section>
@@ -2324,18 +2255,18 @@ P value adjustment: tukey method for comparing a family of 5 estimates </code></
 </ul></li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a>nhanes_adult <span class="ot">&lt;-</span> nhanes_adult <span class="sc">%&gt;%</span></span>
-<span id="cb17-2"><a href="#cb17-2"></a>  <span class="fu">mutate</span>(<span class="at">Excellent =</span> <span class="fu">factor</span>(<span class="fu">if_else</span>(HealthGen <span class="sc">==</span> <span class="st">"Excellent"</span>, <span class="st">"1"</span>, <span class="st">"0"</span>)), </span>
-<span id="cb17-3"><a href="#cb17-3"></a>         <span class="at">Vgood =</span> <span class="fu">factor</span>(<span class="fu">if_else</span>(HealthGen <span class="sc">==</span> <span class="st">"Vgood"</span>, <span class="st">"1"</span>, <span class="st">"0"</span>)), </span>
-<span id="cb17-4"><a href="#cb17-4"></a>         <span class="at">Good =</span> <span class="fu">factor</span>(<span class="fu">if_else</span>(HealthGen <span class="sc">==</span> <span class="st">"Good"</span>, <span class="st">"1"</span>, <span class="st">"0"</span>)), </span>
-<span id="cb17-5"><a href="#cb17-5"></a>         <span class="at">Fair =</span> <span class="fu">factor</span>(<span class="fu">if_else</span>(HealthGen <span class="sc">==</span> <span class="st">"Fair"</span>, <span class="st">"1"</span>, <span class="st">"0"</span>)), </span>
-<span id="cb17-6"><a href="#cb17-6"></a>         <span class="at">Poor =</span> <span class="fu">factor</span>(<span class="fu">if_else</span>(HealthGen <span class="sc">==</span> <span class="st">"Poor"</span>, <span class="st">"1"</span>, <span class="st">"0"</span>))</span>
-<span id="cb17-7"><a href="#cb17-7"></a>  )</span>
-<span id="cb17-8"><a href="#cb17-8"></a></span>
-<span id="cb17-9"><a href="#cb17-9"></a><span class="co"># fit sep logistic models</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href=""></a>nhanes_adult <span class="ot">&lt;-</span> nhanes_adult <span class="sc">%&gt;%</span></span>
+<span id="cb17-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">Excellent =</span> <span class="fu">factor</span>(<span class="fu">if_else</span>(HealthGen <span class="sc">==</span> <span class="st">"Excellent"</span>, <span class="st">"1"</span>, <span class="st">"0"</span>)), </span>
+<span id="cb17-3"><a href=""></a>         <span class="at">Vgood =</span> <span class="fu">factor</span>(<span class="fu">if_else</span>(HealthGen <span class="sc">==</span> <span class="st">"Vgood"</span>, <span class="st">"1"</span>, <span class="st">"0"</span>)), </span>
+<span id="cb17-4"><a href=""></a>         <span class="at">Good =</span> <span class="fu">factor</span>(<span class="fu">if_else</span>(HealthGen <span class="sc">==</span> <span class="st">"Good"</span>, <span class="st">"1"</span>, <span class="st">"0"</span>)), </span>
+<span id="cb17-5"><a href=""></a>         <span class="at">Fair =</span> <span class="fu">factor</span>(<span class="fu">if_else</span>(HealthGen <span class="sc">==</span> <span class="st">"Fair"</span>, <span class="st">"1"</span>, <span class="st">"0"</span>)), </span>
+<span id="cb17-6"><a href=""></a>         <span class="at">Poor =</span> <span class="fu">factor</span>(<span class="fu">if_else</span>(HealthGen <span class="sc">==</span> <span class="st">"Poor"</span>, <span class="st">"1"</span>, <span class="st">"0"</span>))</span>
+<span id="cb17-7"><a href=""></a>  )</span>
+<span id="cb17-8"><a href=""></a></span>
+<span id="cb17-9"><a href=""></a><span class="co"># fit sep logistic models</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a>performance<span class="sc">::</span><span class="fu">check_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href=""></a>performance<span class="sc">::</span><span class="fu">check_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="model-fit" class="slide level2">
@@ -2344,7 +2275,7 @@ P value adjustment: tukey method for comparing a family of 5 estimates </code></
 <li>Mcfadden’s <span class="math inline">\(R^2\)</span></li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a><span class="fu">r2_mcfadden</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href=""></a><span class="fu">r2_mcfadden</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="effect-size" class="slide level2">
@@ -2357,9 +2288,9 @@ P value adjustment: tukey method for comparing a family of 5 estimates </code></
 <li>Recommended by a reviewer once</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a><span class="co"># easystats effectszie package</span></span>
-<span id="cb20-2"><a href="#cb20-2"></a></span>
-<span id="cb20-3"><a href="#cb20-3"></a>effectsize<span class="sc">::</span><span class="fu">oddsratio_to_d</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href=""></a><span class="co"># easystats effectszie package</span></span>
+<span id="cb20-2"><a href=""></a></span>
+<span id="cb20-3"><a href=""></a>effectsize<span class="sc">::</span><span class="fu">oddsratio_to_d</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="write-up" class="slide level2">
@@ -2416,10 +2347,12 @@ P value adjustment: tukey method for comparing a family of 5 estimates </code></
 </ul></li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a>health_m <span class="ot">&lt;-</span> <span class="fu">brm</span>(HealthGen <span class="sc">~</span> PhysActive <span class="sc">+</span> Age, <span class="at">family=</span>categorical, <span class="at">cores =</span> <span class="dv">4</span>, <span class="at">chains =</span> <span class="dv">4</span>, <span class="at">data =</span> nhanes_adult)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href=""></a>health_m <span class="ot">&lt;-</span> <span class="fu">brm</span>(HealthGen <span class="sc">~</span> PhysActive <span class="sc">+</span> Age, <span class="at">family=</span>categorical, <span class="at">cores =</span> <span class="dv">4</span>, <span class="at">chains =</span> <span class="dv">4</span>, <span class="at">data =</span> nhanes_adult)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<div class="quarto-auto-generated-content">
 <div class="footer footer-default">
 <p>PSY 504: Advanced Statistics</p>
+</div>
 </div>
 </section></section>
     </div>
@@ -2707,18 +2640,7 @@ P value adjustment: tukey method for comparing a family of 5 estimates </code></
         }
         return false;
       }
-      const clipboard = new window.ClipboardJS('.code-copy-button', {
-        text: function(trigger) {
-          const codeEl = trigger.previousElementSibling.cloneNode(true);
-          for (const childEl of codeEl.children) {
-            if (isCodeAnnotation(childEl)) {
-              childEl.remove();
-            }
-          }
-          return codeEl.innerText;
-        }
-      });
-      clipboard.on('success', function(e) {
+      const onCopySuccess = function(e) {
         // button target
         const button = e.trigger;
         // don't keep focus
@@ -2750,7 +2672,47 @@ P value adjustment: tukey method for comparing a family of 5 estimates </code></
         }, 1000);
         // clear code selection
         e.clearSelection();
+      }
+      const getTextToCopy = function(trigger) {
+          const codeEl = trigger.previousElementSibling.cloneNode(true);
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+      }
+      const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+        text: getTextToCopy
       });
+      clipboard.on('success', onCopySuccess);
+      if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+        // For code content inside modals, clipBoardJS needs to be initialized with a container option
+        // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+        const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+          text: getTextToCopy,
+          container: window.document.getElementById('quarto-embedded-source-code-modal')
+        });
+        clipboardModal.on('success', onCopySuccess);
+      }
+        var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+        var mailtoRegex = new RegExp(/^mailto:/);
+          var filterRegex = new RegExp('/' + window.location.host + '/');
+        var isInternal = (href) => {
+            return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+        }
+        // Inspect non-navigation links and adorn them if external
+     	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+        for (var i=0; i<links.length; i++) {
+          const link = links[i];
+          if (!isInternal(link.href)) {
+            // undo the damage that might have been done by quarto-nav.js in the case of
+            // links that we want to consider external
+            if (link.dataset.originalHref !== undefined) {
+              link.href = link.dataset.originalHref;
+            }
+          }
+        }
       function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
         const config = {
           allowHTML: true,
@@ -2787,7 +2749,11 @@ P value adjustment: tukey method for comparing a family of 5 estimates </code></
           try { href = new URL(href).hash; } catch {}
           const id = href.replace(/^#\/?/, "");
           const note = window.document.getElementById(id);
-          return note.innerHTML;
+          if (note) {
+            return note.innerHTML;
+          } else {
+            return "";
+          }
         });
       }
       const findCites = (el) => {
