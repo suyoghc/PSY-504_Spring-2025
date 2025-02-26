@@ -32,17 +32,7 @@ execute:
   html:
     code-fold: true
     code-tools: true
-format: 
-  revealjs: # keep your presentation format
-    theme: white
-    css: slide-style.css
-    multiplex: true
-    transition: fade
-    slide-number: true
-    incremental: false 
-    chalkboard: true
-    fontsize: "25pt"
-  pdf: default # add PDF format  
+  
 ---
 
 ## Packages
