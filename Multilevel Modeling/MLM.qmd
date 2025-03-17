@@ -71,7 +71,7 @@ library(broom.mixed)
 library(lme4)
 ```
 
--   Follow along by downloading .qmd file here: <https://github.com/jgeller112/PSY504-Advanced-Stats-S24/blob/main/slides/02-MLM/MLM.qmd>
+-   Follow along by downloading .qmd file here: <https://github.com/suyoghc/PSY-504_Spring-2025/blob/main/Multilevel%20Modeling/MLM.qmd>
 
 ## Why multilevel modeling?
 
@@ -79,7 +79,7 @@ library(lme4)
 
 ```{r}
 
-data <- read.csv("https://raw.githubusercontent.com/jgeller112/PSY504-Advanced-Stats-S24/main/slides/02-MLM/data/heck2011.csv")
+data <- read.csv("https://raw.githubusercontent.com/suyoghc/PSY-504_Spring-2025/refs/heads/main/Multilevel%20Modeling/data/heck2011.csv")
 
 
 ```
