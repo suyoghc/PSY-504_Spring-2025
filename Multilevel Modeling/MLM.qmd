@@ -73,7 +73,7 @@ library(lme4)
 
 -   Follow along by downloading .qmd file here: <https://github.com/suyoghc/PSY-504_Spring-2025/blob/main/Multilevel%20Modeling/MLM.qmd>
 
-## Why multilevel modeling?
+## Why multilevel modeling? 
 
 -   Let's look at the relationship between SES and math achievement
 
