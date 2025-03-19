@@ -105,6 +105,14 @@ ggplot(toy2, aes(x = hrs_week)) +
 ```
 
 `r qend()`
+
+```{r}
+#YOUR ATTEMPT HERE
+
+
+```
+
+
 `r solbegin(show=params$SHOW_SOLS, toggle=params$TOGGLE)`
 
 We should get something like this:  
@@ -121,6 +129,11 @@ ggplot(toy2, aes(x = hrs_week)) +
 Note that the lines are exactly the same for each type of toy. This makes total sense, because the model (which is where we've got the lines from) completely _ignores_ the `toy_type` variable!  
 
 `r solend()`
+
+```{r}
+#
+```
+
 
 `r qbegin(qcounter())`
 
