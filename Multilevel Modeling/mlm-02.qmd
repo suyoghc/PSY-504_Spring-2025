@@ -494,7 +494,7 @@ y = lmer(DV ~ IV1+ IV2 + (1|ID))
 ## Modeling approach
 
 ```{r}
-data <- read.csv("https://raw.githubusercontent.com/jgeller112/PSY504-Advanced-Stats-S24/main/slides/02-MLM/data/heck2011.csv")
+data <- read.csv("https://raw.githubusercontent.com/suyoghc/PSY-504_Spring-2025/refs/heads/main/Multilevel%20Modeling/data/heck2011.csv")
 
 summary(lmer(math~ses + (1+ses|schcode), data=data))
 
