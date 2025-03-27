@@ -85,7 +85,7 @@ options(scipen=999) # get rid of sci notation
 
 ```
 
--   Find the .qmd document here to follow along: <https://github.com/jgeller112/PSY504-Advanced-Stats-S24/blob/main/slides/02-MLM/mlm-02.qmd>
+-   Find the .qmd document here to follow along: <https://github.com/suyoghc/PSY-504_Spring-2025/blob/main/Multilevel%20Modeling/mlm-02.qmd>
 
 ## Today's data
 
@@ -99,7 +99,7 @@ options(scipen=999) # get rid of sci notation
 ## Today's data
 
 ```{r}
-eye  <- read_csv("https://raw.githubusercontent.com/jgeller112/psy504-advanced-stats/main/slides/MLM/data/vocoded_pupil.csv") # data for class
+eye  <- read_csv("https://raw.githubusercontent.com/suyoghc/PSY-504_Spring-2025/refs/heads/main/Multilevel%20Modeling/data/vocoded_pupil.csv") # data for class
 
 ```
 
