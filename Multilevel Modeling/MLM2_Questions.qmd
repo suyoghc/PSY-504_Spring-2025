@@ -1,10 +1,10 @@
 ---
-title: "MLM2 - Ans"
+title: "MLM2 - Questions"
 subtitle: "Advanced Statistics in Psychology"
 format: 
   html:
     toc: true
-    theme: cosmo
+    theme: white
     code-fold: true
     code-tools: true
 ---
