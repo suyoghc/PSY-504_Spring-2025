@@ -57,44 +57,44 @@
         -khtml-user-select: none; -moz-user-select: none;
         -ms-user-select: none; user-select: none;
         padding: 0 4px; width: 4em;
+        color: #aaaaaa;
       }
-    pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
     div.sourceCode
-      { color: #e1e4e8; background-color: #24292e; }
+      { color: #003b4f; background-color: #f1f3f5; }
     @media screen {
     pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
     }
-    code span { color: #e1e4e8; } /* Normal */
-    code span.al { color: #ff5555; font-weight: bold; } /* Alert */
-    code span.an { color: #6a737d; } /* Annotation */
-    code span.at { color: #f97583; } /* Attribute */
-    code span.bn { color: #79b8ff; } /* BaseN */
-    code span.bu { color: #f97583; } /* BuiltIn */
-    code span.cf { color: #f97583; } /* ControlFlow */
-    code span.ch { color: #9ecbff; } /* Char */
-    code span.cn { color: #79b8ff; } /* Constant */
-    code span.co { color: #6a737d; } /* Comment */
-    code span.cv { color: #6a737d; } /* CommentVar */
-    code span.do { color: #6a737d; } /* Documentation */
-    code span.dt { color: #f97583; } /* DataType */
-    code span.dv { color: #79b8ff; } /* DecVal */
-    code span.er { color: #ff5555; text-decoration: underline; } /* Error */
-    code span.ex { color: #f97583; font-weight: bold; } /* Extension */
-    code span.fl { color: #79b8ff; } /* Float */
-    code span.fu { color: #b392f0; } /* Function */
-    code span.im { color: #9ecbff; } /* Import */
-    code span.in { color: #6a737d; } /* Information */
-    code span.kw { color: #f97583; } /* Keyword */
-    code span.op { color: #e1e4e8; } /* Operator */
-    code span.ot { color: #b392f0; } /* Other */
-    code span.pp { color: #f97583; } /* Preprocessor */
-    code span.re { color: #6a737d; } /* RegionMarker */
-    code span.sc { color: #79b8ff; } /* SpecialChar */
-    code span.ss { color: #9ecbff; } /* SpecialString */
-    code span.st { color: #9ecbff; } /* String */
-    code span.va { color: #ffab70; } /* Variable */
-    code span.vs { color: #9ecbff; } /* VerbatimString */
-    code span.wa { color: #ff5555; } /* Warning */
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="mlm-02_files/libs/revealjs/dist/theme/quarto.css">
   <link rel="stylesheet" href="slide-style.css">
@@ -555,7 +555,7 @@
   };
 
   // Store cell data
-  globalThis.qwebrCellDetails = [{"code":"","id":1,"options":{"fig-height":5,"comment":"","output":"true","out-width":"700px","warning":"true","fig-width":7,"message":"true","classes":"","out-height":"","results":"markup","fig-cap":"","dpi":72,"label":"unnamed-chunk-1","context":"interactive"}}];
+  globalThis.qwebrCellDetails = [{"options":{"warning":"true","fig-cap":"","context":"interactive","fig-width":7,"comment":"","results":"markup","out-width":"700px","classes":"","dpi":72,"out-height":"","message":"true","output":"true","fig-height":5,"label":"unnamed-chunk-1"},"id":1,"code":""}];
 
   </script>
   <script type="module">
@@ -2656,8 +2656,8 @@ Confidence level used: 0.95 </code></pre>
 
     <script>
 
-      function styleCell_mr7usldy9db4gyk10bw0(i, j, css_id) {
-          var table = document.getElementById("tinytable_mr7usldy9db4gyk10bw0");
+      function styleCell_dw8tcwk8vt4uabvyz1s8(i, j, css_id) {
+          var table = document.getElementById("tinytable_dw8tcwk8vt4uabvyz1s8");
           var cell = table.rows[i]?.cells[j];  // Safe navigation to avoid errors
           if (cell) {
               console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
@@ -2667,7 +2667,7 @@ Confidence level used: 0.95 </code></pre>
           }
       }
       function insertSpanRow(i, colspan, content) {
-        var table = document.getElementById('tinytable_mr7usldy9db4gyk10bw0');
+        var table = document.getElementById('tinytable_dw8tcwk8vt4uabvyz1s8');
         var newRow = table.insertRow(i);
         var newCell = newRow.insertCell(0);
         newCell.setAttribute("colspan", colspan);
@@ -2675,8 +2675,8 @@ Confidence level used: 0.95 </code></pre>
         // this may be unsafe, but innerText does not interpret <br>
         newCell.innerHTML = content;
       }
-      function spanCell_mr7usldy9db4gyk10bw0(i, j, rowspan, colspan) {
-        var table = document.getElementById("tinytable_mr7usldy9db4gyk10bw0");
+      function spanCell_dw8tcwk8vt4uabvyz1s8(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_dw8tcwk8vt4uabvyz1s8");
         const targetRow = table.rows[i];
         const targetCell = targetRow.cells[j];
         for (let r = 0; r < rowspan; r++) {
@@ -2706,20 +2706,20 @@ Confidence level used: 0.95 </code></pre>
       window.addEventListener('load', function () {
           var cellsToStyle = [
             // tinytable style arrays after
-          { positions: [ { i: 8, j: 0 },  ], css_id: 'tinytable_css_zjjg1pypfhae8cii1pna',}, 
-          { positions: [ { i: 1, j: 0 }, { i: 2, j: 0 }, { i: 3, j: 0 }, { i: 4, j: 0 }, { i: 5, j: 0 }, { i: 6, j: 0 }, { i: 7, j: 0 }, { i: 12, j: 0 }, { i: 9, j: 0 }, { i: 10, j: 0 }, { i: 11, j: 0 }, { i: 13, j: 0 }, { i: 14, j: 0 },  ], css_id: 'tinytable_css_vx8ifn43cnpyg5cxbrdc',}, 
-          { positions: [ { i: 0, j: 1 },  ], css_id: 'tinytable_css_u6yqiuaty7gf8uk6cj4y',}, 
-          { positions: [ { i: 15, j: 0 },  ], css_id: 'tinytable_css_rnwwd8d1px5xdthh3o5x',}, 
-          { positions: [ { i: 15, j: 1 },  ], css_id: 'tinytable_css_f55ou57jj1e5g7p0vkgo',}, 
-          { positions: [ { i: 8, j: 1 },  ], css_id: 'tinytable_css_5wq19lkv2fj2iaqxgl48',}, 
-          { positions: [ { i: 0, j: 0 },  ], css_id: 'tinytable_css_15cgp2denizaohvafh6f',}, 
-          { positions: [ { i: 1, j: 1 }, { i: 2, j: 1 }, { i: 3, j: 1 }, { i: 4, j: 1 }, { i: 5, j: 1 }, { i: 6, j: 1 }, { i: 7, j: 1 }, { i: 12, j: 1 }, { i: 9, j: 1 }, { i: 10, j: 1 }, { i: 11, j: 1 }, { i: 13, j: 1 }, { i: 14, j: 1 },  ], css_id: 'tinytable_css_12evvu1gbxwjzzstq23v',}, 
+          { positions: [ { i: 15, j: 1 },  ], css_id: 'tinytable_css_r4lewbfxxovxyd1c0awj',}, 
+          { positions: [ { i: 8, j: 0 },  ], css_id: 'tinytable_css_q9a3f93c2vhaepsd5qen',}, 
+          { positions: [ { i: 15, j: 0 },  ], css_id: 'tinytable_css_nclkewni3bge79qen1z6',}, 
+          { positions: [ { i: 0, j: 0 },  ], css_id: 'tinytable_css_ksuws10yyxte9h9fya1p',}, 
+          { positions: [ { i: 1, j: 0 }, { i: 2, j: 0 }, { i: 3, j: 0 }, { i: 4, j: 0 }, { i: 5, j: 0 }, { i: 6, j: 0 }, { i: 7, j: 0 }, { i: 12, j: 0 }, { i: 9, j: 0 }, { i: 10, j: 0 }, { i: 11, j: 0 }, { i: 13, j: 0 }, { i: 14, j: 0 },  ], css_id: 'tinytable_css_akhk2kg0ypifdnrsoqrt',}, 
+          { positions: [ { i: 8, j: 1 },  ], css_id: 'tinytable_css_9hwcizukz4k78r69giag',}, 
+          { positions: [ { i: 0, j: 1 },  ], css_id: 'tinytable_css_92i624x75qx1ensjrqne',}, 
+          { positions: [ { i: 1, j: 1 }, { i: 2, j: 1 }, { i: 3, j: 1 }, { i: 4, j: 1 }, { i: 5, j: 1 }, { i: 6, j: 1 }, { i: 7, j: 1 }, { i: 12, j: 1 }, { i: 9, j: 1 }, { i: 10, j: 1 }, { i: 11, j: 1 }, { i: 13, j: 1 }, { i: 14, j: 1 },  ], css_id: 'tinytable_css_50hipbupbeybczyxawa0',}, 
           ];
 
           // Loop over the arrays to style the cells
           cellsToStyle.forEach(function (group) {
               group.positions.forEach(function (cell) {
-                  styleCell_mr7usldy9db4gyk10bw0(cell.i, cell.j, group.css_id);
+                  styleCell_dw8tcwk8vt4uabvyz1s8(cell.i, cell.j, group.css_id);
               });
           });
       });
@@ -2727,17 +2727,17 @@ Confidence level used: 0.95 </code></pre>
 
     <style>
       /* tinytable css entries after */
-      .table td.tinytable_css_zjjg1pypfhae8cii1pna, .table th.tinytable_css_zjjg1pypfhae8cii1pna { text-align: left; border-bottom: solid black 0.05em; }
-      .table td.tinytable_css_vx8ifn43cnpyg5cxbrdc, .table th.tinytable_css_vx8ifn43cnpyg5cxbrdc { text-align: left; }
-      .table td.tinytable_css_u6yqiuaty7gf8uk6cj4y, .table th.tinytable_css_u6yqiuaty7gf8uk6cj4y { text-align: center; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
-      .table td.tinytable_css_rnwwd8d1px5xdthh3o5x, .table th.tinytable_css_rnwwd8d1px5xdthh3o5x { text-align: left; border-bottom: solid #d3d8dc 0.1em; }
-      .table td.tinytable_css_f55ou57jj1e5g7p0vkgo, .table th.tinytable_css_f55ou57jj1e5g7p0vkgo { text-align: center; border-bottom: solid #d3d8dc 0.1em; }
-      .table td.tinytable_css_5wq19lkv2fj2iaqxgl48, .table th.tinytable_css_5wq19lkv2fj2iaqxgl48 { text-align: center; border-bottom: solid black 0.05em; }
-      .table td.tinytable_css_15cgp2denizaohvafh6f, .table th.tinytable_css_15cgp2denizaohvafh6f { text-align: left; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
-      .table td.tinytable_css_12evvu1gbxwjzzstq23v, .table th.tinytable_css_12evvu1gbxwjzzstq23v { text-align: center; }
+      .table td.tinytable_css_r4lewbfxxovxyd1c0awj, .table th.tinytable_css_r4lewbfxxovxyd1c0awj { text-align: center; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_q9a3f93c2vhaepsd5qen, .table th.tinytable_css_q9a3f93c2vhaepsd5qen { text-align: left; border-bottom: solid black 0.05em; }
+      .table td.tinytable_css_nclkewni3bge79qen1z6, .table th.tinytable_css_nclkewni3bge79qen1z6 { text-align: left; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_ksuws10yyxte9h9fya1p, .table th.tinytable_css_ksuws10yyxte9h9fya1p { text-align: left; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+      .table td.tinytable_css_akhk2kg0ypifdnrsoqrt, .table th.tinytable_css_akhk2kg0ypifdnrsoqrt { text-align: left; }
+      .table td.tinytable_css_9hwcizukz4k78r69giag, .table th.tinytable_css_9hwcizukz4k78r69giag { text-align: center; border-bottom: solid black 0.05em; }
+      .table td.tinytable_css_92i624x75qx1ensjrqne, .table th.tinytable_css_92i624x75qx1ensjrqne { text-align: center; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+      .table td.tinytable_css_50hipbupbeybczyxawa0, .table th.tinytable_css_50hipbupbeybczyxawa0 { text-align: center; }
     </style>
     <div class="container">
-      <table class="table table-borderless" id="tinytable_mr7usldy9db4gyk10bw0" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+      <table class="table table-borderless" id="tinytable_dw8tcwk8vt4uabvyz1s8" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
         <thead>
         
               <tr>
