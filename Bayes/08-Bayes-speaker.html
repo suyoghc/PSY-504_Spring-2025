@@ -11,7 +11,7 @@
   <meta name="generator" content="quarto-1.5.57">
 
   <meta name="author" content="Suyog Chandramouli (adapted from Jason Geller’s slides)">
-  <meta name="dcterms.date" content="2025-03-31">
+  <meta name="dcterms.date" content="2025-04-07">
   <title>Bayesian Data Analysis in R</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -555,7 +555,7 @@
   };
 
   // Store cell data
-  globalThis.qwebrCellDetails = [{"id":1,"options":{"message":"true","output":"true","fig-cap":"","warning":"true","out-height":"","dpi":72,"comment":"","autorun":"false","results":"markup","context":"interactive","fig-height":5,"fig-width":7,"classes":"","out-width":"700px","label":"unnamed-chunk-1"},"code":"# Define the number of simulations\nn_simulations <- 100\n# Define the sample size for each simulation\nsample_size <- 100\n# Define the mean and standard deviation for the normal distribution\nmean <- 0\nsd <- 1\n# Initialize a vector to store the mean of each simulation\nsimulation_means <- numeric(n_simulations)\n# Perform the simulations\nfor(i in 1:n_simulations) {\n  sample_data <- rnorm(n = sample_size, mean = mean, sd = sd)\n  simulation_means[i] <- mean(sample_data)\n}\n# Print the results\nprint(simulation_means)"}];
+  globalThis.qwebrCellDetails = [{"id":1,"code":"# Define the number of simulations\nn_simulations <- 100\n# Define the sample size for each simulation\nsample_size <- 100\n# Define the mean and standard deviation for the normal distribution\nmean <- 0\nsd <- 1\n# Initialize a vector to store the mean of each simulation\nsimulation_means <- numeric(n_simulations)\n# Perform the simulations\nfor(i in 1:n_simulations) {\n  sample_data <- rnorm(n = sample_size, mean = mean, sd = sd)\n  simulation_means[i] <- mean(sample_data)\n}\n# Print the results\nprint(simulation_means)","options":{"label":"unnamed-chunk-1","out-height":"","fig-height":5,"warning":"true","dpi":72,"message":"true","context":"interactive","fig-cap":"","fig-width":7,"results":"markup","comment":"","classes":"","out-width":"700px","output":"true","autorun":"false"}}];
 
   </script>
   <script type="module">
@@ -1461,7 +1461,7 @@ Suyog Chandramouli (adapted from Jason Geller’s slides)
 </div>
 </div>
 
-  <p class="date">2025-03-31</p>
+  <p class="date">2025-04-07</p>
 </section>
 <section id="packages" class="slide level2">
 <h2>Packages</h2>
@@ -1483,7 +1483,7 @@ Suyog Chandramouli (adapted from Jason Geller’s slides)
 <span id="cb1-15"><a href=""></a><span class="fu">options</span>(<span class="at">scipen=</span><span class="dv">999</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ul>
-<li>Follow along: <a href="https://github.com/jgeller112/PSY504-Advanced-Stats-S24/blob/main/slides/08-Bayes/08-Bayes.qmd" class="uri">https://github.com/jgeller112/PSY504-Advanced-Stats-S24/blob/main/slides/08-Bayes/08-Bayes.qmd</a></li>
+<li>Follow along: <a href="https://github.com/suyoghc/PSY-504_Spring-2025/blob/main/Bayes/08-Bayes.qmd" class="uri">https://github.com/suyoghc/PSY-504_Spring-2025/blob/main/Bayes/08-Bayes.qmd</a></li>
 </ul>
 </section>
 <section id="today" class="slide level2">
@@ -1582,12 +1582,15 @@ Suyog Chandramouli (adapted from Jason Geller’s slides)
 \underbrace{ p(\theta)}_{\substack{\text{Prior beliefs} }}
 \,\,\,\, \times
 \overbrace{\underbrace{\frac{p( \text{data} \mid \theta)}{p( \text{data})}}}^{\substack{\text{Prediction for specific }\theta }}_{\substack{\text{sum} \\\text{across all }  \theta's}}.
-\end{align}\]</span> . . . - <span class="math inline">\(p(\theta \mid \text{data})\)</span> - what we believe about parameters after seeing the data (posterior probability)</p>
+\end{align}\]</span></p>
+<div class="fragment">
 <ul>
+<li><p><span class="math inline">\(p(\theta \mid \text{data})\)</span> - what we believe about parameters after seeing the data (posterior probability)</p></li>
 <li><p><span class="math inline">\(p(\theta)\)</span> - initial beliefs about parameters (prior probability)</p></li>
 <li><p><span class="math inline">\(p(data \mid \theta)\)</span> - how probable the observed data is, given specific parameter values (likelihood)</p></li>
 <li><p><span class="math inline">\(p(data \mid M_k)\)</span> - probability of observing our data under model M_k (evidence / marginal likelihood)</p></li>
 </ul>
+</div>
 </section>
 <section id="bayes-rule" class="slide level2">
 <h2>Bayes’ rule</h2>
@@ -1906,6 +1909,1761 @@ Suyog Chandramouli (adapted from Jason Geller’s slides)
           display:block!important;
       }</style></aside>
 </section>
+<section id="today---workflow-and-example" class="slide level2">
+<h2>Today - workflow and example</h2>
+</section>
+<section id="frequentist-vs.-bayesian" class="slide level2">
+<h2>Frequentist vs.&nbsp;Bayesian</h2>
+<div class="small-table">
+<table class="caption-top">
+<colgroup>
+<col style="width: 34%">
+<col style="width: 53%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Aspect</th>
+<th style="text-align: left;">Frequentist</th>
+<th style="text-align: left;">Bayesian</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Probability philosophy</strong></td>
+<td style="text-align: left;">Long-run frequency</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Parameters</strong></td>
+<td style="text-align: left;">Fixed unknowns</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Estimation</strong></td>
+<td style="text-align: left;">Point estimates (MLE)</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Uncertainty</strong></td>
+<td style="text-align: left;">Confidence intervals</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Interpretation</strong></td>
+<td style="text-align: left;">“95% of samples contain true value”</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Prior Info</strong></td>
+<td style="text-align: left;">Not formally used</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Prediction</strong></td>
+<td style="text-align: left;">Points with errors</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Testing</strong></td>
+<td style="text-align: left;">p-values</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Comparison</strong></td>
+<td style="text-align: left;">AIC, BIC</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Computation</strong></td>
+<td style="text-align: left;">Often analytical</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Workflow</strong></td>
+<td style="text-align: left;">Residuals, QQ plots</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Small Samples</strong></td>
+<td style="text-align: left;">Often poor</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>R Implementation</strong></td>
+<td style="text-align: left;">lm(), glmer()</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Speed</strong></td>
+<td style="text-align: left;">Faster</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Regularization</strong></td>
+<td style="text-align: left;">Penalties (LASSO)</td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="frequentist-vs.-bayesian-1" class="slide level2">
+<h2>Frequentist vs.&nbsp;Bayesian</h2>
+<div class="small-table">
+<table class="caption-top">
+<colgroup>
+<col style="width: 31%">
+<col style="width: 48%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Aspect</th>
+<th style="text-align: left;">Frequentist</th>
+<th style="text-align: left;">Bayesian</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Probability philosophy</strong></td>
+<td style="text-align: left;">Long-run frequency</td>
+<td style="text-align: left;">Degree of belief</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Parameters</strong></td>
+<td style="text-align: left;">Fixed unknowns</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Estimation</strong></td>
+<td style="text-align: left;">Point estimates (MLE)</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Uncertainty</strong></td>
+<td style="text-align: left;">Confidence intervals</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Interpretation</strong></td>
+<td style="text-align: left;">“95% of samples contain true value”</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Prior Info</strong></td>
+<td style="text-align: left;">Not formally used</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Prediction</strong></td>
+<td style="text-align: left;">Points with errors</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Testing</strong></td>
+<td style="text-align: left;">p-values</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Comparison</strong></td>
+<td style="text-align: left;">AIC, BIC</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Computation</strong></td>
+<td style="text-align: left;">Often analytical</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Workflow</strong></td>
+<td style="text-align: left;">Residuals, QQ plots</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Small Samples</strong></td>
+<td style="text-align: left;">Often poor</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>R Implementation</strong></td>
+<td style="text-align: left;">lm(), glmer()</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Speed</strong></td>
+<td style="text-align: left;">Faster</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Regularization</strong></td>
+<td style="text-align: left;">Penalties (LASSO)</td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="frequentist-vs.-bayesian-2" class="slide level2">
+<h2>Frequentist vs.&nbsp;Bayesian</h2>
+<div class="small-table">
+<table class="caption-top">
+<colgroup>
+<col style="width: 31%">
+<col style="width: 48%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Aspect</th>
+<th style="text-align: left;">Frequentist</th>
+<th style="text-align: left;">Bayesian</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Probability philosophy</strong></td>
+<td style="text-align: left;">Long-run frequency</td>
+<td style="text-align: left;">Degree of belief</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Parameters</strong></td>
+<td style="text-align: left;">Fixed unknowns</td>
+<td style="text-align: left;">Random variables</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Estimation</strong></td>
+<td style="text-align: left;">Point estimates (MLE)</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Uncertainty</strong></td>
+<td style="text-align: left;">Confidence intervals</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Interpretation</strong></td>
+<td style="text-align: left;">“95% of samples contain true value”</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Prior Info</strong></td>
+<td style="text-align: left;">Not formally used</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Prediction</strong></td>
+<td style="text-align: left;">Points with errors</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Testing</strong></td>
+<td style="text-align: left;">p-values</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Comparison</strong></td>
+<td style="text-align: left;">AIC, BIC</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Computation</strong></td>
+<td style="text-align: left;">Often analytical</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Workflow</strong></td>
+<td style="text-align: left;">Residuals, QQ plots</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Small Samples</strong></td>
+<td style="text-align: left;">Often poor</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>R Implementation</strong></td>
+<td style="text-align: left;">lm(), glmer()</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Speed</strong></td>
+<td style="text-align: left;">Faster</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Regularization</strong></td>
+<td style="text-align: left;">Penalties (LASSO)</td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="frequentist-vs.-bayesian-3" class="slide level2">
+<h2>Frequentist vs.&nbsp;Bayesian</h2>
+<div class="small-table">
+<table class="caption-top">
+<colgroup>
+<col style="width: 31%">
+<col style="width: 48%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Aspect</th>
+<th style="text-align: left;">Frequentist</th>
+<th style="text-align: left;">Bayesian</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Probability philosophy</strong></td>
+<td style="text-align: left;">Long-run frequency</td>
+<td style="text-align: left;">Degree of belief</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Parameters</strong></td>
+<td style="text-align: left;">Fixed unknowns</td>
+<td style="text-align: left;">Random variables</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Estimation</strong></td>
+<td style="text-align: left;">Point estimates (MLE)</td>
+<td style="text-align: left;">Full posteriors</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Uncertainty</strong></td>
+<td style="text-align: left;">Confidence intervals</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Interpretation</strong></td>
+<td style="text-align: left;">“95% of samples contain true value”</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Prior Info</strong></td>
+<td style="text-align: left;">Not formally used</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Prediction</strong></td>
+<td style="text-align: left;">Points with errors</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Testing</strong></td>
+<td style="text-align: left;">p-values</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Comparison</strong></td>
+<td style="text-align: left;">AIC, BIC</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Computation</strong></td>
+<td style="text-align: left;">Often analytical</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Workflow</strong></td>
+<td style="text-align: left;">Residuals, QQ plots</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Small Samples</strong></td>
+<td style="text-align: left;">Often poor</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>R Implementation</strong></td>
+<td style="text-align: left;">lm(), glmer()</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Speed</strong></td>
+<td style="text-align: left;">Faster</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Regularization</strong></td>
+<td style="text-align: left;">Penalties (LASSO)</td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="frequentist-vs.-bayesian-4" class="slide level2">
+<h2>Frequentist vs.&nbsp;Bayesian</h2>
+<div class="small-table">
+<table class="caption-top">
+<colgroup>
+<col style="width: 30%">
+<col style="width: 46%">
+<col style="width: 22%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Aspect</th>
+<th style="text-align: left;">Frequentist</th>
+<th style="text-align: left;">Bayesian</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Probability philosophy</strong></td>
+<td style="text-align: left;">Long-run frequency</td>
+<td style="text-align: left;">Degree of belief</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Parameters</strong></td>
+<td style="text-align: left;">Fixed unknowns</td>
+<td style="text-align: left;">Random variables</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Estimation</strong></td>
+<td style="text-align: left;">Point estimates (MLE)</td>
+<td style="text-align: left;">Full posteriors</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Uncertainty</strong></td>
+<td style="text-align: left;">Confidence intervals</td>
+<td style="text-align: left;">Credible intervals</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Interpretation</strong></td>
+<td style="text-align: left;">“95% of samples contain true value”</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Prior Info</strong></td>
+<td style="text-align: left;">Not formally used</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Prediction</strong></td>
+<td style="text-align: left;">Points with errors</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Testing</strong></td>
+<td style="text-align: left;">p-values</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Comparison</strong></td>
+<td style="text-align: left;">AIC, BIC</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Computation</strong></td>
+<td style="text-align: left;">Often analytical</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Workflow</strong></td>
+<td style="text-align: left;">Residuals, QQ plots</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Small Samples</strong></td>
+<td style="text-align: left;">Often poor</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>R Implementation</strong></td>
+<td style="text-align: left;">lm(), glmer()</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Speed</strong></td>
+<td style="text-align: left;">Faster</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Regularization</strong></td>
+<td style="text-align: left;">Penalties (LASSO)</td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="frequentist-vs.-bayesian-5" class="slide level2">
+<h2>Frequentist vs.&nbsp;Bayesian</h2>
+<div class="small-table">
+<table class="caption-top">
+<colgroup>
+<col style="width: 24%">
+<col style="width: 38%">
+<col style="width: 37%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Aspect</th>
+<th style="text-align: left;">Frequentist</th>
+<th style="text-align: left;">Bayesian</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Probability philosophy</strong></td>
+<td style="text-align: left;">Long-run frequency</td>
+<td style="text-align: left;">Degree of belief</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Parameters</strong></td>
+<td style="text-align: left;">Fixed unknowns</td>
+<td style="text-align: left;">Random variables</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Estimation</strong></td>
+<td style="text-align: left;">Point estimates (MLE)</td>
+<td style="text-align: left;">Full posteriors</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Uncertainty</strong></td>
+<td style="text-align: left;">Confidence intervals</td>
+<td style="text-align: left;">Credible intervals</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Interpretation</strong></td>
+<td style="text-align: left;">“95% of samples contain true value”</td>
+<td style="text-align: left;">“95% probability parameter in range”</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Prior Info</strong></td>
+<td style="text-align: left;">Not formally used</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Prediction</strong></td>
+<td style="text-align: left;">Points with errors</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Testing</strong></td>
+<td style="text-align: left;">p-values</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Comparison</strong></td>
+<td style="text-align: left;">AIC, BIC</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Computation</strong></td>
+<td style="text-align: left;">Often analytical</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Workflow</strong></td>
+<td style="text-align: left;">Residuals, QQ plots</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Small Samples</strong></td>
+<td style="text-align: left;">Often poor</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>R Implementation</strong></td>
+<td style="text-align: left;">lm(), glmer()</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Speed</strong></td>
+<td style="text-align: left;">Faster</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Regularization</strong></td>
+<td style="text-align: left;">Penalties (LASSO)</td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="frequentist-vs.-bayesian-6" class="slide level2">
+<h2>Frequentist vs.&nbsp;Bayesian</h2>
+<div class="small-table">
+<table class="caption-top">
+<colgroup>
+<col style="width: 24%">
+<col style="width: 38%">
+<col style="width: 37%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Aspect</th>
+<th style="text-align: left;">Frequentist</th>
+<th style="text-align: left;">Bayesian</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Probability philosophy</strong></td>
+<td style="text-align: left;">Long-run frequency</td>
+<td style="text-align: left;">Degree of belief</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Parameters</strong></td>
+<td style="text-align: left;">Fixed unknowns</td>
+<td style="text-align: left;">Random variables</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Estimation</strong></td>
+<td style="text-align: left;">Point estimates (MLE)</td>
+<td style="text-align: left;">Full posteriors</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Uncertainty</strong></td>
+<td style="text-align: left;">Confidence intervals</td>
+<td style="text-align: left;">Credible intervals</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Interpretation</strong></td>
+<td style="text-align: left;">“95% of samples contain true value”</td>
+<td style="text-align: left;">“95% probability parameter in range”</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Prior Info</strong></td>
+<td style="text-align: left;">Not formally used</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Prediction</strong></td>
+<td style="text-align: left;">Points with errors</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Testing</strong></td>
+<td style="text-align: left;">p-values</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Comparison</strong></td>
+<td style="text-align: left;">AIC, BIC</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Computation</strong></td>
+<td style="text-align: left;">Often analytical</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Workflow</strong></td>
+<td style="text-align: left;">Residuals, QQ plots</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Small Samples</strong></td>
+<td style="text-align: left;">Often poor</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>R Implementation</strong></td>
+<td style="text-align: left;">lm(), glmer()</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Speed</strong></td>
+<td style="text-align: left;">Faster</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Regularization</strong></td>
+<td style="text-align: left;">Penalties (LASSO)</td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="frequentist-vs.-bayesian-7" class="slide level2">
+<h2>Frequentist vs.&nbsp;Bayesian</h2>
+<div class="small-table">
+<table class="caption-top">
+<colgroup>
+<col style="width: 24%">
+<col style="width: 38%">
+<col style="width: 37%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Aspect</th>
+<th style="text-align: left;">Frequentist</th>
+<th style="text-align: left;">Bayesian</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Probability philosophy</strong></td>
+<td style="text-align: left;">Long-run frequency</td>
+<td style="text-align: left;">Degree of belief</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Parameters</strong></td>
+<td style="text-align: left;">Fixed unknowns</td>
+<td style="text-align: left;">Random variables</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Estimation</strong></td>
+<td style="text-align: left;">Point estimates (MLE)</td>
+<td style="text-align: left;">Full posteriors</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Uncertainty</strong></td>
+<td style="text-align: left;">Confidence intervals</td>
+<td style="text-align: left;">Credible intervals</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Interpretation</strong></td>
+<td style="text-align: left;">“95% of samples contain true value”</td>
+<td style="text-align: left;">“95% probability parameter in range”</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Prior Info</strong></td>
+<td style="text-align: left;">Not formally used</td>
+<td style="text-align: left;">Explicit priors</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Prediction</strong></td>
+<td style="text-align: left;">Points with errors</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Testing</strong></td>
+<td style="text-align: left;">p-values</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Comparison</strong></td>
+<td style="text-align: left;">AIC, BIC</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Computation</strong></td>
+<td style="text-align: left;">Often analytical</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Workflow</strong></td>
+<td style="text-align: left;">Residuals, QQ plots</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Small Samples</strong></td>
+<td style="text-align: left;">Often poor</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>R Implementation</strong></td>
+<td style="text-align: left;">lm(), glmer()</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Speed</strong></td>
+<td style="text-align: left;">Faster</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Regularization</strong></td>
+<td style="text-align: left;">Penalties (LASSO)</td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="frequentist-vs.-bayesian-8" class="slide level2">
+<h2>Frequentist vs.&nbsp;Bayesian</h2>
+<div class="small-table">
+<table class="caption-top">
+<colgroup>
+<col style="width: 24%">
+<col style="width: 38%">
+<col style="width: 37%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Aspect</th>
+<th style="text-align: left;">Frequentist</th>
+<th style="text-align: left;">Bayesian</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Probability philosophy</strong></td>
+<td style="text-align: left;">Long-run frequency</td>
+<td style="text-align: left;">Degree of belief</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Parameters</strong></td>
+<td style="text-align: left;">Fixed unknowns</td>
+<td style="text-align: left;">Random variables</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Estimation</strong></td>
+<td style="text-align: left;">Point estimates (MLE)</td>
+<td style="text-align: left;">Full posteriors</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Uncertainty</strong></td>
+<td style="text-align: left;">Confidence intervals</td>
+<td style="text-align: left;">Credible intervals</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Interpretation</strong></td>
+<td style="text-align: left;">“95% of samples contain true value”</td>
+<td style="text-align: left;">“95% probability parameter in range”</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Prior Info</strong></td>
+<td style="text-align: left;">Not formally used</td>
+<td style="text-align: left;">Explicit priors</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Prediction</strong></td>
+<td style="text-align: left;">Points with errors</td>
+<td style="text-align: left;">Full distributions</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Testing</strong></td>
+<td style="text-align: left;">p-values</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Comparison</strong></td>
+<td style="text-align: left;">AIC, BIC</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Computation</strong></td>
+<td style="text-align: left;">Often analytical</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Workflow</strong></td>
+<td style="text-align: left;">Residuals, QQ plots</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Small Samples</strong></td>
+<td style="text-align: left;">Often poor</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>R Implementation</strong></td>
+<td style="text-align: left;">lm(), glmer()</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Speed</strong></td>
+<td style="text-align: left;">Faster</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Regularization</strong></td>
+<td style="text-align: left;">Penalties (LASSO)</td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="frequentist-vs.-bayesian-9" class="slide level2">
+<h2>Frequentist vs.&nbsp;Bayesian</h2>
+<div class="small-table">
+<table class="caption-top">
+<colgroup>
+<col style="width: 24%">
+<col style="width: 38%">
+<col style="width: 37%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Aspect</th>
+<th style="text-align: left;">Frequentist</th>
+<th style="text-align: left;">Bayesian</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Probability philosophy</strong></td>
+<td style="text-align: left;">Long-run frequency</td>
+<td style="text-align: left;">Degree of belief</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Parameters</strong></td>
+<td style="text-align: left;">Fixed unknowns</td>
+<td style="text-align: left;">Random variables</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Estimation</strong></td>
+<td style="text-align: left;">Point estimates (MLE)</td>
+<td style="text-align: left;">Full posteriors</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Uncertainty</strong></td>
+<td style="text-align: left;">Confidence intervals</td>
+<td style="text-align: left;">Credible intervals</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Interpretation</strong></td>
+<td style="text-align: left;">“95% of samples contain true value”</td>
+<td style="text-align: left;">“95% probability parameter in range”</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Prior Info</strong></td>
+<td style="text-align: left;">Not formally used</td>
+<td style="text-align: left;">Explicit priors</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Prediction</strong></td>
+<td style="text-align: left;">Points with errors</td>
+<td style="text-align: left;">Full distributions</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Testing</strong></td>
+<td style="text-align: left;">p-values</td>
+<td style="text-align: left;">Posterior probabilities</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Comparison</strong></td>
+<td style="text-align: left;">AIC, BIC</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Computation</strong></td>
+<td style="text-align: left;">Often analytical</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Workflow</strong></td>
+<td style="text-align: left;">Residuals, QQ plots</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Small Samples</strong></td>
+<td style="text-align: left;">Often poor</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>R Implementation</strong></td>
+<td style="text-align: left;">lm(), glmer()</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Speed</strong></td>
+<td style="text-align: left;">Faster</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Regularization</strong></td>
+<td style="text-align: left;">Penalties (LASSO)</td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="frequentist-vs.-bayesian-10" class="slide level2">
+<h2>Frequentist vs.&nbsp;Bayesian</h2>
+<div class="small-table">
+<table class="caption-top">
+<colgroup>
+<col style="width: 24%">
+<col style="width: 38%">
+<col style="width: 37%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Aspect</th>
+<th style="text-align: left;">Frequentist</th>
+<th style="text-align: left;">Bayesian</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Probability philosophy</strong></td>
+<td style="text-align: left;">Long-run frequency</td>
+<td style="text-align: left;">Degree of belief</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Parameters</strong></td>
+<td style="text-align: left;">Fixed unknowns</td>
+<td style="text-align: left;">Random variables</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Estimation</strong></td>
+<td style="text-align: left;">Point estimates (MLE)</td>
+<td style="text-align: left;">Full posteriors</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Uncertainty</strong></td>
+<td style="text-align: left;">Confidence intervals</td>
+<td style="text-align: left;">Credible intervals</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Interpretation</strong></td>
+<td style="text-align: left;">“95% of samples contain true value”</td>
+<td style="text-align: left;">“95% probability parameter in range”</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Prior Info</strong></td>
+<td style="text-align: left;">Not formally used</td>
+<td style="text-align: left;">Explicit priors</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Prediction</strong></td>
+<td style="text-align: left;">Points with errors</td>
+<td style="text-align: left;">Full distributions</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Testing</strong></td>
+<td style="text-align: left;">p-values</td>
+<td style="text-align: left;">Posterior probabilities</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Comparison</strong></td>
+<td style="text-align: left;">AIC, BIC</td>
+<td style="text-align: left;">WAIC, LOO-CV, Bayes Factor</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Computation</strong></td>
+<td style="text-align: left;">Often analytical</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Workflow</strong></td>
+<td style="text-align: left;">Residuals, QQ plots</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Small Samples</strong></td>
+<td style="text-align: left;">Often poor</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>R Implementation</strong></td>
+<td style="text-align: left;">lm(), glmer()</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Speed</strong></td>
+<td style="text-align: left;">Faster</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Regularization</strong></td>
+<td style="text-align: left;">Penalties (LASSO)</td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="frequentist-vs.-bayesian-11" class="slide level2">
+<h2>Frequentist vs.&nbsp;Bayesian</h2>
+<div class="small-table">
+<table class="caption-top">
+<colgroup>
+<col style="width: 24%">
+<col style="width: 38%">
+<col style="width: 37%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Aspect</th>
+<th style="text-align: left;">Frequentist</th>
+<th style="text-align: left;">Bayesian</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Probability philosophy</strong></td>
+<td style="text-align: left;">Long-run frequency</td>
+<td style="text-align: left;">Degree of belief</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Parameters</strong></td>
+<td style="text-align: left;">Fixed unknowns</td>
+<td style="text-align: left;">Random variables</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Estimation</strong></td>
+<td style="text-align: left;">Point estimates (MLE)</td>
+<td style="text-align: left;">Full posteriors</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Uncertainty</strong></td>
+<td style="text-align: left;">Confidence intervals</td>
+<td style="text-align: left;">Credible intervals</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Interpretation</strong></td>
+<td style="text-align: left;">“95% of samples contain true value”</td>
+<td style="text-align: left;">“95% probability parameter in range”</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Prior Info</strong></td>
+<td style="text-align: left;">Not formally used</td>
+<td style="text-align: left;">Explicit priors</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Prediction</strong></td>
+<td style="text-align: left;">Points with errors</td>
+<td style="text-align: left;">Full distributions</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Testing</strong></td>
+<td style="text-align: left;">p-values</td>
+<td style="text-align: left;">Posterior probabilities</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Comparison</strong></td>
+<td style="text-align: left;">AIC, BIC</td>
+<td style="text-align: left;">WAIC, LOO-CV, Bayes Factor</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Computation</strong></td>
+<td style="text-align: left;">Often analytical</td>
+<td style="text-align: left;">MCMC sampling</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Workflow</strong></td>
+<td style="text-align: left;">Residuals, QQ plots</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Small Samples</strong></td>
+<td style="text-align: left;">Often poor</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>R Implementation</strong></td>
+<td style="text-align: left;">lm(), glmer()</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Speed</strong></td>
+<td style="text-align: left;">Faster</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Regularization</strong></td>
+<td style="text-align: left;">Penalties (LASSO)</td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="frequentist-vs.-bayesian-12" class="slide level2">
+<h2>Frequentist vs.&nbsp;Bayesian</h2>
+<div class="small-table">
+<table class="caption-top">
+<colgroup>
+<col style="width: 24%">
+<col style="width: 38%">
+<col style="width: 37%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Aspect</th>
+<th style="text-align: left;">Frequentist</th>
+<th style="text-align: left;">Bayesian</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Probability philosophy</strong></td>
+<td style="text-align: left;">Long-run frequency</td>
+<td style="text-align: left;">Degree of belief</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Parameters</strong></td>
+<td style="text-align: left;">Fixed unknowns</td>
+<td style="text-align: left;">Random variables</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Estimation</strong></td>
+<td style="text-align: left;">Point estimates (MLE)</td>
+<td style="text-align: left;">Full posteriors</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Uncertainty</strong></td>
+<td style="text-align: left;">Confidence intervals</td>
+<td style="text-align: left;">Credible intervals</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Interpretation</strong></td>
+<td style="text-align: left;">“95% of samples contain true value”</td>
+<td style="text-align: left;">“95% probability parameter in range”</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Prior Info</strong></td>
+<td style="text-align: left;">Not formally used</td>
+<td style="text-align: left;">Explicit priors</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Prediction</strong></td>
+<td style="text-align: left;">Points with errors</td>
+<td style="text-align: left;">Full distributions</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Testing</strong></td>
+<td style="text-align: left;">p-values</td>
+<td style="text-align: left;">Posterior probabilities</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Comparison</strong></td>
+<td style="text-align: left;">AIC, BIC</td>
+<td style="text-align: left;">WAIC, LOO-CV, Bayes Factor</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Computation</strong></td>
+<td style="text-align: left;">Often analytical</td>
+<td style="text-align: left;">MCMC sampling</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Workflow</strong></td>
+<td style="text-align: left;">Residuals, QQ plots</td>
+<td style="text-align: left;">Posterior checks, Rhat</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Small Samples</strong></td>
+<td style="text-align: left;">Often poor</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>R Implementation</strong></td>
+<td style="text-align: left;">lm(), glmer()</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Speed</strong></td>
+<td style="text-align: left;">Faster</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Regularization</strong></td>
+<td style="text-align: left;">Penalties (LASSO)</td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="frequentist-vs.-bayesian-13" class="slide level2">
+<h2>Frequentist vs.&nbsp;Bayesian</h2>
+<div class="small-table">
+<table class="caption-top">
+<colgroup>
+<col style="width: 24%">
+<col style="width: 38%">
+<col style="width: 37%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Aspect</th>
+<th style="text-align: left;">Frequentist</th>
+<th style="text-align: left;">Bayesian</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Probability philosophy</strong></td>
+<td style="text-align: left;">Long-run frequency</td>
+<td style="text-align: left;">Degree of belief</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Parameters</strong></td>
+<td style="text-align: left;">Fixed unknowns</td>
+<td style="text-align: left;">Random variables</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Estimation</strong></td>
+<td style="text-align: left;">Point estimates (MLE)</td>
+<td style="text-align: left;">Full posteriors</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Uncertainty</strong></td>
+<td style="text-align: left;">Confidence intervals</td>
+<td style="text-align: left;">Credible intervals</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Interpretation</strong></td>
+<td style="text-align: left;">“95% of samples contain true value”</td>
+<td style="text-align: left;">“95% probability parameter in range”</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Prior Info</strong></td>
+<td style="text-align: left;">Not formally used</td>
+<td style="text-align: left;">Explicit priors</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Prediction</strong></td>
+<td style="text-align: left;">Points with errors</td>
+<td style="text-align: left;">Full distributions</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Testing</strong></td>
+<td style="text-align: left;">p-values</td>
+<td style="text-align: left;">Posterior probabilities</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Comparison</strong></td>
+<td style="text-align: left;">AIC, BIC</td>
+<td style="text-align: left;">WAIC, LOO-CV, Bayes Factor</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Computation</strong></td>
+<td style="text-align: left;">Often analytical</td>
+<td style="text-align: left;">MCMC sampling</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Workflow</strong></td>
+<td style="text-align: left;">Residuals, QQ plots</td>
+<td style="text-align: left;">Posterior checks, Rhat</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Small Samples</strong></td>
+<td style="text-align: left;">Often poor</td>
+<td style="text-align: left;">Can be robust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>R Implementation</strong></td>
+<td style="text-align: left;">lm(), glmer()</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Speed</strong></td>
+<td style="text-align: left;">Faster</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Regularization</strong></td>
+<td style="text-align: left;">Penalties (LASSO)</td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="frequentist-vs.-bayesian-14" class="slide level2">
+<h2>Frequentist vs.&nbsp;Bayesian</h2>
+<div class="small-table">
+<table class="caption-top">
+<colgroup>
+<col style="width: 24%">
+<col style="width: 38%">
+<col style="width: 37%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Aspect</th>
+<th style="text-align: left;">Frequentist</th>
+<th style="text-align: left;">Bayesian</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Probability philosophy</strong></td>
+<td style="text-align: left;">Long-run frequency</td>
+<td style="text-align: left;">Degree of belief</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Parameters</strong></td>
+<td style="text-align: left;">Fixed unknowns</td>
+<td style="text-align: left;">Random variables</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Estimation</strong></td>
+<td style="text-align: left;">Point estimates (MLE)</td>
+<td style="text-align: left;">Full posteriors</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Uncertainty</strong></td>
+<td style="text-align: left;">Confidence intervals</td>
+<td style="text-align: left;">Credible intervals</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Interpretation</strong></td>
+<td style="text-align: left;">“95% of samples contain true value”</td>
+<td style="text-align: left;">“95% probability parameter in range”</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Prior Info</strong></td>
+<td style="text-align: left;">Not formally used</td>
+<td style="text-align: left;">Explicit priors</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Prediction</strong></td>
+<td style="text-align: left;">Points with errors</td>
+<td style="text-align: left;">Full distributions</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Testing</strong></td>
+<td style="text-align: left;">p-values</td>
+<td style="text-align: left;">Posterior probabilities</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Comparison</strong></td>
+<td style="text-align: left;">AIC, BIC</td>
+<td style="text-align: left;">WAIC, LOO-CV, Bayes Factor</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Computation</strong></td>
+<td style="text-align: left;">Often analytical</td>
+<td style="text-align: left;">MCMC sampling</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Workflow</strong></td>
+<td style="text-align: left;">Residuals, QQ plots</td>
+<td style="text-align: left;">Posterior checks, Rhat</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Small Samples</strong></td>
+<td style="text-align: left;">Often poor</td>
+<td style="text-align: left;">Can be robust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>R Implementation</strong></td>
+<td style="text-align: left;">lm(), glmer()</td>
+<td style="text-align: left;">brms::brm(), rstan()</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Speed</strong></td>
+<td style="text-align: left;">Faster</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Regularization</strong></td>
+<td style="text-align: left;">Penalties (LASSO)</td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="frequentist-vs.-bayesian-15" class="slide level2">
+<h2>Frequentist vs.&nbsp;Bayesian</h2>
+<div class="small-table">
+<table class="caption-top">
+<colgroup>
+<col style="width: 24%">
+<col style="width: 38%">
+<col style="width: 37%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Aspect</th>
+<th style="text-align: left;">Frequentist</th>
+<th style="text-align: left;">Bayesian</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Probability philosophy</strong></td>
+<td style="text-align: left;">Long-run frequency</td>
+<td style="text-align: left;">Degree of belief</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Parameters</strong></td>
+<td style="text-align: left;">Fixed unknowns</td>
+<td style="text-align: left;">Random variables</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Estimation</strong></td>
+<td style="text-align: left;">Point estimates (MLE)</td>
+<td style="text-align: left;">Full posteriors</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Uncertainty</strong></td>
+<td style="text-align: left;">Confidence intervals</td>
+<td style="text-align: left;">Credible intervals</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Interpretation</strong></td>
+<td style="text-align: left;">“95% of samples contain true value”</td>
+<td style="text-align: left;">“95% probability parameter in range”</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Prior Info</strong></td>
+<td style="text-align: left;">Not formally used</td>
+<td style="text-align: left;">Explicit priors</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Prediction</strong></td>
+<td style="text-align: left;">Points with errors</td>
+<td style="text-align: left;">Full distributions</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Testing</strong></td>
+<td style="text-align: left;">p-values</td>
+<td style="text-align: left;">Posterior probabilities</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Comparison</strong></td>
+<td style="text-align: left;">AIC, BIC</td>
+<td style="text-align: left;">WAIC, LOO-CV, Bayes Factor</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Computation</strong></td>
+<td style="text-align: left;">Often analytical</td>
+<td style="text-align: left;">MCMC sampling</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Workflow</strong></td>
+<td style="text-align: left;">Residuals, QQ plots</td>
+<td style="text-align: left;">Posterior checks, Rhat</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Small Samples</strong></td>
+<td style="text-align: left;">Often poor</td>
+<td style="text-align: left;">Can be robust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>R Implementation</strong></td>
+<td style="text-align: left;">lm(), glmer()</td>
+<td style="text-align: left;">brms::brm(), rstan()</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Speed</strong></td>
+<td style="text-align: left;">Faster</td>
+<td style="text-align: left;">More intensive</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Regularization</strong></td>
+<td style="text-align: left;">Penalties (LASSO)</td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="frequentist-vs.-bayesian-16" class="slide level2">
+<h2>Frequentist vs.&nbsp;Bayesian</h2>
+<div class="small-table">
+<table class="caption-top">
+<colgroup>
+<col style="width: 24%">
+<col style="width: 38%">
+<col style="width: 37%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Aspect</th>
+<th style="text-align: left;">Frequentist</th>
+<th style="text-align: left;">Bayesian</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Probability philosophy</strong></td>
+<td style="text-align: left;">Long-run frequency</td>
+<td style="text-align: left;">Degree of belief</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Parameters</strong></td>
+<td style="text-align: left;">Fixed unknowns</td>
+<td style="text-align: left;">Random variables</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Estimation</strong></td>
+<td style="text-align: left;">Point estimates (MLE)</td>
+<td style="text-align: left;">Full posteriors</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Uncertainty</strong></td>
+<td style="text-align: left;">Confidence intervals</td>
+<td style="text-align: left;">Credible intervals</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Interpretation</strong></td>
+<td style="text-align: left;">“95% of samples contain true value”</td>
+<td style="text-align: left;">“95% probability parameter in range”</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Prior Info</strong></td>
+<td style="text-align: left;">Not formally used</td>
+<td style="text-align: left;">Explicit priors</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Prediction</strong></td>
+<td style="text-align: left;">Points with errors</td>
+<td style="text-align: left;">Full distributions</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Testing</strong></td>
+<td style="text-align: left;">p-values</td>
+<td style="text-align: left;">Posterior probabilities</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Comparison</strong></td>
+<td style="text-align: left;">AIC, BIC</td>
+<td style="text-align: left;">WAIC, LOO-CV, Bayes Factor</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Computation</strong></td>
+<td style="text-align: left;">Often analytical</td>
+<td style="text-align: left;">MCMC sampling</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Workflow</strong></td>
+<td style="text-align: left;">Residuals, QQ plots</td>
+<td style="text-align: left;">Posterior checks, Rhat</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Small Samples</strong></td>
+<td style="text-align: left;">Often poor</td>
+<td style="text-align: left;">Can be robust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>R Implementation</strong></td>
+<td style="text-align: left;">lm(), glmer()</td>
+<td style="text-align: left;">brms::brm(), rstan()</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Speed</strong></td>
+<td style="text-align: left;">Faster</td>
+<td style="text-align: left;">More intensive</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Regularization</strong></td>
+<td style="text-align: left;">Penalties (LASSO)</td>
+<td style="text-align: left;">Natural via priors</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="frequentist-vs.-bayesian-17" class="slide level2">
+<h2>Frequentist vs.&nbsp;Bayesian</h2>
+<div class="small-table">
+<table class="caption-top">
+<colgroup>
+<col style="width: 26%">
+<col style="width: 41%">
+<col style="width: 31%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Aspect</th>
+<th>Frequentist</th>
+<th>Bayesian</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Probability philosophy</strong></td>
+<td>Long-run frequency</td>
+<td>Degree of belief</td>
+</tr>
+<tr class="even">
+<td><strong>Parameters</strong></td>
+<td>Fixed unknowns</td>
+<td>Random variables</td>
+</tr>
+<tr class="odd">
+<td><strong>Estimation</strong></td>
+<td>Point estimates (MLE)</td>
+<td>Full posteriors</td>
+</tr>
+<tr class="even">
+<td><strong>Uncertainty</strong></td>
+<td>Confidence intervals</td>
+<td>Credible intervals</td>
+</tr>
+<tr class="odd">
+<td><strong>Interpretation</strong></td>
+<td>“95% of samples contain true value”</td>
+<td>“95% probability parameter in range”</td>
+</tr>
+<tr class="even">
+<td><strong>Prior Info</strong></td>
+<td>Not formally used</td>
+<td>Explicit priors</td>
+</tr>
+<tr class="odd">
+<td><strong>Prediction</strong></td>
+<td>Points with errors</td>
+<td>Full distributions</td>
+</tr>
+<tr class="even">
+<td><strong>Testing</strong></td>
+<td>p-values</td>
+<td>Posterior probabilities</td>
+</tr>
+<tr class="odd">
+<td><strong>Comparison</strong></td>
+<td>AIC, BIC</td>
+<td>WAIC, LOO-CV, Bayes Factor</td>
+</tr>
+<tr class="even">
+<td><strong>Computation</strong></td>
+<td>Often analytical</td>
+<td>MCMC sampling</td>
+</tr>
+<tr class="odd">
+<td><strong>Workflow</strong></td>
+<td>Residuals, QQ plots</td>
+<td>Posterior checks, Rhat</td>
+</tr>
+<tr class="even">
+<td><strong>Small Samples</strong></td>
+<td>Often poor</td>
+<td>Can be robust</td>
+</tr>
+<tr class="odd">
+<td><strong>R Implementation</strong></td>
+<td>lm(), glmer()</td>
+<td>brms::brm(), rstan()</td>
+</tr>
+<tr class="even">
+<td><strong>Speed</strong></td>
+<td>Faster</td>
+<td>More intensive</td>
+</tr>
+<tr class="odd">
+<td><strong>Regularization</strong></td>
+<td>Penalties (LASSO)</td>
+<td>Natural via priors</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="statistical-workflow" class="slide level2">
+<h2>Statistical Workflow</h2>
+<ul>
+<li>Experiment design</li>
+<li>Power analysis</li>
+<li>Model specification</li>
+<li>Model Fitting</li>
+<li>Model Checking</li>
+<li>Model Comparison</li>
+</ul>
+</section>
+<section id="statistical-workflow-1" class="slide level2">
+<h2>Statistical Workflow</h2>
+<ul>
+<li>Experiment design</li>
+<li>Power analysis</li>
+<li>———————————&gt; <em>Prior specification; Prior predictive checks</em></li>
+<li>Model specification</li>
+<li>Model Fitting</li>
+<li>Model Checking</li>
+<li>———————————&gt; <em>Posterior predictive checks</em></li>
+<li>Model Comparison</li>
+</ul>
+</section>
 <section id="today-1" class="slide level2">
 <h2>Today</h2>
 <p><br> <br></p>
@@ -2108,20 +3866,20 @@ Suyog Chandramouli (adapted from Jason Geller’s slides)
 <tr class="odd">
 <td style="text-align: left;">b_avgView</td>
 <td style="text-align: right;">1.001</td>
-<td style="text-align: right;">8093.672</td>
+<td style="text-align: right;">8397.120</td>
 <td style="text-align: right;">0.002</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">b_Intercept</td>
-<td style="text-align: right;">1.001</td>
-<td style="text-align: right;">7733.788</td>
-<td style="text-align: right;">0.108</td>
+<td style="text-align: right;">1.000</td>
+<td style="text-align: right;">8110.759</td>
+<td style="text-align: right;">0.106</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">b_sync_cont</td>
 <td style="text-align: right;">1.001</td>
-<td style="text-align: right;">7863.828</td>
-<td style="text-align: right;">0.092</td>
+<td style="text-align: right;">8604.762</td>
+<td style="text-align: right;">0.089</td>
 </tr>
 </tbody>
 </table>
@@ -2130,11 +3888,9 @@ Suyog Chandramouli (adapted from Jason Geller’s slides)
 <ul>
 <li><p><span class="math inline">\(\hat{R}\)</span></p>
 <ul>
-<li><p>Measure of consistency of Markov chains</p>
-<ul>
-<li>Should be close to 1 (not larger than 1.01)</li>
-</ul></li>
+<li><p>It compares within-chain and between-chain variance. If chains explore the same areas, R-hat approaches 1.</p></li>
 <li><p>Ratio of variance (like <em>F</em> test)</p></li>
+<li><p>0.99 to 1.01 are considered acceptable (across all parameters)</p></li>
 </ul></li>
 </ul>
 </section>
@@ -2156,20 +3912,20 @@ Suyog Chandramouli (adapted from Jason Geller’s slides)
 <tr class="odd">
 <td style="text-align: left;">b_avgView</td>
 <td style="text-align: right;">1.001</td>
-<td style="text-align: right;">8093.672</td>
+<td style="text-align: right;">8397.120</td>
 <td style="text-align: right;">0.002</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">b_Intercept</td>
-<td style="text-align: right;">1.001</td>
-<td style="text-align: right;">7733.788</td>
-<td style="text-align: right;">0.108</td>
+<td style="text-align: right;">1.000</td>
+<td style="text-align: right;">8110.759</td>
+<td style="text-align: right;">0.106</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">b_sync_cont</td>
 <td style="text-align: right;">1.001</td>
-<td style="text-align: right;">7863.828</td>
-<td style="text-align: right;">0.092</td>
+<td style="text-align: right;">8604.762</td>
+<td style="text-align: right;">0.089</td>
 </tr>
 </tbody>
 </table>
@@ -2178,6 +3934,7 @@ Suyog Chandramouli (adapted from Jason Geller’s slides)
 <ul>
 <li><p>Effective sample size (ESS)</p>
 <ul>
+<li><p>Autocorrelation of samples inevitable (each sample is influenced by the previous)</p></li>
 <li><p>Number of independent pieces there is in autocorrelated chains (Krushke, 2015, p182-3)</p>
 <ul>
 <li>MCMC chains are autocorrelated</li>
@@ -2239,8 +3996,25 @@ Suyog Chandramouli (adapted from Jason Geller’s slides)
 <section id="visualize-prior-predictive-distribution" class="slide level2">
 <h2>Visualize prior predictive distribution</h2>
 <ul>
-<li>Make sure prior distribution makes sensible predictions (if using informative priors)</li>
+<li>Good prior predictive checks validate that your model makes sense conceptually - not that it predicts your specific data accurately.
+<ul>
+<li>That’s what posterior checks are for.</li>
+</ul></li>
+<li>Make sure prior distribution makes sensible predictions (if using informative priors)
+<ul>
+<li>Predictions cover reasonable ranges</li>
+<li>Values are plausible (not theoretically impossible)</li>
+<li>Distribution shape is sensible</li>
+</ul></li>
+<li>Prior predictions should be wider than posterior predictions.
+<ul>
+<li>They represent uncertainty before data.</li>
+<li>You don’t want overconfident priors</li>
+</ul></li>
 </ul>
+</section>
+<section id="visualize-prior-predictive-distribution-1" class="slide level2">
+<h2>Visualize prior predictive distribution</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
 <div class="cell">
@@ -2334,46 +4108,46 @@ Suyog Chandramouli (adapted from Jason Geller’s slides)
 <tr class="odd">
 <td style="text-align: left;">b_Intercept</td>
 <td style="text-align: left;">conditional</td>
-<td style="text-align: right;">56.1054831</td>
+<td style="text-align: right;">56.1594235</td>
 <td style="text-align: right;">0.95</td>
-<td style="text-align: right;">36.9207087</td>
-<td style="text-align: right;">74.9698988</td>
+<td style="text-align: right;">37.3398945</td>
+<td style="text-align: right;">74.9020468</td>
 <td style="text-align: right;">1.0000000</td>
-<td style="text-align: right;">1.0008438</td>
-<td style="text-align: right;">7733.788</td>
+<td style="text-align: right;">1.0004573</td>
+<td style="text-align: right;">8110.759</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">b_avgView</td>
 <td style="text-align: left;">conditional</td>
-<td style="text-align: right;">0.4604712</td>
+<td style="text-align: right;">0.4600042</td>
 <td style="text-align: right;">0.95</td>
-<td style="text-align: right;">0.1519671</td>
-<td style="text-align: right;">0.7729923</td>
-<td style="text-align: right;">0.9976667</td>
-<td style="text-align: right;">1.0006930</td>
-<td style="text-align: right;">8093.672</td>
+<td style="text-align: right;">0.1545823</td>
+<td style="text-align: right;">0.7662243</td>
+<td style="text-align: right;">0.9975000</td>
+<td style="text-align: right;">1.0006136</td>
+<td style="text-align: right;">8397.120</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">b_sync_cont</td>
 <td style="text-align: left;">conditional</td>
-<td style="text-align: right;">0.3724776</td>
+<td style="text-align: right;">0.3405407</td>
 <td style="text-align: right;">0.95</td>
-<td style="text-align: right;">-15.7232207</td>
-<td style="text-align: right;">15.9465313</td>
-<td style="text-align: right;">0.5185833</td>
-<td style="text-align: right;">1.0009958</td>
-<td style="text-align: right;">7863.828</td>
+<td style="text-align: right;">-15.7861225</td>
+<td style="text-align: right;">16.6110988</td>
+<td style="text-align: right;">0.5170833</td>
+<td style="text-align: right;">1.0006002</td>
+<td style="text-align: right;">8604.762</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">sigma</td>
 <td style="text-align: left;">sigma</td>
-<td style="text-align: right;">15.2066579</td>
+<td style="text-align: right;">15.2124671</td>
 <td style="text-align: right;">0.95</td>
-<td style="text-align: right;">12.0562701</td>
-<td style="text-align: right;">20.0301701</td>
+<td style="text-align: right;">12.0222332</td>
+<td style="text-align: right;">19.9088681</td>
 <td style="text-align: right;">1.0000000</td>
-<td style="text-align: right;">0.9997787</td>
-<td style="text-align: right;">9615.959</td>
+<td style="text-align: right;">0.9997434</td>
+<td style="text-align: right;">9389.914</td>
 </tr>
 </tbody>
 </table>
@@ -2511,57 +4285,57 @@ Suyog Chandramouli (adapted from Jason Geller’s slides)
 <td style="text-align: left;">2</td>
 <td style="text-align: left;">b_Intercept</td>
 <td style="text-align: left;">conditional</td>
-<td style="text-align: right;">56.1054831</td>
-<td style="text-align: right;">56.0583612</td>
-<td style="text-align: right;">56.6485543</td>
+<td style="text-align: right;">56.1594235</td>
+<td style="text-align: right;">56.2083857</td>
+<td style="text-align: right;">56.4458847</td>
 <td style="text-align: right;">0.95</td>
-<td style="text-align: right;">36.9207087</td>
-<td style="text-align: right;">74.9698988</td>
+<td style="text-align: right;">37.3398945</td>
+<td style="text-align: right;">74.9020468</td>
 <td style="text-align: right;">1.0000000</td>
-<td style="text-align: right;">1.0008438</td>
-<td style="text-align: right;">7733.788</td>
+<td style="text-align: right;">1.0004573</td>
+<td style="text-align: right;">8110.759</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">1</td>
 <td style="text-align: left;">b_avgView</td>
 <td style="text-align: left;">conditional</td>
-<td style="text-align: right;">0.4604712</td>
-<td style="text-align: right;">0.4613373</td>
-<td style="text-align: right;">0.4536544</td>
+<td style="text-align: right;">0.4600042</td>
+<td style="text-align: right;">0.4596431</td>
+<td style="text-align: right;">0.4404066</td>
 <td style="text-align: right;">0.95</td>
-<td style="text-align: right;">0.1519671</td>
-<td style="text-align: right;">0.7729923</td>
-<td style="text-align: right;">0.9976667</td>
-<td style="text-align: right;">1.0006930</td>
-<td style="text-align: right;">8093.672</td>
+<td style="text-align: right;">0.1545823</td>
+<td style="text-align: right;">0.7662243</td>
+<td style="text-align: right;">0.9975000</td>
+<td style="text-align: right;">1.0006136</td>
+<td style="text-align: right;">8397.120</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">3</td>
 <td style="text-align: left;">b_sync_cont</td>
 <td style="text-align: left;">conditional</td>
-<td style="text-align: right;">0.3724776</td>
-<td style="text-align: right;">0.3156050</td>
-<td style="text-align: right;">0.4939377</td>
+<td style="text-align: right;">0.3405407</td>
+<td style="text-align: right;">0.3537299</td>
+<td style="text-align: right;">-0.4809638</td>
 <td style="text-align: right;">0.95</td>
-<td style="text-align: right;">-15.7232207</td>
-<td style="text-align: right;">15.9465313</td>
-<td style="text-align: right;">0.5185833</td>
-<td style="text-align: right;">1.0009958</td>
-<td style="text-align: right;">7863.828</td>
+<td style="text-align: right;">-15.7861225</td>
+<td style="text-align: right;">16.6110988</td>
+<td style="text-align: right;">0.5170833</td>
+<td style="text-align: right;">1.0006002</td>
+<td style="text-align: right;">8604.762</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">4</td>
 <td style="text-align: left;">sigma</td>
 <td style="text-align: left;">sigma</td>
-<td style="text-align: right;">15.2066579</td>
-<td style="text-align: right;">15.4124215</td>
-<td style="text-align: right;">14.6750082</td>
+<td style="text-align: right;">15.2124671</td>
+<td style="text-align: right;">15.4077603</td>
+<td style="text-align: right;">14.8794125</td>
 <td style="text-align: right;">0.95</td>
-<td style="text-align: right;">12.0562701</td>
-<td style="text-align: right;">20.0301701</td>
+<td style="text-align: right;">12.0222332</td>
+<td style="text-align: right;">19.9088681</td>
 <td style="text-align: right;">1.0000000</td>
-<td style="text-align: right;">0.9997787</td>
-<td style="text-align: right;">9615.959</td>
+<td style="text-align: right;">0.9997434</td>
+<td style="text-align: right;">9389.914</td>
 </tr>
 </tbody>
 </table>
@@ -2594,7 +4368,7 @@ Suyog Chandramouli (adapted from Jason Geller’s slides)
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href=""></a><span class="fu">hdi</span>(posteriors<span class="sc">$</span>b_avgView, <span class="at">ci=</span><span class="fl">0.95</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>          [,1]      [,2]
-[1,] 0.1405985 0.7622254</code></pre>
+[1,] 0.1497696 0.7617714</code></pre>
 </div>
 </div>
 <div class="fragment">
@@ -2615,8 +4389,8 @@ Suyog Chandramouli (adapted from Jason Geller’s slides)
 <div class="cell">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href=""></a><span class="fu">hdi</span>(posteriors<span class="sc">$</span>b_sync_cont, <span class="at">ci=</span><span class="fl">0.95</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>          [,1]    [,2]
-[1,] -15.60769 15.9829</code></pre>
+<pre><code>          [,1]     [,2]
+[1,] -16.46681 15.94777</code></pre>
 </div>
 </div>
 <div class="fragment">
@@ -2663,12 +4437,12 @@ Suyog Chandramouli (adapted from Jason Geller’s slides)
 <tr class="odd">
 <td style="text-align: left;">sync_cont</td>
 <td style="text-align: left;">+1</td>
-<td style="text-align: right;">0.3724776</td>
-<td style="text-align: right;">-15.72322</td>
-<td style="text-align: right;">15.94653</td>
-<td style="text-align: right;">79.91167</td>
-<td style="text-align: right;">80.16716</td>
-<td style="text-align: right;">79.91167</td>
+<td style="text-align: right;">0.3405407</td>
+<td style="text-align: right;">-15.78612</td>
+<td style="text-align: right;">16.6111</td>
+<td style="text-align: right;">79.92152</td>
+<td style="text-align: right;">80.3078</td>
+<td style="text-align: right;">79.92152</td>
 <td style="text-align: right;">1</td>
 </tr>
 </tbody>
@@ -2709,9 +4483,9 @@ Suyog Chandramouli (adapted from Jason Geller’s slides)
 
 Parameter   |       BF
 ----------------------
-(Intercept) | 7.23e+04
-avgView     |     1.82
-sync_cont   |    0.598
+(Intercept) | 1.71e+04
+avgView     |     1.35
+sync_cont   |    0.634
 
 * Evidence Against The Null: 0</code></pre>
 </div>
@@ -2753,8 +4527,8 @@ sync_cont   |    0.598
 
 Parameter   |       BF
 ----------------------
-(Intercept) | 5.92e+05
-avgView     |     9.72
+(Intercept) | 3.33e+06
+avgView     |    11.33
 
 * Evidence Against The Null: 0</code></pre>
 </div>
@@ -2824,6 +4598,55 @@ avgView     |     9.72
 <li>Small sample sizes</li>
 <li>Unrepresentative samples</li>
 <li>Poor experimental design</li>
+</ul></li>
+</ul>
+</section>
+<section id="bayesian-mixed-models" class="slide level2">
+<h2>Bayesian Mixed Models</h2>
+</section>
+<section id="three-approaches-to-pooling" class="slide level2">
+<h2>Three approaches to pooling</h2>
+<ul>
+<li>Complete pooling</li>
+<li>No pooling</li>
+<li>Partial Pooling</li>
+</ul>
+</section>
+<section id="three-approaches-to-pooling-1" class="slide level2">
+<h2>Three approaches to pooling</h2>
+<ul>
+<li>Complete pooling
+<ul>
+<li>Pro: Simple, uses all data</li>
+<li>Con: Misses group variation</li>
+</ul></li>
+<li>No pooling
+<ul>
+<li>Pro: Captures group uniqueness</li>
+<li>Con: Limited by group sample size</li>
+</ul></li>
+<li>Partial Pooling
+<ul>
+<li>Groups “learn” from each other</li>
+</ul></li>
+</ul>
+</section>
+<section id="shrinkage" class="slide level2">
+<h2>Shrinkage</h2>
+<ul>
+<li>What is shrinkage?
+<ul>
+<li>Estimates “shrink” toward a common value</li>
+<li>Groups share information</li>
+<li>Small samples borrow strength</li>
+<li>Outliers get pulled toward average</li>
+</ul></li>
+<li>Advantages
+<ul>
+<li>Better predictions</li>
+<li>Reduced overfitting</li>
+<li>More stable estimates</li>
+<li>Fairness in comparisons</li>
 </ul></li>
 </ul>
 </section>

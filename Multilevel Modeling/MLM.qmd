@@ -3,7 +3,7 @@ title: "Multilevel Modeling (with R) Part 1"
 subtitle: "Princeton University"
 author: "Suyog Chandramouli (adapted from materials by Dr. Jason Geller)"
 date: 'Updated:`r Sys.Date()`'
-footer: "PSY 504: Advaced Statistics"
+footer: "PSY 504: Advanced Statistics"
 format: 
   revealjs:
     theme: white	
@@ -614,6 +614,122 @@ lmer(math~ses + (1+ses|schcode), data=data) # random intercept + random slope
 ```
 :::
 :::
+## Understanding syntax
+<!-- The basic structure of linear mixed models as implemented in lmer(): -->
+<!-- y = Xβ + Zu + ε -->
+
+Recap lm() calls:
+```{r}
+#| eval: false
+# Basic regression
+lm(y ~ x, data=data)
+
+# Multiple predictors
+lm(y ~ x1 + x2, data=data)
+
+# Interaction
+lm(y ~ x1 * x2, data=data)
+
+```
+
+This is equivalent to only considering fixed effects
+
+<!-- --- -->
+<!-- ## Understanding syntax -->
+## Adding Random effects:
+- Is required for mixed models / lmer. 
+- At least one random effect needs to be specified. 
+
+## Adding Random effects:
+- Is required for mixed models / lmer. 
+- At least one random effect needs to be specified. 
+- Because, otherwise why bother with lmer? We could just be using lm()
+
+## Adding Random effects:
+- Is required for mixed models / lmer. 
+- At least one random effect needs to be specified. 
+- Because, otherwise why bother with lmer? We could just be using lm()
+```{r}
+#| eval: false
+#The general formula
+model <- lmer(response ~ fixed_effects + (random_effects | grouping_factor), 
+              data = data)
+
+```
+
+## Adding Random effects:
+- Is required for mixed models / lmer. 
+- At least one random effect needs to be specified. 
+- Because, otherwise why bother with lmer? We could just be using lm()
+```{r}
+#| eval: false
+#The general formula
+model <- lmer(response ~ fixed_effects + (random_effects | grouping_factor), 
+              data = data)
+
+```
+
+**random_effects | grouping_factor**
+
+Allows us to specify different combinations of random effects:
+
+intercept only, slope only, or both intercept and slope
+
+⬑ for one or more grouping variables (i.e. given the nesting structure)
+
+
+## Example
+Consider the effect of a teaching method on math scores
+```{r}
+#| eval: false
+
+#Random intercept only
+#different baselines, same treatment effect
+lmer(score ~ treatment + (1|classroom), data=data)
+
+#Random slope only
+#same initial level, different treatment effects
+lmer(score ~ treatment + (0+treatment|classroom), data=data)
+
+#Both random intercept and slope
+#both initial levels & treatment effects vary
+lmer(score ~ treatment + (1+treatment|classroom), data=data)
+
+```
+
+## Example
+Consider the effect of a teaching method on math scores
+```{r}
+#| eval: false
+
+#Random intercept only
+lmer(score ~ treatment + (1|classroom), data=data)
+
+#Random slope only
+lmer(score ~ treatment + (0+treatment|classroom), data=data)
+
+#Both random intercept and slope
+lmer(score ~ treatment + (1+treatment|classroom), data=data)
+```
+Two grouping factors
+```{r}
+#| eval: false
+#Random intercepts for both
+lmer(score ~ treatment + (1|classroom) + (1|age), data=d)
+
+#Random slopes for both
+lmer(score ~ treatment + age + (0+treatment+age|classroom), data=d)
+
+#Random slopes and intercepts for both predictors
+lmer(score ~ treatment + age + (1+treatment+age|classroom), data=d)
+
+#Mixed
+lmer(score ~ treatment + age + (1|classroom) + (1+age|classroom), data=d)
+```
+
+
+
+## Syntax cheat sheet
 
 ## Syntax cheat sheet
 

@@ -11,7 +11,7 @@
   <meta name="generator" content="quarto-1.5.57">
 
   <meta name="author" content="Suyog Chandramouli (adapted from materials by Dr.&nbsp;Jason Geller)">
-  <meta name="dcterms.date" content="2025-03-17">
+  <meta name="dcterms.date" content="2025-03-19">
   <title>Multilevel Modeling (with R) Part 1</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -406,7 +406,7 @@ Suyog Chandramouli (adapted from materials by Dr.&nbsp;Jason Geller)
 </div>
 </div>
 
-  <p class="date">2025-03-17</p>
+  <p class="date">2025-03-19</p>
 </section>
 <section id="overview" class="slide level2">
 <h2>Overview</h2>
@@ -1119,7 +1119,119 @@ U_{1j} = b_{1j} - b_1
 </div>
 </div></div>
 </section>
+<section id="understanding-syntax" class="slide level2">
+<h2>Understanding syntax</h2>
+<!-- The basic structure of linear mixed models as implemented in lmer(): -->
+<!-- y = Xβ + Zu + ε -->
+<p>Recap lm() calls:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a><span class="co"># Basic regression</span></span>
+<span id="cb5-2"><a href=""></a><span class="fu">lm</span>(y <span class="sc">~</span> x, <span class="at">data=</span>data)</span>
+<span id="cb5-3"><a href=""></a></span>
+<span id="cb5-4"><a href=""></a><span class="co"># Multiple predictors</span></span>
+<span id="cb5-5"><a href=""></a><span class="fu">lm</span>(y <span class="sc">~</span> x1 <span class="sc">+</span> x2, <span class="at">data=</span>data)</span>
+<span id="cb5-6"><a href=""></a></span>
+<span id="cb5-7"><a href=""></a><span class="co"># Interaction</span></span>
+<span id="cb5-8"><a href=""></a><span class="fu">lm</span>(y <span class="sc">~</span> x1 <span class="sc">*</span> x2, <span class="at">data=</span>data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This is equivalent to only considering fixed effects</p>
+<!-- --- -->
+<!-- ## Understanding syntax -->
+</section>
+<section id="adding-random-effects" class="slide level2">
+<h2>Adding Random effects:</h2>
+<ul>
+<li>Is required for mixed models / lmer.</li>
+<li>At least one random effect needs to be specified.</li>
+</ul>
+</section>
+<section id="adding-random-effects-1" class="slide level2">
+<h2>Adding Random effects:</h2>
+<ul>
+<li>Is required for mixed models / lmer.</li>
+<li>At least one random effect needs to be specified.</li>
+<li>Because, otherwise why bother with lmer? We could just be using lm()</li>
+</ul>
+</section>
+<section id="adding-random-effects-2" class="slide level2">
+<h2>Adding Random effects:</h2>
+<ul>
+<li>Is required for mixed models / lmer.</li>
+<li>At least one random effect needs to be specified.</li>
+<li>Because, otherwise why bother with lmer? We could just be using lm()</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a><span class="co">#The general formula</span></span>
+<span id="cb6-2"><a href=""></a>model <span class="ot">&lt;-</span> <span class="fu">lmer</span>(response <span class="sc">~</span> fixed_effects <span class="sc">+</span> (random_effects <span class="sc">|</span> grouping_factor), </span>
+<span id="cb6-3"><a href=""></a>              <span class="at">data =</span> data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="adding-random-effects-3" class="slide level2">
+<h2>Adding Random effects:</h2>
+<ul>
+<li>Is required for mixed models / lmer.</li>
+<li>At least one random effect needs to be specified.</li>
+<li>Because, otherwise why bother with lmer? We could just be using lm()</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href=""></a><span class="co">#The general formula</span></span>
+<span id="cb7-2"><a href=""></a>model <span class="ot">&lt;-</span> <span class="fu">lmer</span>(response <span class="sc">~</span> fixed_effects <span class="sc">+</span> (random_effects <span class="sc">|</span> grouping_factor), </span>
+<span id="cb7-3"><a href=""></a>              <span class="at">data =</span> data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>random_effects | grouping_factor</strong></p>
+<p>Allows us to specify different combinations of random effects:</p>
+<p>intercept only, slope only, or both intercept and slope</p>
+<p>⬑ for one or more grouping variables (i.e.&nbsp;given the nesting structure)</p>
+</section>
+<section id="example" class="slide level2">
+<h2>Example</h2>
+<p>Consider the effect of a teaching method on math scores</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a><span class="co">#Random intercept only</span></span>
+<span id="cb8-2"><a href=""></a><span class="co">#different baselines, same treatment effect</span></span>
+<span id="cb8-3"><a href=""></a><span class="fu">lmer</span>(score <span class="sc">~</span> treatment <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>classroom), <span class="at">data=</span>data)</span>
+<span id="cb8-4"><a href=""></a></span>
+<span id="cb8-5"><a href=""></a><span class="co">#Random slope only</span></span>
+<span id="cb8-6"><a href=""></a><span class="co">#same initial level, different treatment effects</span></span>
+<span id="cb8-7"><a href=""></a><span class="fu">lmer</span>(score <span class="sc">~</span> treatment <span class="sc">+</span> (<span class="dv">0</span><span class="sc">+</span>treatment<span class="sc">|</span>classroom), <span class="at">data=</span>data)</span>
+<span id="cb8-8"><a href=""></a></span>
+<span id="cb8-9"><a href=""></a><span class="co">#Both random intercept and slope</span></span>
+<span id="cb8-10"><a href=""></a><span class="co">#both initial levels &amp; treatment effects vary</span></span>
+<span id="cb8-11"><a href=""></a><span class="fu">lmer</span>(score <span class="sc">~</span> treatment <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>treatment<span class="sc">|</span>classroom), <span class="at">data=</span>data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="example-1" class="slide level2">
+<h2>Example</h2>
+<p>Consider the effect of a teaching method on math scores</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href=""></a><span class="co">#Random intercept only</span></span>
+<span id="cb9-2"><a href=""></a><span class="fu">lmer</span>(score <span class="sc">~</span> treatment <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>classroom), <span class="at">data=</span>data)</span>
+<span id="cb9-3"><a href=""></a></span>
+<span id="cb9-4"><a href=""></a><span class="co">#Random slope only</span></span>
+<span id="cb9-5"><a href=""></a><span class="fu">lmer</span>(score <span class="sc">~</span> treatment <span class="sc">+</span> (<span class="dv">0</span><span class="sc">+</span>treatment<span class="sc">|</span>classroom), <span class="at">data=</span>data)</span>
+<span id="cb9-6"><a href=""></a></span>
+<span id="cb9-7"><a href=""></a><span class="co">#Both random intercept and slope</span></span>
+<span id="cb9-8"><a href=""></a><span class="fu">lmer</span>(score <span class="sc">~</span> treatment <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>treatment<span class="sc">|</span>classroom), <span class="at">data=</span>data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Two grouping factors</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href=""></a><span class="co">#Random intercepts for both</span></span>
+<span id="cb10-2"><a href=""></a><span class="fu">lmer</span>(score <span class="sc">~</span> treatment <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>classroom) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>age), <span class="at">data=</span>d)</span>
+<span id="cb10-3"><a href=""></a></span>
+<span id="cb10-4"><a href=""></a><span class="co">#Random slopes for both</span></span>
+<span id="cb10-5"><a href=""></a><span class="fu">lmer</span>(score <span class="sc">~</span> treatment <span class="sc">+</span> age <span class="sc">+</span> (<span class="dv">0</span><span class="sc">+</span>treatment<span class="sc">+</span>age<span class="sc">|</span>classroom), <span class="at">data=</span>d)</span>
+<span id="cb10-6"><a href=""></a></span>
+<span id="cb10-7"><a href=""></a><span class="co">#Random slopes and intercepts for both predictors</span></span>
+<span id="cb10-8"><a href=""></a><span class="fu">lmer</span>(score <span class="sc">~</span> treatment <span class="sc">+</span> age <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>treatment<span class="sc">+</span>age<span class="sc">|</span>classroom), <span class="at">data=</span>d)</span>
+<span id="cb10-9"><a href=""></a></span>
+<span id="cb10-10"><a href=""></a><span class="co">#Mixed</span></span>
+<span id="cb10-11"><a href=""></a><span class="fu">lmer</span>(score <span class="sc">~</span> treatment <span class="sc">+</span> age <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>classroom) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>age<span class="sc">|</span>classroom), <span class="at">data=</span>d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
 <section id="syntax-cheat-sheet" class="slide level2">
+<h2>Syntax cheat sheet</h2>
+</section>
+<section id="syntax-cheat-sheet-1" class="slide level2">
 <h2>Syntax cheat sheet</h2>
 
 <img data-src="images/lmesyntax.png" class="quarto-figure quarto-figure-center r-stretch"></section>
@@ -1188,7 +1300,7 @@ U_{1j} = b_{1j} - b_1
 </ul>
 <div class="quarto-auto-generated-content">
 <div class="footer footer-default">
-<p>PSY 504: Advaced Statistics</p>
+<p>PSY 504: Advanced Statistics</p>
 </div>
 </div>
 </section></section>

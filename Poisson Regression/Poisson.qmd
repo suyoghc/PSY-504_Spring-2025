@@ -1,5 +1,6 @@
 ---
 title: "Poisson (🐟), Negative Binomial, and Zero-Inflated Models"
+output: powerpoint_presentation
 subtitle: "Princeton University"
 author: "Suyog Chandramouli (adapted from materials by Jason Geller)"
 date: 'Updated:`r Sys.Date()`'
@@ -69,7 +70,7 @@ library(glmmTMB) # zero inflated glmer
 options(scipen=999) # get rid of sci notation
 ```
 
--   You can follow along [here](https://github.com/jgeller112/PSY504-Advanced-Stats-S24/blob/main/slides/07-Poisson/07-Poisson.qmd)
+-   You can follow along [here](https://github.com/suyoghc/PSY-504_Spring-2025/blob/main/Poisson%20Regression/Poisson.qmd)
 
 ## Count data
 
@@ -219,12 +220,12 @@ include_graphics("images/faces.png")
 ## The data
 
 ```{webr-r}
-hh_data <- read.csv("https://raw.githubusercontent.com/jgeller112/psy504-advanced-stats/main/slides/Poisson/data/tobii_aoi_study1.csv")
+hh_data <- read.csv("https://raw.githubusercontent.com/suyoghc/PSY-504_Spring-2025/refs/heads/main/Poisson%20Regression/data/tobii_aoi_study1.csv")
 ```
 
 ```{r}
 #| echo: false
-hh_data <- read.csv("https://raw.githubusercontent.com/jgeller112/psy504-advanced-stats/main/slides/Poisson/data/tobii_aoi_study1.csv")
+hh_data <- read.csv("https://raw.githubusercontent.com/suyoghc/PSY-504_Spring-2025/refs/heads/main/Poisson%20Regression/data/tobii_aoi_study1.csv")
 ```
 
 ## The data

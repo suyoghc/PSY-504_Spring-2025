@@ -1,0 +1,2600 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Suyog Chandramouli (adapted from materials by Jason Geller)">
+<meta name="dcterms.date" content="2025-03-05">
+
+<title>Poisson (🐟), Negative Binomial, and Zero-Inflated Models</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="Poisson_2_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Poisson_2_files/libs/quarto-html/quarto.js"></script>
+<script src="Poisson_2_files/libs/quarto-html/popper.min.js"></script>
+<script src="Poisson_2_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="Poisson_2_files/libs/quarto-html/anchor.min.js"></script>
+<link href="Poisson_2_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Poisson_2_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="Poisson_2_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="Poisson_2_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="Poisson_2_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="Poisson_2_files/libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="Poisson_2_files/libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Poisson (🐟), Negative Binomial, and Zero-Inflated Models</h1>
+<p class="subtitle lead">Princeton University</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Suyog Chandramouli (adapted from materials by Jason Geller) </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">March 5, 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="today" class="level2">
+<h2 class="anchored" data-anchor-id="today">Today</h2>
+<ul>
+<li><p>GLMs for count data</p>
+<ul>
+<li><p>Poisson, negative binomial (overdispersion), and zero-inflated (excess zeros) models</p>
+<ul>
+<li><p>Fitting and interpretation in R</p></li>
+<li><p>Visualization</p></li>
+<li><p>Effect sizes</p></li>
+<li><p>Reporting</p></li>
+</ul></li>
+<li><p>Running example: stuttering and fixations to faces</p></li>
+</ul></li>
+</ul>
+</section>
+<section id="packages" class="level2">
+<h2 class="anchored" data-anchor-id="packages">Packages</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse) <span class="co"># data wrangling</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.4     ✔ readr     2.1.5
+✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ ggplot2   3.5.1     ✔ tibble    3.2.1
+✔ lubridate 1.9.4     ✔ tidyr     1.3.1
+✔ purrr     1.0.2     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(emoji) <span class="co"># emojis </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'emoji'
+
+The following object is masked from 'package:ggplot2':
+
+    arrow</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(easystats) <span class="co"># performance</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code># Attaching packages: easystats 0.7.3 (red = needs update)
+✖ bayestestR  0.15.0   ✖ correlation 0.8.6 
+✔ datawizard  1.0.0    ✔ effectsize  1.0.0 
+✖ insight     1.0.2    ✖ modelbased  0.8.9 
+✔ performance 0.13.0   ✖ parameters  0.24.1
+✖ report      0.5.9    ✖ see         0.9.0 
+
+Restart the R-Session and update packages with `easystats::easystats_update()`.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(kableExtra) <span class="co"># table formatting</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'kableExtra'
+
+The following object is masked from 'package:dplyr':
+
+    group_rows</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggeffects) <span class="co"># plot </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'ggeffects'
+
+The following object is masked from 'package:easystats':
+
+    install_latest</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lme4) <span class="co"># glmer </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: Matrix
+
+Attaching package: 'Matrix'
+
+The following objects are masked from 'package:tidyr':
+
+    expand, pack, unpack</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork) <span class="co"># combine plots</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(viridis) <span class="co"># colors</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: viridisLite</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gridExtra)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'gridExtra'
+
+The following object is masked from 'package:dplyr':
+
+    combine</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pscl) <span class="co"># zip </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Classes and Methods for R originally developed in the
+Political Science Computational Laboratory
+Department of Political Science
+Stanford University (2002-2015),
+by and under the direction of Simon Jackman.
+hurdle and zeroinfl functions by Achim Zeileis.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmmTMB) <span class="co"># zero inflated glmer </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in check_dep_version(dep_pkg = "TMB"): package version mismatch: 
+glmmTMB was built with TMB package version 1.9.15
+Current TMB package version is 1.9.16
+Please re-install glmmTMB from source or restore original 'TMB' package (see '?reinstalling' for more information)</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">scipen=</span><span class="dv">999</span>) <span class="co"># get rid of sci notation</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li>You can follow along <a href="https://github.com/jgeller112/PSY504-Advanced-Stats-S24/blob/main/slides/07-Poisson/07-Poisson.qmd">here</a></li>
+</ul>
+</section>
+<section id="count-data" class="level2">
+<h2 class="anchored" data-anchor-id="count-data">Count data</h2>
+<ul>
+<li>Today’s lecture brought to you by the number 8</li>
+</ul>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/count.jpeg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="poisson-distribution" class="level2" data-link="Poisson distribution">
+<h2 data-link="Poisson distribution" class="anchored" data-anchor-id="poisson-distribution">Poisson distribution</h2>
+<div class="cell" data-layout-align="center">
+<div class="cell-output cell-output-stderr">
+<pre><code>`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Poisson_2_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="poisson-distribution-1" class="level2">
+<h2 class="anchored" data-anchor-id="poisson-distribution-1">Poisson distribution</h2>
+<p><span class="math display">\[Y_i \sim Poisson(\lambda)\]</span></p>
+<p>Let <span class="math inline">\(Y\)</span> be the number of events in a given unit of time or space.</p>
+<p><span class="math display">\[P(Y=y) = \frac{e^{-\lambda}\lambda^y}{y!} \hspace{10mm} y=0,1,2,\ldots, \infty\]</span></p>
+<ul>
+<li><span class="math inline">\(E(Y) = Var(Y) = \lambda\)</span> (<em>just the mean number of events</em>)</li>
+<li>The distribution is typically skewed right, particularly if <span class="math inline">\(\lambda\)</span> is small</li>
+<li>The distribution becomes more symmetric as <span class="math inline">\(\lambda\)</span> increases
+<ul>
+<li>If <span class="math inline">\(\lambda\)</span> is sufficiently large, it can be approximated using a normal distribution</li>
+</ul></li>
+</ul>
+</section>
+<section id="poisson-distribution-2" class="level2">
+<h2 class="anchored" data-anchor-id="poisson-distribution-2">Poisson distribution</h2>
+<div class="cell" data-layout-align="center">
+<div class="cell-output cell-output-stderr">
+<pre><code>`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Poisson_2_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Mean</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Variance</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">lambda = 1</td>
+<td style="text-align: right;">0.99351</td>
+<td style="text-align: right;">0.9902178</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">lambda = 5</td>
+<td style="text-align: right;">4.99367</td>
+<td style="text-align: right;">4.9865798</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">lambda = 50</td>
+<td style="text-align: right;">49.99288</td>
+<td style="text-align: right;">49.8962683</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+</section>
+<section id="examples" class="level2">
+<h2 class="anchored" data-anchor-id="examples">Examples</h2>
+<p>The annual number of earthquakes registering at least 2.5 on the Richter Scale and having an epicenter within 40 miles of downtown Memphis follows a Poisson distribution with mean 6.5. <strong>What is the probability there will be 3 or fewer such earthquakes next year?</strong></p>
+<p><span class="math display">\[P(Y&lt;=y) = \frac{e^{-6.5}6.5^0} {0!}+
+\frac{e^{-6.5}6.5^1} {1!} +
+\frac{e^{-6.5}6.5^2} {2!} +
+  \frac{e^{-6.5}6.5^3} {3!}\]</span></p>
+<pre class="{webr-r}"><code>a=(exp(-6.5) * 6.5^0) / factorial(0)
+b=(exp(-6.5) * 6.5^1) / factorial(1)
+c=(exp(-6.5) * 6.5^2) / factorial(2)
+d=(exp(-6.5) * 6.5^3) / factorial(3)
+
+ppois(3, 6.5)</code></pre>
+</section>
+<section id="examples-1" class="level2">
+<h2 class="anchored" data-anchor-id="examples-1">Examples</h2>
+<ul>
+<li><p>Exact count</p>
+<ul>
+<li>Let’s say you read, on average, 10 pages an hour. <strong>What is the probability you will read 8 pages in an hour?</strong></li>
+</ul></li>
+</ul>
+<p>. . .</p>
+<p><span class="math display">\[P(Y=y)= \frac{e^{-10}10^8} {8!}\]</span></p>
+<pre class="{webr-r}"><code>
+prob &lt;- (exp(-10) * 10^8) / factorial(8)
+
+dpois(x=8, lambda=10)
+
+prob
+</code></pre>
+</section>
+<section id="poisson-regression" class="level1">
+<h1>Poisson regression</h1>
+<section id="preferential-viewing-task" class="level2">
+<h2 class="anchored" data-anchor-id="preferential-viewing-task">Preferential viewing task</h2>
+<ul>
+<li>The data: viewing behavior to emotional faces</li>
+</ul>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/faces.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="1824"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="preferential-viewing-task-1" class="level2">
+<h2 class="anchored" data-anchor-id="preferential-viewing-task-1">Preferential viewing task</h2>
+<p><strong>Response</strong>:</p>
+<ul>
+<li><p>Number of fixations to each face</p></li>
+<li><p><strong>Predictors</strong>:</p>
+<ul>
+<li><code>Emotion</code>: Anger vs.&nbsp;Happy (within-subject)</li>
+<li><code>Group</code>: Control vs.&nbsp;Stuttering (between subject)</li>
+</ul></li>
+</ul>
+</section>
+<section id="the-data" class="level2">
+<h2 class="anchored" data-anchor-id="the-data">The data</h2>
+<pre class="{webr-r}"><code>hh_data &lt;- read.csv("https://raw.githubusercontent.com/jgeller112/psy504-advanced-stats/main/slides/Poisson/data/tobii_aoi_study1.csv")</code></pre>
+</section>
+<section id="the-data-1" class="level2">
+<h2 class="anchored" data-anchor-id="the-data-1">The data</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>hh_data <span class="ot">&lt;-</span> hh_data <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(ID, Number_of_fixations, emotion, Group) <span class="sc">%&gt;%</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(emotion<span class="sc">==</span><span class="st">"Anger"</span><span class="sc">|</span> emotion<span class="sc">==</span><span class="st">"Happy"</span>)</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(hh_data) <span class="sc">%&gt;%</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">ID</th>
+<th style="text-align: right;">Number_of_fixations</th>
+<th style="text-align: left;">emotion</th>
+<th style="text-align: left;">Group</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">AB001</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">Anger</td>
+<td style="text-align: left;">C</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AB001</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">Anger</td>
+<td style="text-align: left;">C</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AB001</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: left;">Happy</td>
+<td style="text-align: left;">C</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AB001</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: left;">Anger</td>
+<td style="text-align: left;">C</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AB001</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: left;">Happy</td>
+<td style="text-align: left;">C</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AB001</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">Anger</td>
+<td style="text-align: left;">C</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="response-variable" class="level2">
+<h2 class="anchored" data-anchor-id="response-variable">Response variable</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Poisson_2_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>hh_data <span class="sc">%&gt;%</span> <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">mean =</span> <span class="fu">mean</span>(Number_of_fixations), <span class="at">var =</span> <span class="fu">var</span>(Number_of_fixations), <span class="at">ratio=</span>mean<span class="sc">/</span>var) <span class="sc">%&gt;%</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">var</th>
+<th style="text-align: right;">ratio</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">3.936</td>
+<td style="text-align: right;">3.091</td>
+<td style="text-align: right;">1.273</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="why-the-least-squares-model-doesnt-work" class="level2">
+<h2 class="anchored" data-anchor-id="why-the-least-squares-model-doesnt-work">Why the least-squares model doesn’t work</h2>
+<p>The goal is to model <span class="math inline">\(\lambda\)</span>, the expected number of fixations on faces, as a function of the predictors (covariates)</p>
+<p>. . .</p>
+<p>We might be tempted to try a linear model <span class="math display">\[\lambda_i = \beta_0 + \beta_1x_{i1} + \beta_2x_{i2} + \dots + \beta_px_{ip}\]</span></p>
+<p>. . .</p>
+<p>This model won’t work because…</p>
+<ul>
+<li><p>It could produce negative values of <span class="math inline">\(\lambda\)</span> for certain values of the predictors</p></li>
+<li><p>The equal variance assumption required to conduct inference for linear regression is violated</p></li>
+</ul>
+</section>
+<section id="poisson-regression-model" class="level2">
+<h2 class="anchored" data-anchor-id="poisson-regression-model">Poisson regression model</h2>
+<p>If <span class="math inline">\(Y_i \sim Poisson\)</span> with <span class="math inline">\(\lambda = \lambda_i\)</span> for the given values <span class="math inline">\(x_{i1}, \ldots, x_{ip}\)</span>, then</p>
+<p><br>
+<span class="math display">\[\log(\lambda_i) = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \dots + \beta_p x_{ip}\]</span></p>
+<p>. . .</p>
+<ul>
+<li><p>Each observation can have a different value of <span class="math inline">\(\lambda\)</span> based on its value of the predictors <span class="math inline">\(x_1, \ldots, x_p\)</span></p></li>
+<li><p><span class="math inline">\(\lambda\)</span> determines the mean and variance, so we don’t need to estimate a separate error term</p></li>
+</ul>
+</section>
+<section id="assumptions-for-poisson-regression" class="level2">
+<h2 class="anchored" data-anchor-id="assumptions-for-poisson-regression">Assumptions for Poisson regression</h2>
+<ul>
+<li><p><strong>Poisson response</strong>: The response variable is a count per unit of time or space, described by a Poisson distribution, at each level of the predictor(s)</p></li>
+<li><p><strong>Independence</strong>: The observations must be independent of one another</p></li>
+<li><p><strong>Linearity</strong>: The log of the mean rate, <span class="math inline">\(\log(\lambda)\)</span>, must be a linear function of the predictor(s)</p></li>
+<li><p><strong>Mean = Variance</strong>: The mean must equal the variance</p></li>
+</ul>
+</section>
+</section>
+<section id="poisson-regression-fitting-and-interpretation" class="level1 smaller">
+<h1 class="smaller">Poisson regression: Fitting and Interpretation</h1>
+<section id="poisson-regression-fitting-and-interpretation-1" class="level2">
+<h2 class="anchored" data-anchor-id="poisson-regression-fitting-and-interpretation-1">Poisson regression: Fitting and Interpretation</h2>
+<pre class="{webr-r}"><code>
+hh_data_contrast &lt;- hh_data %&gt;%
+  mutate(emotion=ifelse(emotion=="Anger", 0.5, -0.5), Group=ifelse(Group=="S", 0.5, -0.5))</code></pre>
+<ul>
+<li><code>glm</code></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># regular glm </span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>model_glm <span class="ot">&lt;-</span> <span class="fu">glm</span>(Number_of_fixations <span class="sc">~</span> emotion<span class="sc">*</span>Group, <span class="at">data =</span> hh_data, <span class="at">family =</span> <span class="fu">poisson</span>(<span class="at">link =</span> <span class="st">"log"</span>)) <span class="co"># change family to poisson</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li><code>glmer</code> from the package <code>lme4</code></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fit poisson model# change family to poisson</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="co"># repeated measures poisson</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>model1_cont <span class="ot">&lt;-</span> <span class="fu">glmer</span>(Number_of_fixations <span class="sc">~</span> emotion<span class="sc">+</span> Group <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>ID), <span class="at">data =</span> hh_data_contrast, <span class="at">family =</span> <span class="fu">poisson</span>(<span class="at">link =</span> <span class="st">"log"</span>)) <span class="co"># change family to poisson</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="poisson-regression-fitting-and-interpretation-2" class="level2">
+<h2 class="anchored" data-anchor-id="poisson-regression-fitting-and-interpretation-2">Poisson regression: Fitting and interpretation</h2>
+<ul>
+<li>Coefficients represent log lambda or log mean counts</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>parameters<span class="sc">::</span><span class="fu">model_parameters</span>(model1_cont, <span class="at">exponentiate =</span> <span class="cn">FALSE</span>, <span class="at">effects=</span><span class="st">"fixed"</span>) <span class="sc">%&gt;%</span> <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">3</span>, <span class="at">format =</span> <span class="st">"markdown"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 15%">
+<col style="width: 7%">
+<col style="width: 6%">
+<col style="width: 8%">
+<col style="width: 10%">
+<col style="width: 8%">
+<col style="width: 11%">
+<col style="width: 7%">
+<col style="width: 10%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: right;">Coefficient</th>
+<th style="text-align: right;">SE</th>
+<th style="text-align: right;">CI</th>
+<th style="text-align: right;">CI_low</th>
+<th style="text-align: right;">CI_high</th>
+<th style="text-align: right;">z</th>
+<th style="text-align: right;">df_error</th>
+<th style="text-align: right;">p</th>
+<th style="text-align: left;">Effects</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: right;">1.352</td>
+<td style="text-align: right;">0.035</td>
+<td style="text-align: right;">0.95</td>
+<td style="text-align: right;">1.283</td>
+<td style="text-align: right;">1.420</td>
+<td style="text-align: right;">38.761</td>
+<td style="text-align: right;">Inf</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">fixed</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">emotion</td>
+<td style="text-align: right;">-0.085</td>
+<td style="text-align: right;">0.032</td>
+<td style="text-align: right;">0.95</td>
+<td style="text-align: right;">-0.148</td>
+<td style="text-align: right;">-0.022</td>
+<td style="text-align: right;">-2.648</td>
+<td style="text-align: right;">Inf</td>
+<td style="text-align: right;">0.008</td>
+<td style="text-align: left;">fixed</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Group</td>
+<td style="text-align: right;">0.085</td>
+<td style="text-align: right;">0.070</td>
+<td style="text-align: right;">0.95</td>
+<td style="text-align: right;">-0.051</td>
+<td style="text-align: right;">0.222</td>
+<td style="text-align: right;">1.228</td>
+<td style="text-align: right;">Inf</td>
+<td style="text-align: right;">0.220</td>
+<td style="text-align: left;">fixed</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="poisson-regression-fitting-and-interpretation-3" class="level2">
+<h2 class="anchored" data-anchor-id="poisson-regression-fitting-and-interpretation-3">Poisson regression: Fitting and interpretation</h2>
+<ul>
+<li>Mean counts = more interpretable</li>
+</ul>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/log_poi.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="poisson-regression-fitting-and-interpretation-4" class="level2">
+<h2 class="anchored" data-anchor-id="poisson-regression-fitting-and-interpretation-4">Poisson regression: Fitting and interpretation</h2>
+<ul>
+<li><p>Incidence rate ratios (IRR)</p>
+<ul>
+<li><p>The IRR for a one-unit change in <span class="math inline">\(x_i\)</span> is exp <span class="math inline">\((\beta)\)</span></p></li>
+<li><p>The coefficient tells you how changes in X affect the rate at which Y occurs</p></li>
+</ul></li>
+</ul>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>IRR &gt; 1: Expected # events increases for 1 unit increase</p>
+<p>IRR &lt; 1: Expected # events decreases for 1 unit increase</p>
+<p>IRR = 1: No difference in expected number of events for 1 unit increase</p>
+</div>
+</div>
+</section>
+<section id="poisson-regression-fitting-and-interpretation-5" class="level2">
+<h2 class="anchored" data-anchor-id="poisson-regression-fitting-and-interpretation-5">Poisson regression: Fitting and interpretation</h2>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Fixed Effects</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: center;">Log-Mean</th>
+<th style="text-align: center;">SE</th>
+<th style="text-align: center;">95% CI</th>
+<th style="text-align: center;">z</th>
+<th style="text-align: center;">p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: center;">1.35</td>
+<td style="text-align: center;">0.03</td>
+<td style="text-align: center;">(1.28, 1.42)</td>
+<td style="text-align: center;">38.76</td>
+<td style="text-align: center;">&lt; .001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">emotion</td>
+<td style="text-align: center;">-0.08</td>
+<td style="text-align: center;">0.03</td>
+<td style="text-align: center;">(-0.15, -0.02)</td>
+<td style="text-align: center;">-2.65</td>
+<td style="text-align: center;">0.008</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Group</td>
+<td style="text-align: center;">0.09</td>
+<td style="text-align: center;">0.07</td>
+<td style="text-align: center;">(-0.05, 0.22)</td>
+<td style="text-align: center;">1.23</td>
+<td style="text-align: center;">0.220</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<ul>
+<li>exp(<span class="math inline">\(\alpha\)</span>) = Overall mean count</li>
+</ul>
+<pre class="{webr-r}"><code></code></pre>
+</section>
+<section id="poisson-regression-fitting-and-interpretation-6" class="level2">
+<h2 class="anchored" data-anchor-id="poisson-regression-fitting-and-interpretation-6">Poisson regression: Fitting and interpretation</h2>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">Log</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">Exp</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">model_parameters</span>(model1_cont, <span class="at">effects=</span><span class="st">"fixed"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<caption>Fixed Effects</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Parameter</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Log-Mean</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">SE</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">95% CI</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">z</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: center;">1.35</td>
+<td style="text-align: center;">0.03</td>
+<td style="text-align: center;">(1.28, 1.42)</td>
+<td style="text-align: center;">38.76</td>
+<td style="text-align: center;">&lt; .001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; font-weight: bold; color: red !important; background-color: white !important;">emotion</td>
+<td style="text-align: center; font-weight: bold; color: red !important; background-color: white !important;">-0.08</td>
+<td style="text-align: center; font-weight: bold; color: red !important; background-color: white !important;">0.03</td>
+<td style="text-align: center; font-weight: bold; color: red !important; background-color: white !important;">(-0.15, -0.02)</td>
+<td style="text-align: center; font-weight: bold; color: red !important; background-color: white !important;">-2.65</td>
+<td style="text-align: center; font-weight: bold; color: red !important; background-color: white !important;">0.008</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Group</td>
+<td style="text-align: center;">0.09</td>
+<td style="text-align: center;">0.07</td>
+<td style="text-align: center;">(-0.05, 0.22)</td>
+<td style="text-align: center;">1.23</td>
+<td style="text-align: center;">0.220</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">model_parameters</span>(model1_cont, <span class="at">exponentiate =</span> <span class="cn">TRUE</span>, <span class="at">effects=</span><span class="st">"fixed"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<caption>Fixed Effects</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Parameter</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">IRR</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">SE</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">95% CI</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">z</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: center;">3.86</td>
+<td style="text-align: center;">0.13</td>
+<td style="text-align: center;">(3.61, 4.14)</td>
+<td style="text-align: center;">38.76</td>
+<td style="text-align: center;">&lt; .001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; font-weight: bold; color: red !important; background-color: white !important;">emotion</td>
+<td style="text-align: center; font-weight: bold; color: red !important; background-color: white !important;">0.92</td>
+<td style="text-align: center; font-weight: bold; color: red !important; background-color: white !important;">0.03</td>
+<td style="text-align: center; font-weight: bold; color: red !important; background-color: white !important;">(0.86, 0.98)</td>
+<td style="text-align: center; font-weight: bold; color: red !important; background-color: white !important;">-2.65</td>
+<td style="text-align: center; font-weight: bold; color: red !important; background-color: white !important;">0.008</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Group</td>
+<td style="text-align: center;">1.09</td>
+<td style="text-align: center;">0.08</td>
+<td style="text-align: center;">(0.95, 1.25)</td>
+<td style="text-align: center;">1.23</td>
+<td style="text-align: center;">0.220</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Angry faces have .08 fewer log fixations than happy faces or
+<ul>
+<li>exp(-.08) = 0.923x that of happy faces. The expected number of fixations is 8% lower for angry faces vs.&nbsp;happy faces</li>
+</ul></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="main-effect-emotion" class="level2">
+<h2 class="anchored" data-anchor-id="main-effect-emotion">Main effect: <code>emotion</code></h2>
+<ul>
+<li>Marginal mean counts for each condition</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>marginaleffects<span class="sc">::</span><span class="fu">avg_predictions</span>(model1, <span class="at">variables=</span><span class="st">"emotion"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 10%">
+<col style="width: 12%">
+<col style="width: 13%">
+<col style="width: 13%">
+<col style="width: 10%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 13%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">emotion</th>
+<th style="text-align: right;">estimate</th>
+<th style="text-align: right;">std.error</th>
+<th style="text-align: right;">statistic</th>
+<th style="text-align: right;">p.value</th>
+<th style="text-align: right;">s.value</th>
+<th style="text-align: right;">conf.low</th>
+<th style="text-align: right;">conf.high</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Anger</td>
+<td style="text-align: right;">3.766682</td>
+<td style="text-align: right;">0.1450030</td>
+<td style="text-align: right;">25.97658</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">491.7800</td>
+<td style="text-align: right;">3.482481</td>
+<td style="text-align: right;">4.050883</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Happy</td>
+<td style="text-align: right;">4.100459</td>
+<td style="text-align: right;">0.1555123</td>
+<td style="text-align: right;">26.36743</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">506.5593</td>
+<td style="text-align: right;">3.795661</td>
+<td style="text-align: right;">4.405258</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="marginal-effects" class="level2">
+<h2 class="anchored" data-anchor-id="marginal-effects">Marginal effects</h2>
+<ul>
+<li>Difference in counts</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>marginaleffects<span class="sc">::</span><span class="fu">avg_comparisons</span>(model1, <span class="at">variables =</span> <span class="st">"emotion"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 11%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 7%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">term</th>
+<th style="text-align: left;">contrast</th>
+<th style="text-align: right;">estimate</th>
+<th style="text-align: right;">std.error</th>
+<th style="text-align: right;">statistic</th>
+<th style="text-align: right;">p.value</th>
+<th style="text-align: right;">s.value</th>
+<th style="text-align: right;">conf.low</th>
+<th style="text-align: right;">conf.high</th>
+<th style="text-align: right;">predicted_lo</th>
+<th style="text-align: right;">predicted_hi</th>
+<th style="text-align: right;">predicted</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">emotion</td>
+<td style="text-align: left;">Happy - Anger</td>
+<td style="text-align: right;">0.3337775</td>
+<td style="text-align: right;">0.1264171</td>
+<td style="text-align: right;">2.640287</td>
+<td style="text-align: right;">0.0082836</td>
+<td style="text-align: right;">6.915528</td>
+<td style="text-align: right;">0.0860045</td>
+<td style="text-align: right;">0.5815506</td>
+<td style="text-align: right;">3.838949</td>
+<td style="text-align: right;">4.17913</td>
+<td style="text-align: right;">3.838949</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Happy faces had .33 more fixations than angry faces</p>
+</div>
+</div>
+</section>
+<section id="poisson-regression-fitting-and-interpretation-7" class="level2">
+<h2 class="anchored" data-anchor-id="poisson-regression-fitting-and-interpretation-7">Poisson regression: Fitting and interpretation</h2>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">Log</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">Exp</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">model_parameters</span>(model1_cont, <span class="at">effects=</span><span class="st">"fixed"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<caption>Fixed Effects</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Parameter</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Log-Mean</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">SE</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">95% CI</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">z</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: center;">1.35</td>
+<td style="text-align: center;">0.03</td>
+<td style="text-align: center;">(1.28, 1.42)</td>
+<td style="text-align: center;">38.76</td>
+<td style="text-align: center;">&lt; .001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">emotion</td>
+<td style="text-align: center;">-0.08</td>
+<td style="text-align: center;">0.03</td>
+<td style="text-align: center;">(-0.15, -0.02)</td>
+<td style="text-align: center;">-2.65</td>
+<td style="text-align: center;">0.008</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; font-weight: bold; color: red !important; background-color: white !important;">Group</td>
+<td style="text-align: center; font-weight: bold; color: red !important; background-color: white !important;">0.09</td>
+<td style="text-align: center; font-weight: bold; color: red !important; background-color: white !important;">0.07</td>
+<td style="text-align: center; font-weight: bold; color: red !important; background-color: white !important;">(-0.05, 0.22)</td>
+<td style="text-align: center; font-weight: bold; color: red !important; background-color: white !important;">1.23</td>
+<td style="text-align: center; font-weight: bold; color: red !important; background-color: white !important;">0.220</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">model_parameters</span>(model1_cont,<span class="at">exponentiate =</span> <span class="cn">TRUE</span>,  <span class="at">effects=</span><span class="st">"fixed"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<caption>Fixed Effects</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Parameter</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">IRR</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">SE</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">95% CI</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">z</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: center;">3.86</td>
+<td style="text-align: center;">0.13</td>
+<td style="text-align: center;">(3.61, 4.14)</td>
+<td style="text-align: center;">38.76</td>
+<td style="text-align: center;">&lt; .001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">emotion</td>
+<td style="text-align: center;">0.92</td>
+<td style="text-align: center;">0.03</td>
+<td style="text-align: center;">(0.86, 0.98)</td>
+<td style="text-align: center;">-2.65</td>
+<td style="text-align: center;">0.008</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; font-weight: bold; color: red !important; background-color: white !important;">Group</td>
+<td style="text-align: center; font-weight: bold; color: red !important; background-color: white !important;">1.09</td>
+<td style="text-align: center; font-weight: bold; color: red !important; background-color: white !important;">0.08</td>
+<td style="text-align: center; font-weight: bold; color: red !important; background-color: white !important;">(0.95, 1.25)</td>
+<td style="text-align: center; font-weight: bold; color: red !important; background-color: white !important;">1.23</td>
+<td style="text-align: center; font-weight: bold; color: red !important; background-color: white !important;">0.220</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><p>Stuttering group has .09 more log fixations than Control group, or</p>
+<ul>
+<li>exp(0.85) = 1.094x that of Control group. The expected number of fixations is 9% higher for Controls</li>
+</ul></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="main-effect-group" class="level2">
+<h2 class="anchored" data-anchor-id="main-effect-group">Main effect: <code>Group</code></h2>
+<ul>
+<li>Marginal mean counts</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>marginaleffects<span class="sc">::</span><span class="fu">avg_predictions</span>(model1, <span class="at">variables=</span><span class="st">"Group"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">3</span>, <span class="at">format =</span> <span class="st">"markdown"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 8%">
+<col style="width: 12%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 12%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Group</th>
+<th style="text-align: right;">estimate</th>
+<th style="text-align: right;">std.error</th>
+<th style="text-align: right;">statistic</th>
+<th style="text-align: right;">p.value</th>
+<th style="text-align: right;">s.value</th>
+<th style="text-align: right;">conf.low</th>
+<th style="text-align: right;">conf.high</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">C</td>
+<td style="text-align: right;">3.751</td>
+<td style="text-align: right;">0.194</td>
+<td style="text-align: right;">19.297</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">273.216</td>
+<td style="text-align: right;">3.370</td>
+<td style="text-align: right;">4.132</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">S</td>
+<td style="text-align: right;">4.086</td>
+<td style="text-align: right;">0.190</td>
+<td style="text-align: right;">21.463</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">337.036</td>
+<td style="text-align: right;">3.713</td>
+<td style="text-align: right;">4.459</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="marginal-effects-1" class="level2">
+<h2 class="anchored" data-anchor-id="marginal-effects-1">Marginal Effects</h2>
+<ul>
+<li>Difference in counts</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>marginaleffects<span class="sc">::</span><span class="fu">avg_comparisons</span>(model1, <span class="at">variables =</span> <span class="st">"Group"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 5%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 8%">
+<col style="width: 8%">
+<col style="width: 8%">
+<col style="width: 7%">
+<col style="width: 9%">
+<col style="width: 8%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 8%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">term</th>
+<th style="text-align: left;">contrast</th>
+<th style="text-align: right;">estimate</th>
+<th style="text-align: right;">std.error</th>
+<th style="text-align: right;">statistic</th>
+<th style="text-align: right;">p.value</th>
+<th style="text-align: right;">s.value</th>
+<th style="text-align: right;">conf.low</th>
+<th style="text-align: right;">conf.high</th>
+<th style="text-align: right;">predicted_lo</th>
+<th style="text-align: right;">predicted_hi</th>
+<th style="text-align: right;">predicted</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Group</td>
+<td style="text-align: left;">S - C</td>
+<td style="text-align: right;">0.334829</td>
+<td style="text-align: right;">0.2719172</td>
+<td style="text-align: right;">1.231364</td>
+<td style="text-align: right;">0.2181868</td>
+<td style="text-align: right;">2.196364</td>
+<td style="text-align: right;">-0.1981189</td>
+<td style="text-align: right;">0.8677769</td>
+<td style="text-align: right;">3.838949</td>
+<td style="text-align: right;">4.181616</td>
+<td style="text-align: right;">3.838949</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Stuttering group had .33 more fixations than Control group.</p>
+</div>
+</div>
+</section>
+<section id="full-model" class="level2">
+<h2 class="anchored" data-anchor-id="full-model">Full model</h2>
+<ul>
+<li>LRT test for more complex models</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co">#overall model</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>mod_1 <span class="ot">&lt;-</span> car<span class="sc">::</span><span class="fu">Anova</span>(model1, <span class="at">type=</span><span class="st">"II"</span>)</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>mod_1 <span class="sc">%&gt;%</span> <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">3</span>, <span class="at">format =</span> <span class="st">"markdown"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">Chisq</th>
+<th style="text-align: right;">Df</th>
+<th style="text-align: right;">Pr(&gt;Chisq)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">emotion</td>
+<td style="text-align: right;">7.013</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.008</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Group</td>
+<td style="text-align: right;">1.507</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.220</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>. . .</p>
+<ul>
+<li>Main effect of emotion, <span class="math inline">\(\chi^2\)</span> = 7.01, p &lt; .001, but not Group</li>
+</ul>
+</section>
+<section id="model-2-add-interaction" class="level2">
+<h2 class="anchored" data-anchor-id="model-2-add-interaction">Model 2: Add interaction</h2>
+<p>. . .</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>model2 <span class="ot">&lt;-</span> <span class="fu">glmer</span>(Number_of_fixations <span class="sc">~</span> emotion<span class="sc">*</span>Group<span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>ID), <span class="at">data =</span> hh_data_contrast, <span class="at">family =</span> poisson)</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="fu">model_parameters</span>(model2, <span class="at">effects=</span><span class="st">"fixed"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>   <span class="fu">print_md</span>() <span class="sc">%&gt;%</span> kableExtra<span class="sc">::</span><span class="fu">row_spec</span>(., <span class="at">row=</span><span class="dv">4</span>, <span class="at">bold=</span> T, <span class="at">color=</span><span class="st">"red"</span>, <span class="at">background =</span> <span class="st">"white"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<caption>Fixed Effects</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Parameter</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Log-Mean</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">SE</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">95% CI</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">z</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: center;">1.35</td>
+<td style="text-align: center;">0.03</td>
+<td style="text-align: center;">(1.28, 1.42)</td>
+<td style="text-align: center;">38.73</td>
+<td style="text-align: center;">&lt; .001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">emotion</td>
+<td style="text-align: center;">-0.09</td>
+<td style="text-align: center;">0.03</td>
+<td style="text-align: center;">(-0.16, -0.03)</td>
+<td style="text-align: center;">-2.93</td>
+<td style="text-align: center;">0.003</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Group</td>
+<td style="text-align: center;">0.09</td>
+<td style="text-align: center;">0.07</td>
+<td style="text-align: center;">(-0.05, 0.23)</td>
+<td style="text-align: center;">1.28</td>
+<td style="text-align: center;">0.202</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; font-weight: bold; color: red !important; background-color: white !important;">emotion × Group</td>
+<td style="text-align: center; font-weight: bold; color: red !important; background-color: white !important;">0.15</td>
+<td style="text-align: center; font-weight: bold; color: red !important; background-color: white !important;">0.06</td>
+<td style="text-align: center; font-weight: bold; color: red !important; background-color: white !important;">(0.02, 0.27)</td>
+<td style="text-align: center; font-weight: bold; color: red !important; background-color: white !important;">2.28</td>
+<td style="text-align: center; font-weight: bold; color: red !important; background-color: white !important;">0.023</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+</section>
+<section id="add-emotiongroup-to-the-model" class="level2">
+<h2 class="anchored" data-anchor-id="add-emotiongroup-to-the-model">Add <code>emotion*Group</code> to the model?</h2>
+<ul>
+<li>☑️ Conduct a drop-in-deviance LR test</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">test_likelihoodratio</span>(model1_cont, model2) <span class="sc">%&gt;%</span> </span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;">Name</th>
+<th style="text-align: left;">Model</th>
+<th style="text-align: right;">df</th>
+<th style="text-align: right;">df_diff</th>
+<th style="text-align: right;">Chi2</th>
+<th style="text-align: right;">p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">model1_cont</td>
+<td style="text-align: left;">model1_cont</td>
+<td style="text-align: left;">glmerMod</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">model2</td>
+<td style="text-align: left;">model2</td>
+<td style="text-align: left;">glmerMod</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">5.19736</td>
+<td style="text-align: right;">0.0226212</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>. . .</p>
+<ul>
+<li>✅ Yes!</li>
+</ul>
+</section>
+<section id="interaction-groupemotion" class="level2">
+<h2 class="anchored" data-anchor-id="interaction-groupemotion">Interaction: <code>Group*emotion</code></h2>
+<ul>
+<li>Simple effects test done on the <em>response</em> (count)</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>marginaleffects<span class="sc">::</span><span class="fu">avg_comparisons</span>(</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>    model_glm,</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">variables  =</span> <span class="st">"Group"</span>, </span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">by=</span><span class="st">"emotion"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 9%">
+<col style="width: 8%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 10%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">term</th>
+<th style="text-align: left;">contrast</th>
+<th style="text-align: left;">emotion</th>
+<th style="text-align: right;">estimate</th>
+<th style="text-align: right;">std.error</th>
+<th style="text-align: right;">statistic</th>
+<th style="text-align: right;">p.value</th>
+<th style="text-align: right;">s.value</th>
+<th style="text-align: right;">conf.low</th>
+<th style="text-align: right;">conf.high</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Group</td>
+<td style="text-align: left;">S - C</td>
+<td style="text-align: left;">Anger</td>
+<td style="text-align: right;">0.5824405</td>
+<td style="text-align: right;">0.1741925</td>
+<td style="text-align: right;">3.3436599</td>
+<td style="text-align: right;">0.0008268</td>
+<td style="text-align: right;">10.2401563</td>
+<td style="text-align: right;">0.2410295</td>
+<td style="text-align: right;">0.9238515</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Group</td>
+<td style="text-align: left;">S - C</td>
+<td style="text-align: left;">Happy</td>
+<td style="text-align: right;">0.0336971</td>
+<td style="text-align: right;">0.1830009</td>
+<td style="text-align: right;">0.1841362</td>
+<td style="text-align: right;">0.8539066</td>
+<td style="text-align: right;">0.2278498</td>
+<td style="text-align: right;">-0.3249780</td>
+<td style="text-align: right;">0.3923722</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>. . .</p>
+<ul>
+<li>More fixations to Angry faces vs.&nbsp;Happy faces for the Stuttering group</li>
+</ul>
+</section>
+</section>
+<section id="visualization" class="level1">
+<h1>Visualization</h1>
+<section id="visualizing-poisson-regression" class="level2">
+<h2 class="anchored" data-anchor-id="visualizing-poisson-regression">Visualizing poisson regression</h2>
+<ul>
+<li>Used expected/predicted values</li>
+</ul>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggemmeans</span>(model2_dum, <span class="at">terms=</span><span class="fu">c</span>(<span class="st">"emotion"</span>, <span class="st">"Group"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(<span class="at">show_data=</span><span class="cn">TRUE</span>, <span class="at">colors =</span> <span class="st">"hero"</span>, <span class="at">jitter=</span>.<span class="dv">2</span>, <span class="at">dot_size=</span><span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>You are calculating adjusted predictions on the population-level (i.e.
+  `type = "fixed"`) for a *generalized* linear mixed model.
+  This may produce biased estimates due to Jensen's inequality. Consider
+  setting `bias_correction = TRUE` to correct for this bias.
+  See also the documentation of the `bias_correction` argument.</code></pre>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Poisson_2_files/figure-html/unnamed-chunk-35-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="assumptions" class="level2">
+<h2 class="anchored" data-anchor-id="assumptions">Assumptions</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>performance<span class="sc">::</span><span class="fu">check_model</span>(model2, <span class="at">check =</span> <span class="fu">c</span>(<span class="st">"pp_check"</span>, <span class="st">"outliers"</span>, <span class="st">"vif"</span>, <span class="st">"overdispersion"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Cannot simulate residuals for models of class `glmerMod`. Please try
+  `check_model(..., residual_type = "normal")` instead.</code></pre>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Poisson_2_files/figure-html/unnamed-chunk-36-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="overdispersion" class="level2">
+<h2 class="anchored" data-anchor-id="overdispersion">Overdispersion</h2>
+<p><strong>Overdispersion</strong>: There is more variability in the response than what is implied by the Poisson model</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">var</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">3.936</td>
+<td style="text-align: right;">3.091</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">emotion</th>
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">var</th>
+<th style="text-align: right;">ratio</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Anger</td>
+<td style="text-align: right;">3.769</td>
+<td style="text-align: right;">3.200</td>
+<td style="text-align: right;">1.178</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Happy</td>
+<td style="text-align: right;">4.103</td>
+<td style="text-align: right;">2.933</td>
+<td style="text-align: right;">1.399</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Group</th>
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">var</th>
+<th style="text-align: right;">ratio</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">C</td>
+<td style="text-align: right;">3.768</td>
+<td style="text-align: right;">3.337</td>
+<td style="text-align: right;">1.129</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">S</td>
+<td style="text-align: right;">4.076</td>
+<td style="text-align: right;">2.850</td>
+<td style="text-align: right;">1.430</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="testing-for-overdispersion" class="level2">
+<h2 class="anchored" data-anchor-id="testing-for-overdispersion">Testing for overdispersion</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="co"># easystats</span></span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>performance<span class="sc">::</span><span class="fu">check_overdispersion</span>(model2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># Overdispersion test
+
+       dispersion ratio =   0.648
+  Pearson's Chi-Squared = 636.578
+                p-value =       1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>No overdispersion detected.</code></pre>
+</div>
+</div>
+<p><span class="math display">\[
+\text{Pearson residual}_i = \frac{\text{observed} - \text{predicted}}{\text{std. error}} = \frac{y_i - \hat{\lambda}_i}{\sqrt{\hat{\lambda}_i}}
+\]</span></p>
+<p><span class="math display">\[
+(\text{Pearson}) = \sum_{i=1}^{n}(\text{Pearson residual})_i^2
+\]</span></p>
+<p><span class="math display">\[
+\text{Pearson} \sim \chi^2_{df(n-p)}
+\]</span></p>
+</section>
+<section id="why-overdispersion-matters" class="level2">
+<h2 class="anchored" data-anchor-id="why-overdispersion-matters">Why overdispersion matters</h2>
+<ul>
+<li>If there is overdispersion, then there is more variation in the response than what’s implied by a Poisson model. This means:</li>
+</ul>
+<p>❌ The standard errors of the model coefficients are artificially small</p>
+<p>❌ The p-values are artificially small</p>
+<p>❌ We are not fitting the correct model</p>
+</section>
+<section id="why-overdispersion-matters-1" class="level2">
+<h2 class="anchored" data-anchor-id="why-overdispersion-matters-1">Why overdispersion matters</h2>
+<ul>
+<li><p>We can take overdispersion into account by:</p>
+<ul>
+<li><p>Robust standard errors</p></li>
+<li><p><strong>Using a negative-binomial regression model</strong></p></li>
+</ul></li>
+</ul>
+</section>
+</section>
+<section id="negative-binomial-regression-model" class="level1">
+<h1>Negative binomial regression model</h1>
+<section id="negative-binomial-regression-model-1" class="level2">
+<h2 class="anchored" data-anchor-id="negative-binomial-regression-model-1">Negative binomial regression model</h2>
+<p><span class="math display">\[
+f(y) = \binom{y + \phi - 1}{y} \left ( \frac{\mu}{\mu + \phi} \right )^y \left ( \frac{\phi}{\mu + \phi} \right )^\phi,
+\]</span></p>
+<p><span class="math display">\[
+Y_i \sim NegBinom(\mu_i, \phi)
+\]</span></p>
+<ul>
+<li>Basically a poisson model, but allowing for a dispersion parameter <span class="math inline">\(\phi\)</span></li>
+</ul>
+<p><span class="math display">\[Var(Y) = \mu + \frac{\mu^2}{\phi}\]</span></p>
+<ul>
+<li>As <span class="math inline">\(\phi\)</span> -&gt; inf, converges to Poisson</li>
+</ul>
+<!-- -->
+<ul>
+<li>Smaller <span class="math inline">\(\phi\)</span> = more overdispersion</li>
+</ul>
+</section>
+<section id="running-negative-binomial" class="level2">
+<h2 class="anchored" data-anchor-id="running-negative-binomial">Running negative binomial</h2>
+<ul>
+<li><code>glmer.nb</code> (nested/multilevel data)</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="co">#use to run neg binomial</span></span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a><span class="co">#lme4</span></span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>m.nb_c <span class="ot">&lt;-</span> lme4<span class="sc">::</span><span class="fu">glmer.nb</span>(Number_of_fixations <span class="sc">~</span> emotion<span class="sc">*</span>Group <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>ID), <span class="at">data=</span>hh_data_contrast, <span class="at">verbose=</span><span class="cn">FALSE</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in theta.ml(Y, mu, weights = object@resp$weights, limit = limit, :
+iteration limit reached</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Fixed Effects</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: center;">Log-Mean</th>
+<th style="text-align: center;">SE</th>
+<th style="text-align: center;">95% CI</th>
+<th style="text-align: center;">z</th>
+<th style="text-align: center;">p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: center;">1.35</td>
+<td style="text-align: center;">0.03</td>
+<td style="text-align: center;">(1.28, 1.42)</td>
+<td style="text-align: center;">38.65</td>
+<td style="text-align: center;">&lt; .001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">emotion</td>
+<td style="text-align: center;">-0.09</td>
+<td style="text-align: center;">0.03</td>
+<td style="text-align: center;">(-0.16, -0.03)</td>
+<td style="text-align: center;">-2.92</td>
+<td style="text-align: center;">0.004</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Group</td>
+<td style="text-align: center;">0.09</td>
+<td style="text-align: center;">0.07</td>
+<td style="text-align: center;">(-0.05, 0.23)</td>
+<td style="text-align: center;">1.28</td>
+<td style="text-align: center;">0.201</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">emotion × Group</td>
+<td style="text-align: center;">0.15</td>
+<td style="text-align: center;">0.06</td>
+<td style="text-align: center;">(0.02, 0.27)</td>
+<td style="text-align: center;">2.29</td>
+<td style="text-align: center;">0.022</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="running-negative-binomial-1" class="level2">
+<h2 class="anchored" data-anchor-id="running-negative-binomial-1">Running negative binomial</h2>
+<ul>
+<li><code>glm.nb</code> from <code>MASS</code> package (non-nested/between-subjects)</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="co">#use to run neg binomial</span></span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a><span class="co"># mass package</span></span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>m.nb <span class="ot">&lt;-</span> MASS<span class="sc">::</span><span class="fu">glm.nb</span>(Number_of_fixations <span class="sc">~</span> emotion<span class="sc">*</span>Group, <span class="at">data=</span>hh_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in theta.ml(Y, mu, sum(w), w, limit = control$maxit, trace =
+control$trace &gt; : iteration limit reached
+Warning in theta.ml(Y, mu, sum(w), w, limit = control$maxit, trace =
+control$trace &gt; : iteration limit reached</code></pre>
+</div>
+</div>
+</section>
+<section id="visualize-negative-binomial" class="level2">
+<h2 class="anchored" data-anchor-id="visualize-negative-binomial">Visualize negative binomial</h2>
+<ul>
+<li>Same as Poisson (show expected counts)</li>
+</ul>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">ggemmeans</span>(m.nb, <span class="at">terms=</span><span class="fu">c</span>(<span class="st">"emotion"</span>, <span class="st">'Group'</span>)), <span class="at">show_data=</span><span class="cn">TRUE</span>, <span class="at">jitter=</span>.<span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Some of the focal terms are of type `character`. This may lead to
+  unexpected results. It is recommended to convert these variables to
+  factors before fitting the model.
+  The following variables are of type character: `emotion`, `Group`</code></pre>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Poisson_2_files/figure-html/unnamed-chunk-44-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="model-comparison-poisson-or-neg-binom" class="level2">
+<h2 class="anchored" data-anchor-id="model-comparison-poisson-or-neg-binom">Model comparison: Poisson or Neg Binom?</h2>
+<ul>
+<li>Can test poisson vs.&nbsp;negative binomial with LRT because they are nested</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">test_likelihoodratio</span>(model2, m.nb_c) <span class="sc">%&gt;%</span></span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Some of the nested models seem to be identical and probably only vary in
+  their random effects.</code></pre>
+</div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;">Name</th>
+<th style="text-align: left;">Model</th>
+<th style="text-align: right;">df</th>
+<th style="text-align: right;">df_diff</th>
+<th style="text-align: right;">Chi2</th>
+<th style="text-align: right;">p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">model2</td>
+<td style="text-align: left;">model2</td>
+<td style="text-align: left;">glmerMod</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">m.nb_c</td>
+<td style="text-align: left;">m.nb_c</td>
+<td style="text-align: left;">glmerMod</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.005111</td>
+<td style="text-align: right;">0.9430067</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>. . .</p>
+<ul>
+<li>Seems like a Poisson model is okay here</li>
+</ul>
+</section>
+<section id="effect-sizes" class="level2">
+<h2 class="anchored" data-anchor-id="effect-sizes">Effect sizes</h2>
+<ul>
+<li>Pseudo-<span class="math inline">\(R^2\)</span></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>performance<span class="sc">::</span><span class="fu">r2</span>(model1_cont) <span class="co"># glmer</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># R2 for Mixed Models
+
+  Conditional R2: 0.126
+     Marginal R2: 0.014</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>partR2<span class="sc">::</span><span class="fu">partR2</span>(model1_cont,<span class="at">data=</span>hh_data, </span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">partvars =</span> <span class="fu">c</span>(<span class="st">"Group"</span>, <span class="st">"emotion"</span>),</span>
+<span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">R2_type =</span> <span class="st">"marginal"</span>, <span class="at">nboot =</span> <span class="dv">10</span>, <span class="at">CI =</span> <span class="fl">0.95</span></span>
+<span id="cb64-4"><a href="#cb64-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>boundary (singular) fit: see help('isSingular')</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>An observational level random-effect has been fitted
+to account for overdispersion.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+
+R2 (marginal) and 95% CI for the full model: 
+ R2    CI_lower CI_upper nboot ndf
+ 0.014 0.0048   0.0407   10    3  
+
+----------
+
+Part (semi-partial) R2:
+ Predictor(s)  R2    CI_lower CI_upper nboot ndf
+ Model         0.014 0.0048   0.0407   10    3  
+ Group         0.007 0.0000   0.0341   10    2  
+ emotion       0.007 0.0000   0.0340   10    2  
+ Group+emotion 0.014 0.0048   0.0407   10    1  </code></pre>
+</div>
+</div>
+</section>
+<section id="effect-sizes-1" class="level2">
+<h2 class="anchored" data-anchor-id="effect-sizes-1">Effect sizes</h2>
+<ul>
+<li><p>Simpler models</p>
+<ul>
+<li>Pseudo- <span class="math inline">\(R^2\)</span> (overall model)</li>
+<li>IRR (individual effect)</li>
+<li>Cohen’s <em>d (catgegorical</em> individual effects)
+<ul>
+<li><a href="https://stefany.shinyapps.io/RcountD/">RecountD</a></li>
+</ul></li>
+</ul></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>    performance<span class="sc">::</span><span class="fu">r2_mcfadden</span>(model1) <span class="co"># glm </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="reporting-a-poissonneg-binom-regression" class="level2">
+<h2 class="anchored" data-anchor-id="reporting-a-poissonneg-binom-regression">Reporting a Poisson/neg binom regression</h2>
+<ul>
+<li><p>State your hypothesis, statistical test, its link function, and justify the use of Poisson/neg binomial</p></li>
+<li><p>In text, report mean counts/marginal effects</p>
+<ul>
+<li>Report log <span class="math inline">\(\lambda\)</span>, SE, 95 CIs, p-values, IRR, effect size</li>
+</ul></li>
+</ul>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>We fitted a poisson mixed model (estimated using ML and Nelder-Mead optimizer)
+to predict Number_of_fixations with emotion and Group (formula:
+Number_of_fixations ~ emotion * Group). The model included ID as random effect
+(formula: ~1 | ID). The model's total explanatory power is moderate
+(conditional R2 = 0.13) and the part related to the fixed effects alone
+(marginal R2) is of 0.02. The model's intercept, corresponding to emotion = 0
+and Group = 0, is at 1.35 (95% CI [1.28, 1.42], p &lt; .001). Within this model:
+
+  - The effect of emotion is statistically significant and negative (beta =
+-0.09, 95% CI [-0.16, -0.03], p = 0.003; Std. beta = -0.04, 95% CI [-0.08,
+-0.01])
+  - The effect of Group is statistically non-significant and positive (beta =
+0.09, 95% CI [-0.05, 0.23], p = 0.202; Std. beta = 0.04, 95% CI [-0.02, 0.11])
+  - The effect of emotion × Group is statistically significant and positive (beta
+= 0.15, 95% CI [0.02, 0.27], p = 0.023; Std. beta = 0.04, 95% CI [5.19e-03,
+0.07])
+
+Standardized parameters were obtained by fitting the model on a standardized
+version of the dataset. 95% Confidence Intervals (CIs) and p-values were
+computed using a Wald z-distribution approximation.</code></pre>
+</div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="zero-inflated-models" class="level1">
+<h1>Zero-inflated Models</h1>
+<section id="zero-inflation" class="level2">
+<h2 class="anchored" data-anchor-id="zero-inflation">Zero-inflation</h2>
+<ul>
+<li><p>Too many zeros can bias your results</p>
+<ul>
+<li><p>Overdispersion</p></li>
+<li><p>Problematic for negative binomial model as well</p>
+<ul>
+<li>Assumes 0s are part of the same process (but might not be)</li>
+</ul></li>
+</ul></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>performance<span class="sc">::</span><span class="fu">check_zeroinflation</span>(model2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># Check for zero-inflation
+
+   Observed zeros: 16
+  Predicted zeros: 23
+            Ratio: 1.44</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Model is overfitting zeros.</code></pre>
+</div>
+</div>
+<ul>
+<li>Observed &gt; predicted (zero inflation)</li>
+</ul>
+</section>
+<section id="zi-models" class="level2">
+<h2 class="anchored" data-anchor-id="zi-models">ZI Models</h2>
+<ul>
+<li><p>Two parts</p>
+<ul>
+<li><p>Count model</p>
+<ul>
+<li><p>True zeros (sampling 0s)</p>
+<ul>
+<li>Poisson or negative binomial</li>
+</ul></li>
+</ul></li>
+<li><p>Zeros model</p>
+<ul>
+<li><p>Excess zeros (structural 0s)</p>
+<ul>
+<li><p>Uses a binomial logistic model</p>
+<ul>
+<li>0 vs.&nbsp;not 0</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+</section>
+<section id="zi-model" class="level2">
+<h2 class="anchored" data-anchor-id="zi-model">ZI Model</h2>
+<ul>
+<li><p><code>pscl</code> package <code>zeroinfl</code></p></li>
+<li><p><code>glmmTB</code> package for multilevel zero-inflated models</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="co"># pscl </span></span>
+<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a><span class="co"># neg binom model </span></span>
+<span id="cb74-3"><a href="#cb74-3" aria-hidden="true" tabindex="-1"></a>zif_model <span class="ot">&lt;-</span> <span class="fu">zeroinfl</span>(Number_of_fixations <span class="sc">~</span> emotion<span class="sc">*</span>Group <span class="sc">|</span> emotion<span class="sc">*</span>Group, <span class="at">dist=</span><span class="fu">c</span>(<span class="st">"negbin"</span>), <span class="at">link=</span><span class="fu">c</span>(<span class="st">"log"</span>), <span class="at">data=</span>hh_data_contrast) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in log(1 - phi): NaNs produced
+Warning in log(1 - phi): NaNs produced
+Warning in log(1 - phi): NaNs produced
+Warning in log(1 - phi): NaNs produced</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in value[[3L]](cond): Lapack routine dgesv: system is exactly singular:
+U[9,9] = 0FALSE</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="co"># glmmTB</span></span>
+<span id="cb77-2"><a href="#cb77-2" aria-hidden="true" tabindex="-1"></a>model_zip_glmer <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(Number_of_fixations <span class="sc">~</span> emotion<span class="sc">*</span>Group <span class="sc">+</span>(<span class="dv">1</span><span class="sc">|</span>ID), </span>
+<span id="cb77-3"><a href="#cb77-3" aria-hidden="true" tabindex="-1"></a>                               <span class="at">data =</span> hh_data_contrast,</span>
+<span id="cb77-4"><a href="#cb77-4" aria-hidden="true" tabindex="-1"></a>                               <span class="at">ziformula =</span> <span class="sc">~</span><span class="dv">1</span>, <span class="co">#estimate zero inflated # add variables here</span></span>
+<span id="cb77-5"><a href="#cb77-5" aria-hidden="true" tabindex="-1"></a>                               <span class="at">family =</span> nbinom2) <span class="co"># nbinom2 fits variance with quadartic component like eq  we talked about mu^2/phi</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in finalizeTMB(TMBStruc, obj, fit, h, data.tmb.old): Model convergence
+problem; false convergence (8). See vignette('troubleshooting'),
+help('diagnose')</code></pre>
+</div>
+</div>
+</section>
+<section id="zi-model-1" class="level2">
+<h2 class="anchored" data-anchor-id="zi-model-1">ZI model</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="co"># pscl</span></span>
+<span id="cb79-2"><a href="#cb79-2" aria-hidden="true" tabindex="-1"></a><span class="fu">model_parameters</span>(</span>
+<span id="cb79-3"><a href="#cb79-3" aria-hidden="true" tabindex="-1"></a>  model_zip_glmer) <span class="sc">%&gt;%</span></span>
+<span id="cb79-4"><a href="#cb79-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print_md</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption># Fixed Effects (Count Model)</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: center;">Log-Mean</th>
+<th style="text-align: center;">SE</th>
+<th style="text-align: center;">95% CI</th>
+<th style="text-align: center;">z</th>
+<th style="text-align: center;">p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: center;">1.35</td>
+<td style="text-align: center;">0.03</td>
+<td style="text-align: center;">(1.28, 1.42)</td>
+<td style="text-align: center;">38.71</td>
+<td style="text-align: center;">&lt; .001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">emotion</td>
+<td style="text-align: center;">-0.09</td>
+<td style="text-align: center;">0.03</td>
+<td style="text-align: center;">(-0.16, -0.03)</td>
+<td style="text-align: center;">-2.92</td>
+<td style="text-align: center;">0.003</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Group</td>
+<td style="text-align: center;">0.09</td>
+<td style="text-align: center;">0.07</td>
+<td style="text-align: center;">(-0.05, 0.23)</td>
+<td style="text-align: center;">1.28</td>
+<td style="text-align: center;">0.202</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">emotion × Group</td>
+<td style="text-align: center;">0.15</td>
+<td style="text-align: center;">0.06</td>
+<td style="text-align: center;">(0.02, 0.27)</td>
+<td style="text-align: center;">2.28</td>
+<td style="text-align: center;">0.023</td>
+</tr>
+</tbody>
+</table>
+<table class="caption-top table table-sm table-striped small">
+<caption># Fixed Effects (Zero-Inflation Component)</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: center;">Log-Odds</th>
+<th style="text-align: center;">SE</th>
+<th style="text-align: center;">95% CI</th>
+<th style="text-align: center;">z</th>
+<th style="text-align: center;">p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: center;">-15.53</td>
+<td style="text-align: center;">120.21</td>
+<td style="text-align: center;">(-251.15, 220.08)</td>
+<td style="text-align: center;">-0.13</td>
+<td style="text-align: center;">0.897</td>
+</tr>
+</tbody>
+</table>
+<table class="caption-top table table-sm table-striped small">
+<caption># Dispersion</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: center;">Coefficient</th>
+<th style="text-align: center;">95% CI</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: center;">4.11e+07</td>
+<td style="text-align: center;">(22412.56, 7.53e+10)</td>
+</tr>
+</tbody>
+</table>
+<table class="caption-top table table-sm table-striped small">
+<caption># Random Effects Variances</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: center;">Coefficient</th>
+<th style="text-align: center;">95% CI</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">SD (Intercept: ID)</td>
+<td style="text-align: center;">0.17</td>
+<td style="text-align: center;">(0.12, 0.23)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="fin" class="level2">
+<h2 class="anchored" data-anchor-id="fin">Fin</h2>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><p>Read the assigned textbook chapters and articles (I promise it will help understand these models)</p></li>
+<li><p>Lab on Wednesday (read a prereg document, figure out what model to fit, and write up results)</p></li>
+</ul>
+</div>
+</div>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

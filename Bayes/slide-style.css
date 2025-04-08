@@ -59,3 +59,7 @@ div.cell-output cell-output-stdout {
   margin-bottom: 12px;
   /*font-size: 90%;*/
 }
+
+.small-table {
+  font-size: 60%;
+}

@@ -1,0 +1,247 @@
+---
+title: "Packman Ordinal Regression Lab Answers"
+output: 
+  tufte::tufte_html:
+    css: 
+    tufte_variant: "envisioned"
+    highlight: github-dark
+    fig_height: 10
+    fig_width: 16
+    toc: true
+    toc_depth: 1
+execute: 
+  message: false
+  warning: false
+format: 
+  html:
+    code-fold: true
+    code-overflow: wrap
+engine: knitr
+---
+
+# Lab 3- Ordinal Regression
+
+## Instructions
+
+-   If you are fitting a model, display the model output in a neatly formatted table. (The `tidy` and `kable` functions can help!)
+
+-   If you are creating a plot, use clear labels for all axes, titles, etc.
+
+-   If you are using Github, don't forget to commit and push your work to to it regularly, at least after each exercise. Write short and informative commit messages. Else, if you are submitting on Canvas, make sure that the version you submit is the latest, and that it runs/knits without any errors.
+
+-   When you're done, we should be able to knit the final version of the QMD in your GitHub as a HTML.
+
+# Lab
+
+The data for this week's lab is taken from the Great British Bake-off (GBBO, https://bakeoff.netlify.app/). In this lab you will be looking at `Gender` and `Age` as a predictor of technical rank. For this exercise, we will only be looking at those who were in top 3 of technical.
+
+In the GBBO, the bakers are usually provided with a list of ingredients and basic instructions, but they may not have access to specific measurements or details on how to prepare the ingredients. The judges evaluate the bakers' finished products based on factors such as appearance, texture, and flavor, but also compare the bakers' results to a standard version of the recipe that has been prepared in advance by the judges or a baking expert.
+
+The dataset contains 3 variables:
+
+-   `Gender`: M = MALE, F = FEMALE
+
+-   `Age`: Age of baker
+
+-   `Technical Rank`: Rank in technical (1,2,3)
+
+## Load packages:
+
+```{r}
+library(tidyverse)
+library(broom)
+library(performance)
+library(ordinal) #clm
+library(car) # anova
+library(ggeffects) #  viz
+library(gofcat) # brant
+library(brms)
+library(emmeans) # contrasts
+library(knitr)
+library(dplyr)
+library(ggplot2)
+library(readr)
+library(modelsummary)
+library(tidyr)
+library(knitr)
+library(easystats)
+library(broom)
+library(emmeans)
+library(marginaleffects)
+library(arm)
+
+
+```
+
+## Load data
+
+-   Make sure only the top 3 ranks are being used. *For some reason, there are missing ranks (my guess is they did not announce rank on TV)*
+
+```{r}
+
+gbbo <- read_csv("https://raw.githubusercontent.com/suyoghc/PSY-504_Spring-2025/refs/heads/main/Ordinal%20Regression/data/GBBO.csv")
+
+# Enter code to filter. Think about the data type that would be relevant for Rank
+gb <- filter(gbbo, gbbo$`Technical Rank` < 4)
+
+```
+
+## Explore
+
+-   Plot two figures showing the percentage of bakers in each rank--- create one for `Gender` and `Age`
+
+    ```{r}
+    as.factor(gb$`Technical Rank`)
+    as.factor(gb$Gender)
+    # make sure ordered properly 
+    gb$Technical.Rank <- ordered(gb$'Technical Rank', levels=c("3", "2", "1"))
+
+    head(gb$Technical.Rank) # check to see if ordered
+
+    Rank_summary <- gb %>%
+      count(gb$Technical.Rank) %>%
+      mutate(proportion = n / sum(n))
+
+    ggplot(data = gb, mapping = aes(x = Technical.Rank, fill = Gender)) +
+      geom_bar(position = "fill", show.legend = TRUE) +
+      labs(x = "Technical Rank",
+           y = "Percentage",
+           title = "Gender by Technical Rank") + theme(axis.text.x = element_text(vjust = 0.5, hjust=1)) 
+
+    ```
+
+```{r}
+ggplot(data = gb, mapping = aes(x = Age, fill = Technical.Rank)) +
+  geom_bar(position = "fill", show.legend = TRUE) +
+  labs(x = "Age",
+       y = "Percentage",
+       title = "Technical Rank by Age") + theme(axis.text.x = element_text(vjust = 0.5, hjust=1)) 
+```
+
+## Ordinal Analysis
+
+-   If you haven't already, convert the outcome variable to an ordered factor. What does the order here represent?
+
+    ```{r}
+    #Outcome variable, 'Technical Rank' is already a factor, the order of which represents placement in the competition, where 1 is first place (best), 2 is second place (runner-up), and 3 is thrid place (second runner-up)
+
+    ```
+
+-   Convert input variables to categorical factors as appropriate.
+
+    ```{r}
+    gb$Gender <- as.factor(gb$Gender)
+    ```
+
+-   Run a ordinal logistic regression model against all relevant input variables. Interpret the effects for `Gender`, `Age` and `Gender*Age` (even if they are non-significant).
+
+    ```{r}
+    library(ordinal) # clm function
+
+
+    #Model without interaction
+    ols1 = clm(Technical.Rank ~ Age + Gender, data=gb, link = "logit")
+    summary(ols1)
+    #Tidy results
+    ols1 %>% 
+      tidy() %>%
+      kable()
+    #Exponentiated results (OR)
+    ols1 %>% 
+      tidy(exponentiate = TRUE) %>%
+      kable()
+    ```
+
+    In the model without an interaction term, age very slightly predicted higher odds of being awarded higher Technical Rank (with 1 being the highest rank), but this was not statistically significant (*b* = 0.0056, *z* = 0.617, *p* = 0.537, OR = 1.006). Gender (i.e., being male relative to being female), non-significantly predicted lower odds of being awarded higher Technical Rank, *b* = -0.191, *z* = -0.907, *p* = 0.365, OR = 0.826.
+
+-   Test if the interaction is warranted
+
+#Hint: You need to create two models with clm(); one with interaction and one without. #Then you compare them using the anova test using anova()
+
+```{r}
+#Model with interaction
+ols2 = clm(Technical.Rank ~ Age*Gender, data=gb, link = "logit")
+summary(ols2)
+#Tidy results
+ols2 %>% 
+  tidy() %>%
+  kable()
+#Exponentiated results (OR)
+ols2 %>% 
+  tidy(exponentiate = TRUE) %>%
+  kable()
+
+#Model Comparison
+ols_test <- anova(ols1, ols2)
+knitr::kable(ols_test)
+
+#Model Comparison using Type III
+ols_testIII <- car::Anova(ols2, type="III")
+knitr::kable(ols_testIII)
+```
+
+```         
+#Anova seems to be warranted (see above code chunk)
+```
+
+-   The interaction between Gender and Age significantly correlates with Technical Rank, (*b* = -0.0388, *z* = -2.093, *p* = 0.0363, OR = 0.962), suggesting that as male contestants get older, they have lower odds of being awarded higher Technical Rank.
+
+-   Use `ggemmeans` to create a figure showing the interaction between `Gender` and `Age` as a function of rank. Plot predicted probabilities from the model.
+
+    ```{r}
+    interact <- ggemmeans(ols2, terms= c("Age [all]", "Gender"))
+    plot_predictions(ols2, condition = c("Age", "Gender"), newdata = gb, type = "prob")+ facet_grid(~group)
+
+    ```
+
+### Latent Visualization
+
+```{r}
+
+ols_clm = MASS::polr(Technical.Rank~Gender*Age, data=gb)
+
+ggeffect(ols_clm, c("Age[all]", "Gender"), latent=TRUE) %>% plot()
+
+```
+
+-   Use the Brant test to support or reject the hypothesis that the proportional odds assumption holds for your simplified model.
+
+    ```{r}
+
+    brant.test(ols_clm)
+
+    ```
+
+    According to the Brant Test, the proportional odds assumption holds.
+
+    ## `brms`
+
+-   Below is a model implementation using the `brms` package. We will just use the default priors for this. The exercise is to run this code and note your observations. What are salient differences you observe in how the model fitting takes place With respect to the results, how do you compare the results of the model you fit with `clm` and the one you fit with `brms`?
+
+```{r}
+#| results: hide
+#| 
+library(brms)  
+ols2_brm = brm(Technical.Rank ~  Gender*Age, data=gb, family = "cumulative", cores = 4,chains = 4)
+summary(ols2_brm)
+```
+
+-   The coefficient estimates appear to be roughly the same as those from the clm model (log-odds, not exponentiated). The intercepts are slightly different, but perhaps due to rounding and not some meaningful difference in thresholds. Of the predictors, only the interaction term Age\*Gender is statistically significant. The brms output gives us Rhat for each estimate as 1, which indicates convergence. I am not sure what the utility of knowing Rhat is, however.
+
+-   The `conditional_effects` function is used to plot predicted probabilities by Gender and Age across each rank.
+
+    ```{r}
+    conditional_effects(ols2_brm, categorical = T)
+    #I receive a warning that interactions cannot be plotted directly if 'categorical' is TRUE, but I'm assuming we don't want to directly plot the interaction, but instead want to observe it in the plot of the predicted probabilities of each predictor? 
+    ```
+
+-   `check_predictions` from the `easystats` `performance` package is used for examining model fit (i.e., does the data fit the model being used?). Run the below code. What do you think?
+
+```{r}
+check_predictions(ols2_brm)
+library(easystats)
+#model goodness
+r2_mcfadden(ols2)
+```
+
+Check-predictions seem to indicate the model fits the data fairly well, according to the posterior predictive check. Does this process take the place of McFadden's pseudo-R2 for brms-calculated models? I tried assessing pseudo-r2 for ols2_brm, but was met with an error.

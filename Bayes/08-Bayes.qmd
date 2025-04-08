@@ -54,7 +54,7 @@ library(ggbeeswarm)
 options(scipen=999)
 ```
 
--   Follow along: <https://github.com/jgeller112/PSY504-Advanced-Stats-S24/blob/main/slides/08-Bayes/08-Bayes.qmd>
+-   Follow along: <https://github.com/suyoghc/PSY-504_Spring-2025/blob/main/Bayes/08-Bayes.qmd>
 
 ## Today
 
@@ -404,8 +404,393 @@ knitr::include_graphics("images/step7.png")
 Of course, after seeing the data, a third person would believe more in the model that predicted the data better (in this case model 1). This means that the posterior odds of the person changed in comparison to the prior odds. How can we quantify how much the belief changed? By multiplying the prior odds with the Bayes factor. Remember that the BF told us how much to believe in one model compared to the other, so this is straightforward: We multiply what we believed before with what we should believe when we see the data and get what we should believe after we have seen the data. In this case, the posterior model odds are 1.46, that means that an impartial judge who had no preference before would think that the green model is 1.46 times more likely than the blue model after seeing the data.
 :::
 
-## Today
+## Today - workflow and example
 
+## Frequentist vs. Bayesian
+
+::: {.small-table}
+| Aspect                   | Frequentist                           | Bayesian |
+| :----------------------- | :------------------------------------ | :------- |
+| **Probability philosophy** | Long-run frequency                    |          |
+| **Parameters** | Fixed unknowns                        |          |
+| **Estimation** | Point estimates (MLE)                 |          |
+| **Uncertainty** | Confidence intervals                  |          |
+| **Interpretation** | "95% of samples contain true value" |          |
+| **Prior Info** | Not formally used                     |          |
+| **Prediction** | Points with errors                    |          |
+| **Testing** | p-values                              |          |
+| **Comparison** | AIC, BIC                              |          |
+| **Computation** | Often analytical                      |          |
+| **Workflow** | Residuals, QQ plots                   |          |
+| **Small Samples** | Often poor                            |          |
+| **R Implementation** | lm(), glmer()                         |          |
+| **Speed** | Faster                                |          |
+| **Regularization** | Penalties (LASSO)                     |          |
+:::
+
+## Frequentist vs. Bayesian
+::: {.small-table}
+| Aspect                   | Frequentist                           | Bayesian         |
+| :----------------------- | :------------------------------------ | :--------------- |
+| **Probability philosophy** | Long-run frequency                    | Degree of belief |
+| **Parameters** | Fixed unknowns                        |                  |
+| **Estimation** | Point estimates (MLE)                 |                  |
+| **Uncertainty** | Confidence intervals                  |                  |
+| **Interpretation** | "95% of samples contain true value" |                  |
+| **Prior Info** | Not formally used                     |                  |
+| **Prediction** | Points with errors                    |                  |
+| **Testing** | p-values                              |                  |
+| **Comparison** | AIC, BIC                              |                  |
+| **Computation** | Often analytical                      |                  |
+| **Workflow** | Residuals, QQ plots                   |                  |
+| **Small Samples** | Often poor                            |                  |
+| **R Implementation** | lm(), glmer()                         |                  |
+| **Speed** | Faster                                |                  |
+| **Regularization** | Penalties (LASSO)                     |                  |
+:::
+## Frequentist vs. Bayesian
+::: {.small-table}
+| Aspect                   | Frequentist                           | Bayesian         |
+| :----------------------- | :------------------------------------ | :--------------- |
+| **Probability philosophy** | Long-run frequency                    | Degree of belief |
+| **Parameters** | Fixed unknowns                        | Random variables |
+| **Estimation** | Point estimates (MLE)                 |                  |
+| **Uncertainty** | Confidence intervals                  |                  |
+| **Interpretation** | "95% of samples contain true value" |                  |
+| **Prior Info** | Not formally used                     |                  |
+| **Prediction** | Points with errors                    |                  |
+| **Testing** | p-values                              |                  |
+| **Comparison** | AIC, BIC                              |                  |
+| **Computation** | Often analytical                      |                  |
+| **Workflow** | Residuals, QQ plots                   |                  |
+| **Small Samples** | Often poor                            |                  |
+| **R Implementation** | lm(), glmer()                         |                  |
+| **Speed** | Faster                                |                  |
+| **Regularization** | Penalties (LASSO)                     |                  |
+:::
+## Frequentist vs. Bayesian
+::: {.small-table}
+| Aspect                   | Frequentist                           | Bayesian         |
+| :----------------------- | :------------------------------------ | :--------------- |
+| **Probability philosophy** | Long-run frequency                    | Degree of belief |
+| **Parameters** | Fixed unknowns                        | Random variables |
+| **Estimation** | Point estimates (MLE)                 | Full posteriors  |
+| **Uncertainty** | Confidence intervals                  |                  |
+| **Interpretation** | "95% of samples contain true value" |                  |
+| **Prior Info** | Not formally used                     |                  |
+| **Prediction** | Points with errors                    |                  |
+| **Testing** | p-values                              |                  |
+| **Comparison** | AIC, BIC                              |                  |
+| **Computation** | Often analytical                      |                  |
+| **Workflow** | Residuals, QQ plots                   |                  |
+| **Small Samples** | Often poor                            |                  |
+| **R Implementation** | lm(), glmer()                         |                  |
+| **Speed** | Faster                                |                  |
+| **Regularization** | Penalties (LASSO)                     |                  |
+:::
+## Frequentist vs. Bayesian
+::: {.small-table}
+| Aspect                   | Frequentist                           | Bayesian           |
+| :----------------------- | :------------------------------------ | :----------------- |
+| **Probability philosophy** | Long-run frequency                    | Degree of belief   |
+| **Parameters** | Fixed unknowns                        | Random variables   |
+| **Estimation** | Point estimates (MLE)                 | Full posteriors    |
+| **Uncertainty** | Confidence intervals                  | Credible intervals |
+| **Interpretation** | "95% of samples contain true value" |                    |
+| **Prior Info** | Not formally used                     |                    |
+| **Prediction** | Points with errors                    |                    |
+| **Testing** | p-values                              |                    |
+| **Comparison** | AIC, BIC                              |                    |
+| **Computation** | Often analytical                      |                    |
+| **Workflow** | Residuals, QQ plots                   |                    |
+| **Small Samples** | Often poor                            |                    |
+| **R Implementation** | lm(), glmer()                         |                    |
+| **Speed** | Faster                                |                    |
+| **Regularization** | Penalties (LASSO)                     |                    |
+:::
+## Frequentist vs. Bayesian
+::: {.small-table}
+| Aspect                   | Frequentist                           | Bayesian                             |
+| :----------------------- | :------------------------------------ | :----------------------------------- |
+| **Probability philosophy** | Long-run frequency                    | Degree of belief                     |
+| **Parameters** | Fixed unknowns                        | Random variables                     |
+| **Estimation** | Point estimates (MLE)                 | Full posteriors                      |
+| **Uncertainty** | Confidence intervals                  | Credible intervals                   |
+| **Interpretation** | "95% of samples contain true value" | "95% probability parameter in range" |
+| **Prior Info** | Not formally used                     |                                      |
+| **Prediction** | Points with errors                    |                                      |
+| **Testing** | p-values                              |                                      |
+| **Comparison** | AIC, BIC                              |                                      |
+| **Computation** | Often analytical                      |                                      |
+| **Workflow** | Residuals, QQ plots                   |                                      |
+| **Small Samples** | Often poor                            |                                      |
+| **R Implementation** | lm(), glmer()                         |                                      |
+| **Speed** | Faster                                |                                      |
+| **Regularization** | Penalties (LASSO)                     |                                      |
+:::
+## Frequentist vs. Bayesian
+::: {.small-table}
+| Aspect                   | Frequentist                           | Bayesian                             |
+| :----------------------- | :------------------------------------ | :----------------------------------- |
+| **Probability philosophy** | Long-run frequency                    | Degree of belief                     |
+| **Parameters** | Fixed unknowns                        | Random variables                     |
+| **Estimation** | Point estimates (MLE)                 | Full posteriors                      |
+| **Uncertainty** | Confidence intervals                  | Credible intervals                   |
+| **Interpretation** | "95% of samples contain true value" | "95% probability parameter in range" |
+| **Prior Info** | Not formally used                     |                                      |
+| **Prediction** | Points with errors                    |                                      |
+| **Testing** | p-values                              |                                      |
+| **Comparison** | AIC, BIC                              |                                      |
+| **Computation** | Often analytical                      |                                      |
+| **Workflow** | Residuals, QQ plots                   |                                      |
+| **Small Samples** | Often poor                            |                                      |
+| **R Implementation** | lm(), glmer()                         |                                      |
+| **Speed** | Faster                                |                                      |
+| **Regularization** | Penalties (LASSO)                     |                                      |
+:::
+## Frequentist vs. Bayesian
+::: {.small-table}
+| Aspect                   | Frequentist                           | Bayesian                             |
+| :----------------------- | :------------------------------------ | :----------------------------------- |
+| **Probability philosophy** | Long-run frequency                    | Degree of belief                     |
+| **Parameters** | Fixed unknowns                        | Random variables                     |
+| **Estimation** | Point estimates (MLE)                 | Full posteriors                      |
+| **Uncertainty** | Confidence intervals                  | Credible intervals                   |
+| **Interpretation** | "95% of samples contain true value" | "95% probability parameter in range" |
+| **Prior Info** | Not formally used                     | Explicit priors                      |
+| **Prediction** | Points with errors                    |                                      |
+| **Testing** | p-values                              |                                      |
+| **Comparison** | AIC, BIC                              |                                      |
+| **Computation** | Often analytical                      |                                      |
+| **Workflow** | Residuals, QQ plots                   |                                      |
+| **Small Samples** | Often poor                            |                                      |
+| **R Implementation** | lm(), glmer()                         |                                      |
+| **Speed** | Faster                                |                                      |
+| **Regularization** | Penalties (LASSO)                     |                                      |
+:::
+## Frequentist vs. Bayesian
+::: {.small-table}
+| Aspect                   | Frequentist                           | Bayesian                             |
+| :----------------------- | :------------------------------------ | :----------------------------------- |
+| **Probability philosophy** | Long-run frequency                    | Degree of belief                     |
+| **Parameters** | Fixed unknowns                        | Random variables                     |
+| **Estimation** | Point estimates (MLE)                 | Full posteriors                      |
+| **Uncertainty** | Confidence intervals                  | Credible intervals                   |
+| **Interpretation** | "95% of samples contain true value" | "95% probability parameter in range" |
+| **Prior Info** | Not formally used                     | Explicit priors                      |
+| **Prediction** | Points with errors                    | Full distributions                   |
+| **Testing** | p-values                              |                                      |
+| **Comparison** | AIC, BIC                              |                                      |
+| **Computation** | Often analytical                      |                                      |
+| **Workflow** | Residuals, QQ plots                   |                                      |
+| **Small Samples** | Often poor                            |                                      |
+| **R Implementation** | lm(), glmer()                         |                                      |
+| **Speed** | Faster                                |                                      |
+| **Regularization** | Penalties (LASSO)                     |                                      |
+:::
+## Frequentist vs. Bayesian
+::: {.small-table}
+| Aspect                   | Frequentist                           | Bayesian                             |
+| :----------------------- | :------------------------------------ | :----------------------------------- |
+| **Probability philosophy** | Long-run frequency                    | Degree of belief                     |
+| **Parameters** | Fixed unknowns                        | Random variables                     |
+| **Estimation** | Point estimates (MLE)                 | Full posteriors                      |
+| **Uncertainty** | Confidence intervals                  | Credible intervals                   |
+| **Interpretation** | "95% of samples contain true value" | "95% probability parameter in range" |
+| **Prior Info** | Not formally used                     | Explicit priors                      |
+| **Prediction** | Points with errors                    | Full distributions                   |
+| **Testing** | p-values                              | Posterior probabilities              |
+| **Comparison** | AIC, BIC                              |                                      |
+| **Computation** | Often analytical                      |                                      |
+| **Workflow** | Residuals, QQ plots                   |                                      |
+| **Small Samples** | Often poor                            |                                      |
+| **R Implementation** | lm(), glmer()                         |                                      |
+| **Speed** | Faster                                |                                      |
+| **Regularization** | Penalties (LASSO)                     |                                      |
+:::
+## Frequentist vs. Bayesian
+::: {.small-table}
+| Aspect                   | Frequentist                           | Bayesian                             |
+| :----------------------- | :------------------------------------ | :----------------------------------- |
+| **Probability philosophy** | Long-run frequency                    | Degree of belief                     |
+| **Parameters** | Fixed unknowns                        | Random variables                     |
+| **Estimation** | Point estimates (MLE)                 | Full posteriors                      |
+| **Uncertainty** | Confidence intervals                  | Credible intervals                   |
+| **Interpretation** | "95% of samples contain true value" | "95% probability parameter in range" |
+| **Prior Info** | Not formally used                     | Explicit priors                      |
+| **Prediction** | Points with errors                    | Full distributions                   |
+| **Testing** | p-values                              | Posterior probabilities              |
+| **Comparison** | AIC, BIC                              | WAIC, LOO-CV, Bayes Factor                         |
+| **Computation** | Often analytical                      |                                      |
+| **Workflow** | Residuals, QQ plots                   |                                      |
+| **Small Samples** | Often poor                            |                                      |
+| **R Implementation** | lm(), glmer()                         |                                      |
+| **Speed** | Faster                                |                                      |
+| **Regularization** | Penalties (LASSO)                     |                                      |
+:::
+## Frequentist vs. Bayesian
+::: {.small-table}
+| Aspect                   | Frequentist                           | Bayesian                             |
+| :----------------------- | :------------------------------------ | :----------------------------------- |
+| **Probability philosophy** | Long-run frequency                    | Degree of belief                     |
+| **Parameters** | Fixed unknowns                        | Random variables                     |
+| **Estimation** | Point estimates (MLE)                 | Full posteriors                      |
+| **Uncertainty** | Confidence intervals                  | Credible intervals                   |
+| **Interpretation** | "95% of samples contain true value" | "95% probability parameter in range" |
+| **Prior Info** | Not formally used                     | Explicit priors                      |
+| **Prediction** | Points with errors                    | Full distributions                   |
+| **Testing** | p-values                              | Posterior probabilities              |
+| **Comparison** | AIC, BIC                              | WAIC, LOO-CV, Bayes Factor                         |
+| **Computation** | Often analytical                      | MCMC sampling                        |
+| **Workflow** | Residuals, QQ plots                   |                                      |
+| **Small Samples** | Often poor                            |                                      |
+| **R Implementation** | lm(), glmer()                         |                                      |
+| **Speed** | Faster                                |                                      |
+| **Regularization** | Penalties (LASSO)                     |                                      |
+:::
+## Frequentist vs. Bayesian
+::: {.small-table}
+| Aspect                   | Frequentist                           | Bayesian                             |
+| :----------------------- | :------------------------------------ | :----------------------------------- |
+| **Probability philosophy** | Long-run frequency                    | Degree of belief                     |
+| **Parameters** | Fixed unknowns                        | Random variables                     |
+| **Estimation** | Point estimates (MLE)                 | Full posteriors                      |
+| **Uncertainty** | Confidence intervals                  | Credible intervals                   |
+| **Interpretation** | "95% of samples contain true value" | "95% probability parameter in range" |
+| **Prior Info** | Not formally used                     | Explicit priors                      |
+| **Prediction** | Points with errors                    | Full distributions                   |
+| **Testing** | p-values                              | Posterior probabilities              |
+| **Comparison** | AIC, BIC                              | WAIC, LOO-CV, Bayes Factor                         |
+| **Computation** | Often analytical                      | MCMC sampling                        |
+| **Workflow** | Residuals, QQ plots                   | Posterior checks, Rhat               |
+| **Small Samples** | Often poor                            |                                      |
+| **R Implementation** | lm(), glmer()                         |                                      |
+| **Speed** | Faster                                |                                      |
+| **Regularization** | Penalties (LASSO)                     |                                      |
+:::
+## Frequentist vs. Bayesian
+::: {.small-table}
+| Aspect                   | Frequentist                           | Bayesian                             |
+| :----------------------- | :------------------------------------ | :----------------------------------- |
+| **Probability philosophy** | Long-run frequency                    | Degree of belief                     |
+| **Parameters** | Fixed unknowns                        | Random variables                     |
+| **Estimation** | Point estimates (MLE)                 | Full posteriors                      |
+| **Uncertainty** | Confidence intervals                  | Credible intervals                   |
+| **Interpretation** | "95% of samples contain true value" | "95% probability parameter in range" |
+| **Prior Info** | Not formally used                     | Explicit priors                      |
+| **Prediction** | Points with errors                    | Full distributions                   |
+| **Testing** | p-values                              | Posterior probabilities              |
+| **Comparison** | AIC, BIC                              | WAIC, LOO-CV, Bayes Factor                         |
+| **Computation** | Often analytical                      | MCMC sampling                        |
+| **Workflow** | Residuals, QQ plots                   | Posterior checks, Rhat               |
+| **Small Samples** | Often poor                            | Can be robust                        |
+| **R Implementation** | lm(), glmer()                         |                                      |
+| **Speed** | Faster                                |                                      |
+| **Regularization** | Penalties (LASSO)                     |                                      |
+:::
+## Frequentist vs. Bayesian
+::: {.small-table}
+| Aspect                   | Frequentist                           | Bayesian                             |
+| :----------------------- | :------------------------------------ | :----------------------------------- |
+| **Probability philosophy** | Long-run frequency                    | Degree of belief                     |
+| **Parameters** | Fixed unknowns                        | Random variables                     |
+| **Estimation** | Point estimates (MLE)                 | Full posteriors                      |
+| **Uncertainty** | Confidence intervals                  | Credible intervals                   |
+| **Interpretation** | "95% of samples contain true value" | "95% probability parameter in range" |
+| **Prior Info** | Not formally used                     | Explicit priors                      |
+| **Prediction** | Points with errors                    | Full distributions                   |
+| **Testing** | p-values                              | Posterior probabilities              |
+| **Comparison** | AIC, BIC                              | WAIC, LOO-CV, Bayes Factor                         |
+| **Computation** | Often analytical                      | MCMC sampling                        |
+| **Workflow** | Residuals, QQ plots                   | Posterior checks, Rhat               |
+| **Small Samples** | Often poor                            | Can be robust                        |
+| **R Implementation** | lm(), glmer()                         | brms::brm(), rstan()                 |
+| **Speed** | Faster                                |                                      |
+| **Regularization** | Penalties (LASSO)                     |                                      |
+:::
+## Frequentist vs. Bayesian
+::: {.small-table}
+| Aspect                   | Frequentist                           | Bayesian                             |
+| :----------------------- | :------------------------------------ | :----------------------------------- |
+| **Probability philosophy** | Long-run frequency                    | Degree of belief                     |
+| **Parameters** | Fixed unknowns                        | Random variables                     |
+| **Estimation** | Point estimates (MLE)                 | Full posteriors                      |
+| **Uncertainty** | Confidence intervals                  | Credible intervals                   |
+| **Interpretation** | "95% of samples contain true value" | "95% probability parameter in range" |
+| **Prior Info** | Not formally used                     | Explicit priors                      |
+| **Prediction** | Points with errors                    | Full distributions                   |
+| **Testing** | p-values                              | Posterior probabilities              |
+| **Comparison** | AIC, BIC                              | WAIC, LOO-CV, Bayes Factor                         |
+| **Computation** | Often analytical                      | MCMC sampling                        |
+| **Workflow** | Residuals, QQ plots                   | Posterior checks, Rhat               |
+| **Small Samples** | Often poor                            | Can be robust                        |
+| **R Implementation** | lm(), glmer()                         | brms::brm(), rstan()                 |
+| **Speed** | Faster                                | More intensive                       |
+| **Regularization** | Penalties (LASSO)                     |                                      |
+:::
+## Frequentist vs. Bayesian
+::: {.small-table}
+| Aspect                   | Frequentist                           | Bayesian                             |
+| :----------------------- | :------------------------------------ | :----------------------------------- |
+| **Probability philosophy** | Long-run frequency                    | Degree of belief                     |
+| **Parameters** | Fixed unknowns                        | Random variables                     |
+| **Estimation** | Point estimates (MLE)                 | Full posteriors                      |
+| **Uncertainty** | Confidence intervals                  | Credible intervals                   |
+| **Interpretation** | "95% of samples contain true value" | "95% probability parameter in range" |
+| **Prior Info** | Not formally used                     | Explicit priors                      |
+| **Prediction** | Points with errors                    | Full distributions                   |
+| **Testing** | p-values                              | Posterior probabilities              |
+| **Comparison** | AIC, BIC                              | WAIC, LOO-CV, Bayes Factor                         |
+| **Computation** | Often analytical                      | MCMC sampling                        |
+| **Workflow** | Residuals, QQ plots                   | Posterior checks, Rhat               |
+| **Small Samples** | Often poor                            | Can be robust                        |
+| **R Implementation** | lm(), glmer()                         | brms::brm(), rstan()                 |
+| **Speed** | Faster                                | More intensive                       |
+| **Regularization** | Penalties (LASSO)                     | Natural via priors                   |
+:::
+
+## Frequentist vs. Bayesian
+
+::: {.small-table}
+| Aspect | Frequentist | Bayesian |
+|-------------------|------------------------------|-----------------------|
+| **Probability philosophy** | Long-run frequency | Degree of belief |
+| **Parameters** | Fixed unknowns | Random variables |
+| **Estimation** | Point estimates (MLE) | Full posteriors |
+| **Uncertainty** | Confidence intervals | Credible intervals |
+| **Interpretation** | "95% of samples contain true value" | "95% probability parameter in range" |
+| **Prior Info** | Not formally used | Explicit priors |
+| **Prediction** | Points with errors | Full distributions |
+| **Testing** | p-values | Posterior probabilities |
+| **Comparison** | AIC, BIC | WAIC, LOO-CV, Bayes Factor |
+| **Computation** | Often analytical | MCMC sampling |
+| **Workflow** | Residuals, QQ plots | Posterior checks, Rhat |
+| **Small Samples** | Often poor | Can be robust |
+| **R Implementation** | lm(), glmer() | brms::brm(), rstan() |
+| **Speed** | Faster | More intensive |
+| **Regularization** | Penalties (LASSO) | Natural via priors |
+:::
+
+## Statistical Workflow
+
+- Experiment design
+- Power analysis
+- Model specification
+- Model Fitting
+- Model Checking
+- Model Comparison
+
+## Statistical Workflow
+- Experiment design
+- Power analysis
+- ---------------------------------> _Prior specification; Prior predictive checks_
+- Model specification
+- Model Fitting
+- Model Checking
+- ---------------------------------> _Posterior predictive checks_
+- Model Comparison
+
+## Today
 <br> <br>
 
 -   `r emoji("check")` Understand basic concepts of Bayesian statistics
@@ -595,11 +980,11 @@ kable(diagnostic_posterior(brm_class1), digits=3)
 
 -   $\hat{R}$
 
-    -   Measure of consistency of Markov chains
-
-        -   Should be close to 1 (not larger than 1.01)
+    -   It compares within-chain and between-chain variance. If chains explore the same areas, R-hat approaches 1.
 
     -   Ratio of variance (like *F* test)
+    
+    -   0.99 to 1.01 are considered acceptable (across all parameters)
 
 ## MCMC Diagnostics
 
@@ -609,6 +994,7 @@ kable(diagnostic_posterior(brm_class1), digits=3)
 
 -   Effective sample size (ESS)
 
+    -   Autocorrelation of samples inevitable (each sample is influenced by the previous)
     -   Number of independent pieces there is in autocorrelated chains (Krushke, 2015, p182-3)
 
         -   MCMC chains are autocorrelated
@@ -652,7 +1038,20 @@ plot(density(x))
 
 ## Visualize prior predictive distribution
 
+-   Good prior predictive checks validate that your model makes sense conceptually - not that it predicts your specific data accurately. 
+    - That's what posterior checks are for.
+
 -   Make sure prior distribution makes sensible predictions (if using informative priors)
+    - Predictions cover reasonable ranges
+    - Values are plausible (not theoretically impossible)
+    - Distribution shape is sensible
+    
+-   Prior predictions should be wider than posterior predictions. 
+    - They represent uncertainty before data.
+    - You don't want overconfident priors
+
+
+## Visualize prior predictive distribution
 
 ::::: columns
 ::: {.column width="50%"}
@@ -1009,6 +1408,41 @@ report_bayes=report::report(brm_class1)
     -   Small sample sizes
     -   Unrepresentative samples
     -   Poor experimental design
+
+
+## Bayesian Mixed Models
+
+## Three approaches to pooling
+- Complete pooling
+- No pooling
+- Partial Pooling
+
+## Three approaches to pooling
+- Complete pooling
+  - Pro: Simple, uses all data
+  - Con: Misses group variation
+
+- No pooling
+  - Pro: Captures group uniqueness
+  - Con: Limited by group sample size
+
+- Partial Pooling
+  - Groups "learn" from each other
+  
+## Shrinkage
+
+- What is shrinkage?
+    - Estimates "shrink" toward a common value
+    - Groups share information
+    - Small samples borrow strength
+    - Outliers get pulled toward average
+    
+- Advantages
+    - Better predictions
+    - Reduced overfitting
+    - More stable estimates
+    - Fairness in comparisons
+
 
 ## Resources
 

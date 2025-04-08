@@ -11,7 +11,7 @@
   <meta name="generator" content="quarto-1.5.57">
 
   <meta name="author" content="Suyog Chandramouli (adapted from materials by Jason Geller)">
-  <meta name="dcterms.date" content="2025-03-03">
+  <meta name="dcterms.date" content="2025-03-05">
   <title>Poisson (🐟), Negative Binomial, and Zero-Inflated Models</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -557,7 +557,7 @@
   };
 
   // Store cell data
-  globalThis.qwebrCellDetails = [{"options":{"fig-cap":"","context":"interactive","output":"true","warning":"true","out-height":"","classes":"","autorun":"false","comment":"","fig-width":7,"label":"unnamed-chunk-1","message":"true","results":"markup","fig-height":5,"out-width":"700px","dpi":72},"code":"a=(exp(-6.5) * 6.5^0) / factorial(0)\nb=(exp(-6.5) * 6.5^1) / factorial(1)\nc=(exp(-6.5) * 6.5^2) / factorial(2)\nd=(exp(-6.5) * 6.5^3) / factorial(3)\n\nppois(3, 6.5)","id":1},{"options":{"fig-cap":"","context":"interactive","output":"true","warning":"true","out-height":"","classes":"","autorun":"false","comment":"","fig-width":7,"label":"unnamed-chunk-2","message":"true","results":"markup","fig-height":5,"out-width":"700px","dpi":72},"code":"\nprob <- (exp(-10) * 10^8) / factorial(8)\n\ndpois(x=8, lambda=10)\n\nprob","id":2},{"options":{"fig-cap":"","context":"interactive","output":"true","warning":"true","out-height":"","classes":"","autorun":"false","comment":"","fig-width":7,"label":"unnamed-chunk-3","message":"true","results":"markup","fig-height":5,"out-width":"700px","dpi":72},"code":"hh_data <- read.csv(\"https://raw.githubusercontent.com/jgeller112/psy504-advanced-stats/main/slides/Poisson/data/tobii_aoi_study1.csv\")","id":3},{"options":{"fig-cap":"","context":"interactive","output":"true","warning":"true","out-height":"","classes":"","autorun":"false","comment":"","fig-width":7,"label":"unnamed-chunk-4","message":"true","results":"markup","fig-height":5,"out-width":"700px","dpi":72},"code":"\nhh_data_contrast <- hh_data %>%\n  mutate(emotion=ifelse(emotion==\"Anger\", 0.5, -0.5), Group=ifelse(Group==\"S\", 0.5, -0.5))","id":4},{"options":{"fig-cap":"","context":"interactive","output":"true","warning":"true","out-height":"","classes":"","autorun":"false","comment":"","fig-width":7,"label":"unnamed-chunk-5","message":"true","results":"markup","fig-height":5,"out-width":"700px","dpi":72},"code":"","id":5}];
+  globalThis.qwebrCellDetails = [{"code":"a=(exp(-6.5) * 6.5^0) / factorial(0)\nb=(exp(-6.5) * 6.5^1) / factorial(1)\nc=(exp(-6.5) * 6.5^2) / factorial(2)\nd=(exp(-6.5) * 6.5^3) / factorial(3)\n\nppois(3, 6.5)","id":1,"options":{"fig-height":5,"context":"interactive","message":"true","fig-width":7,"label":"unnamed-chunk-1","fig-cap":"","classes":"","results":"markup","warning":"true","out-height":"","autorun":"false","comment":"","dpi":72,"output":"true","out-width":"700px"}},{"code":"\nprob <- (exp(-10) * 10^8) / factorial(8)\n\ndpois(x=8, lambda=10)\n\nprob","id":2,"options":{"fig-height":5,"context":"interactive","message":"true","fig-width":7,"label":"unnamed-chunk-2","fig-cap":"","classes":"","results":"markup","warning":"true","out-height":"","autorun":"false","comment":"","dpi":72,"output":"true","out-width":"700px"}},{"code":"hh_data <- read.csv(\"https://raw.githubusercontent.com/suyoghc/PSY-504_Spring-2025/refs/heads/main/Poisson%20Regression/data/tobii_aoi_study1.csv\")","id":3,"options":{"fig-height":5,"context":"interactive","message":"true","fig-width":7,"label":"unnamed-chunk-3","fig-cap":"","classes":"","results":"markup","warning":"true","out-height":"","autorun":"false","comment":"","dpi":72,"output":"true","out-width":"700px"}},{"code":"\nhh_data_contrast <- hh_data %>%\n  mutate(emotion=ifelse(emotion==\"Anger\", 0.5, -0.5), Group=ifelse(Group==\"S\", 0.5, -0.5))","id":4,"options":{"fig-height":5,"context":"interactive","message":"true","fig-width":7,"label":"unnamed-chunk-4","fig-cap":"","classes":"","results":"markup","warning":"true","out-height":"","autorun":"false","comment":"","dpi":72,"output":"true","out-width":"700px"}},{"code":"","id":5,"options":{"fig-height":5,"context":"interactive","message":"true","fig-width":7,"label":"unnamed-chunk-5","fig-cap":"","classes":"","results":"markup","warning":"true","out-height":"","autorun":"false","comment":"","dpi":72,"output":"true","out-width":"700px"}}];
 
   </script>
   <script type="module">
@@ -1463,7 +1463,7 @@ Suyog Chandramouli (adapted from materials by Jason Geller)
 </div>
 </div>
 
-  <p class="date">2025-03-03</p>
+  <p class="date">2025-03-05</p>
 </section>
 <section id="today" class="slide level2">
 <h2>Today</h2>
@@ -1500,7 +1500,7 @@ Suyog Chandramouli (adapted from materials by Jason Geller)
 <span id="cb1-14"><a href=""></a><span class="fu">options</span>(<span class="at">scipen=</span><span class="dv">999</span>) <span class="co"># get rid of sci notation</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ul>
-<li>You can follow along <a href="https://github.com/jgeller112/PSY504-Advanced-Stats-S24/blob/main/slides/07-Poisson/07-Poisson.qmd">here</a></li>
+<li>You can follow along <a href="https://github.com/suyoghc/PSY-504_Spring-2025/blob/main/Poisson%20Regression/Poisson.qmd">here</a></li>
 </ul>
 </section>
 <section id="count-data" class="slide level2">
