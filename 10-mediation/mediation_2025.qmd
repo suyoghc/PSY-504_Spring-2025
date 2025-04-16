@@ -1,0 +1,1243 @@
+---
+title: "Mediation Analysis in R"
+subtitle: "Princeton University"
+author: "Suyog Chandramouli (adapted from Jason Geller's slides)"
+date: 'Updated:`r Sys.Date()`'
+footer: "PSY 504: Advanced Statistics"
+format: 
+  revealjs:
+    theme: white
+    css: style_new.css
+    multiplex: true
+    transition: fade
+    slide-number: true
+    incremental: false 
+    chalkboard: true
+    fontsize: "25pt"
+webr:
+  packages: ["tidyverse", "easystats", "broom", "knitr", "laavan"]
+filters:
+  - webr
+execute:
+  freeze: auto
+  echo: true
+  message: false
+  warning: false
+  fig-align: center
+  fig-width: 12
+  fig-height: 8
+  editor_options: 
+  chunk_output_type: inline
+  code-overflow: wrap
+  html:
+    code-fold: true
+    code-tools: true
+editor: 
+  markdown: 
+    wrap: 72
+---
+
+## Today
+
+-   Purpose: Understanding mediation and moderation
+-   Regression → mediation and moderation
+-   Testing mediation in R
+    -   Classical approach to testing mediation (Baron and Kenny)
+    -   Joint significance
+    -   Sobel
+    -   Bootstrapped approach to testing mediation (preferred approach)
+-   Other models:
+    -   Multiple mediators
+    -   Within-subject mediation
+-   Reporting mediation results
+
+## Packages
+
+```{r}
+#devtools::install_github("dustinfife/flexplot")
+library(tidyverse)
+library(lavaanPlot)
+library(easystats)
+library(lavaan)
+library(kableExtra)
+library(broom)
+library(flextable)
+library(flexplot)
+library(mediation)
+library(JSmediation)
+library(processR)
+library(MeMoBootR)
+library(broom)
+library(ggdag)
+
+options(scipen = 999) # get rid sci notation
+```
+
+-   Follow along here:
+    <https://github.com/jgeller112/PSY504-Advanced-Stats-S24/blob/main/slides/10-mediation/mediation.qmd>
+
+## Why do we model data?
+
+## Why do we model data?
+
+Models have different purposes:
+
+-   Description - What patterns exist in our data?
+
+-   Prediction - Can we forecast outcomes?
+
+-   Understanding - Why do these variables relate?
+
+-   Theory building - Does this match our understanding?
+
+-   Process mapping - How does X lead to Y?
+
+## Regression gives us relationships:
+
+$$Exam = b₀\ +\ b₁ . Facebook\_use_\ +\ ε$$
+
+-   What does b₁ tell us?
+-   What doesn't it tell us?
+
+## Regression gives us relationships:
+
+$$Exam = b₀\ +\ b₁ . Facebook\_use_\ +\ ε$$
+
+-   What does b₁ tell us?
+    -   That Facebook relates to exam scores.
+    -   X is related to Y
+-   What doesn't it tell us?
+    -   The process behind this relationship.
+    -   correlation ≠ causation
+    -   Facebook use predicts exam scores ≠ Facebook use changes exam
+        scores
+
+## 
+
+![](images/PSY%20503_Lecture%2005_100724_Correlation_Regression_Group%20Models_Page_52.png)
+
+## Establishing Causation: Beyond Correlation
+
+**Requirements for causal claims:**
+
+- Temporal precedence (X occurs before Y) 
+
+- Covariation (X and Y are associated) 
+
+- Elimination of alternative explanations
+
+- Converging lines of evidence
+
+**Research approaches:**
+
+- Gold standard: Controlled experiments with random assignment 
+
+- Mediation analysis can be applied with both:
+
+  - Experimental data (strongest causal claims) 
+
+  - Observational data (more limitations/assumptions made)
+
+
+
+## Mediation (attempts to) reveal mechanisms:
+
+In terms of a mediator variable M:
+
+-   X affects *M*, which affects Y
+
+-   "Facebook → Study time → Exam scores"
+
+Mediation deals with *how* effects occur (mechanisms).
+
+## 
+
+![](images/mediation.png)
+
+## Moderation (attempts to) reveal conditions:
+
+In terms of a moderator variable Z:
+
+-   The effect of X on Y depends on Z
+
+-   X affects Y differently at different levels of Z
+
+    -   "Facebook usage → Exam scores (relationship strength depends on
+        self-discipline)"
+
+Moderation explains *when* / the "context in which" one thing affects
+another.
+
+## 
+
+![](images/Moderation.png)
+
+## Mediation is hard to establish
+
+-   Mediation is a hard causal inference task!
+
+    -   Manipulation of and random assignment of X affords causal
+        inference/causal claims
+
+        -   However, we rarely do the same for M
+
+            -   Mediation analysis requires theory and subsequent
+                experiments to test mediator
+
+![](images/clipboard-1024068425.png){fig-align="center"}
+
+## Mediation is hard to establish
+
+Julia Rohrer's talk delves into some of these issues
+
+-   Introduction to DAG analysis
+
+    -   Slides: <https://osf.io/9d4ef>
+
+    -   Video:<https://drive.google.com/file/d/1evOsN_LLl013yc015REAMRyQWfuSoeRb/view?usp=drivesdk>
+
+::: callout-note
+Bullock, J. G., Green, D. P., & Ha, S. E. (2010). Yes, but what's the
+mechanism? (don't expect an easy answer). *Journal of personality and
+social psychology*, *98*(4), 550–558. https://doi.org/10.1037/a0018933
+:::
+
+## Mediation: Example
+
+-   Does study time mediate the relationship between Facebook usage and
+    exam scores?
+
+    -   Implying that the overuse of Facebook prevents people from
+        studying, so they do differently on their exam
+
+    ```{r}
+    #| echo: false
+    #| fig.align: center
+    #| fig.width: 8
+    #| fig.height: 4
+
+    labels=list(X="Facebook",M="Studying",Y="Exam Score")
+    statisticalDiagram(4,labels = labels )
+
+    ```
+
+## Load packages
+
+```{r}
+library(MeMoBootR) # mediation analysis #download from gihub
+library(JSmediation) # mediation analysis
+library(flexplot) # mediate_plot function
+library(lavaan) # SEM and mediation 
+#library(tidySEM)# plot models from lavaan
+library(processR) # path model figs`
+```
+
+## Load data
+
+
+
+```{r}
+master <- read.csv("https://raw.githubusercontent.com/jgeller112/psy504-advanced-stats/main/slides/mediation_r/data/mediation.csv")
+master <- na.omit(master) # delete missing
+```
+
+```{webr-r}
+#| message: false
+#| warning: false
+#| echo: false
+#| 
+master <- read_csv("https://raw.githubusercontent.com/jgeller112/psy504-advanced-stats/main/slides/mediation_r/data/mediation.csv")
+master <- na.omit(master) # delete missing
+```
+
+```{r}
+#| echo: false
+head(master[-1]) %>% kable()
+```
+
+# Testing Mediation
+
+## Causal Steps - Baron & Kenny (1986)
+
+-   Mediation is tested through three regression models:
+
+::: panel-tabset
+## Regression 1
+
+-   Predicting the outcome from the predictor variable
+-   X -\> Y
+-   c path : total effect
+
+## Regression 2
+
+-   Predicting the mediator from the predictor variable
+
+-   X -\> M
+
+-   a path
+
+## Regression 3
+
+-   Predicting the outcome from both the predictor variable and the
+    mediator
+
+-   X+M→Y
+
+-   b path
+
+-   c' (c-prime) path: direct effect
+:::
+
+```{r}
+#| echo: false
+#| fig-align: "center"
+#| 
+labels=list(X="Facebook",M="Studying",Y="Exam Score")
+statisticalDiagram(4,labels = labels )
+```
+
+## Mediation Paths
+
+![](images/IMG_4157.JPG){fig-align="center"}
+
+| Paths |   |
+|----------------------------------------|--------------------------------|
+| c: "total effect" of X on Y | Total effect = direct effect + indirect effect |
+| a x b = "indirect effect" of X on Y (our mediation effect) | indirect effect = total effect - direct effect |
+| $c^\prime$ = "direct effect" of X on Y |  |
+
+## Why take the product of the two coefficients?
+
+![](images/IMG_0B66D4765F33-1.jpeg){fig-align="center"}
+
+-   An intuitive explanation:
+
+    -   A 1 unit increase in M corresponds to a b unit increase in Y
+        holding X constant
+
+        -   How much does X change M?
+
+            -   a
+
+-   So if **a = 1/2**, X changes M by 1/2, which then changes Y by b,
+    the indirect effect is **(1/2) × b**
+
+## Causal Steps - Baron & Kenny (1986)
+
+-   Traditionally, to show mediation ALL these conditions must be met:
+
+    -   X must significantly predict Y in Step 1
+
+    -   X must significantly predict M in Step 2
+
+    -   M must significantly predict Y controlling for X in Step 3
+
+    -   The effect of X on Y must be reduced in Step 3
+
+        -   If X is no longer significant, you have "full mediation"
+
+        -   If X is still significant, then you have "partial mediation"
+
+            -   Not really used in anymore
+
+## Mediation: c path
+
+```{webr-r}
+
+model1 <- lm(exam ~ facebook, data = master)
+
+```
+
+```{r}
+#| echo: false
+#| 
+model1 <- lm(exam ~ facebook, data = master)
+
+```
+
+```{r}
+#| echo: false
+#| 
+model_parameters(model1, digit=3) %>%
+  kable() %>% 
+  kable_styling(font_size = 24) %>%
+ row_spec(2, color = "white",
+              background = "red")
+```
+
+-   The c path (total effect): X --\> Y:
+
+    $b = -0.66, t(237) = -5.16, 95\% CI[-0.91, -0.41], p < .001$
+
+## Mediation: a path
+
+```{webr-r}
+
+model2 <- lm(previous ~ facebook, data = master)
+
+```
+
+```{r}
+#| echo: false
+model2 <- lm(previous ~ facebook, data = master)
+
+```
+
+```{r}
+#| echo: false
+#| 
+model_parameters(model2, digit=3) %>%
+    kable() %>% 
+  kable_styling(font_size = 24) %>%
+ row_spec(2, color = "white",
+              background = "red")
+
+```
+
+-   The a path: X --\> M:
+
+    $b = -0.21, t(237) = -2.16, 95\% CI[-0.40, -0.02], p = .031$
+
+## Mediation: b, c' path
+
+-   Add in the b (M --\> Y) and c' **(direct)** paths: X + M --\> Y
+
+```{webr-r}
+
+model3 <- lm(exam ~ facebook + previous, data = master)
+```
+
+```{r}
+#| echo: false
+#| 
+model3 <- lm(exam ~ facebook + previous, data = master)
+```
+
+```{r}
+#| echo: false
+#|
+model_parameters(model3, digits=3) %>% 
+kable() %>% 
+  kable_styling(font_size = 24) %>%
+ row_spec(2, color = "white",
+              background = "red") %>%
+  row_spec(3, color = "white",
+              background = "purple")
+
+```
+
+-   c' Path:
+    $b = -0.61, t(237) = -4.77, 95\% CI[-0.86, -0.36], p < .001$
+
+-   b Path: $b = 0.26, t(237) = 3.09, 95\% CI[0.09, 0.42], p = .002$
+
+## Mediation: interpretation
+
+-   Facebook usage negatively impacts exam scores (c path = -.66)
+
+-   Facebook usage negatively impacts previous study time (a path =
+    -.21)
+
+-   Controlling for Facebook time, previous study time positively
+    impacts exam scores (b path = .26)
+
+-   Controlling for previous study time, Facebook usage negatively
+    impacts exam scores (c' path = -0.61)
+
+. . .
+
+-   Do we have mediation here?
+
+## Causal Steps - Baron & Kenny (1986)
+
+-   Traditionally, to show mediation ALL these conditions must be met:
+
+    -   X must significantly predict Y in Step 1 ✅
+
+    -   X must significantly predict M in Step 2 ✅
+
+    -   M must significantly predict Y controlling for X in Step 3 ✅
+
+    -   The effect of X on Y must be reduced in Step 3
+
+        -   If X is no longer significant, you have "full mediation"
+
+        -   If X is still significant, then you have "partial mediation"
+            ✅
+
+            -   Not really used in anymore
+
+## Issues with causal steps
+
+. . .
+
+-   Indirect effect is inferred rather than directly estimated
+
+. . .
+
+-   Failure to meet a criterion results in game over!
+
+. . .
+
+-   If total effect (path c) is not statistically significant, game does
+    not begin
+
+## Joint significance test
+
+-   An edited version of causal steps approach
+
+    -   If a path and b path are significant
+
+        -   Mediation!
+
+-   Some issues:
+
+    -   Indirect effect is inferred rather than directly estimated
+
+    -   Failure to meet a criterion results in game over!
+
+::: callout-note
+Yzerbyt, V., Muller, D., Batailler, C., & Judd, C. M. (2018). New
+recommendations for testing indirect effects in mediational models: The
+need to report and test component paths. *Journal of Personality and
+Social Psychology*, *115*(6), 929–943. doi: 10.1037/pspa0000132
+:::
+
+## Testing mediation: Sobel test
+
+-   So, did mediation happen? Is a change from 0.66 to 0.61 important?
+
+-   The Sobel Test:
+
+    $$Z = \frac{a \times b}{\sqrt{b^2 \times SE_a^2 + a^2 \times SE_b^2}}$$
+
+    -   If the indirect effect is larger than the error, we would
+        conclude that the addition of the M variable changed the c path
+
+## Sobel Test
+
+```{webr-r}
+#sobel
+a <- coef(model2)[2]
+b <- coef(model3)[3]
+SEa <- summary(model2)$coefficients[2,2]
+SEb <- summary(model3)$coefficients[3,2]
+zscore <- (a*b)/(sqrt((b^2*SEa^2)+(a^2*SEb^2)))
+zscore
+#two tailed test 
+pnorm(abs(zscore), lower.tail = F)*2
+
+```
+
+## Sobel test
+
+```{r}
+library(bda)
+#conducts sobel test
+mediation.test(master$previous,master$facebook,master$exam)
+```
+
+-   *Z* = -1.77, *p* = .08
+
+    -   *We would conclude that no mediation had occurred*
+
+::: callout-note
+Other tests listed use slightly different denominator formula
+:::
+
+## Sobel test
+
+-   Serious problem!
+
+    -   Assumes indirect effect is normally distributed
+
+        -   Not always the case
+
+![](images/IMG_C60929BD11B9-1.jpeg){fig-align="center"}
+
+## Mediation: Bootstrapping
+
+-   Testing significance of indirect effect (a x b)
+
+    -   Does not assume distribution is normal
+    -   More sensitive test = Higher power!
+
+## Mediation: Bootstrapping
+
+-   What it is:
+
+    -   A computer based method for deriving the probability
+        distribution for any random variable
+
+-   When to use it:
+
+    -   You do not know the distribution of your variable(s)
+
+-   How to do it:
+
+    -   Run your analysis a bunch of times with a slightly different set
+        of observations each time
+
+## Bootstrap: Overview
+
+::::: columns
+::: {.column width="50%"}
+1.  Take a random sample of size n from the sample with replacement
+2.  Estimate the indirect effect in this “resample”
+3.  Repeat (1) and (2) a total of k times, where k is at least 1,000.
+    The larger k, the better. I recommend at least 10,000
+4.  Use distribution of the indirect effect over multiple resamples as
+    an approximation of the sampling distribution of the indirect effect
+:::
+
+::: {.column width="50%"}
+```{r}
+#| echo: false
+
+
+knitr::include_graphics("images/bootstrap.jpg")
+```
+:::
+:::::
+
+## Bootstrap: Overview
+
+::::: columns
+::: {.column width="50%"}
+![](images/IMG_4210.jpg)
+:::
+
+::: {.column width="50%"}
+![](images/IMG_4211.jpg)
+:::
+:::::
+
+## The Bootstrapped CI
+
+-   Using the bootstrap sample we can calculate 95% CI
+
+    -   Percentile bootstrap
+
+        -   Find the 2.5th and 97.5th percentiles of the distribution of
+            the statistic
+
+-   If 0 is included, no mediation
+
+::: callout-note
+Variations exist (e.g., ‘bias corrected’ or ‘bias-corrected and
+accelerated’ confidence intervals but they do not perform as well as
+percentile.)
+:::
+
+## Mediation: All together + bootstrapping
+
+-   Do it all with one function
+
+    -   The MeMoBootR package (developed by Erin Buchanon) gives you
+        data screening, each step of the mediation, and the
+        bootstrapping results!
+
+        -   The data screening does not include accuracy or missing
+            data, so that should be completed first
+
+```{r}
+#| results: hide
+#| 
+#| 
+devtools::install_github("doomlab/MeMoBootR")
+#library(MeMoBootR)
+#no missing data allowed
+med_results <- mediation1(y = "exam",
+                          x = "facebook", 
+                          m = "previous", nboot = 1000, 
+                          df = master)
+```
+
+## Assumptions
+
+::: panel-tabset
+## Linearity
+
+```{r}
+#| fig-align: "center"
+#| fig-width: 8
+#| fig-height: 4
+med_results$datascreening$linearity
+
+```
+
+## Normality
+
+```{r}
+#| fig-align: "center"
+#| fig-width: 8
+#| fig-height: 4
+med_results$datascreening$normality
+
+```
+
+## Homogeneity
+
+```{r}
+#| fig-align: "center"
+#| fig-width: 8
+#| fig-height: 4
+med_results$datascreening$homogen
+
+```
+:::
+
+## Mediation: MeMoBootR
+
+For each of our stages of mediation, you can print out the models:
+
+::: panel-tabset
+## Step 1
+
+```{r}
+model_parameters(med_results$model1) %>% kable()
+```
+
+## Step 2
+
+```{r}
+
+model_parameters((med_results$model2)) %>% kable()
+```
+
+## Step 3
+
+```{r}
+
+model_parameters(med_results$model3) %>% kable()
+```
+:::
+
+## Mediation: MeMoBootR
+
+-   Next, you can get the Sobel test results:
+
+```{r}
+med_results$indirect.effect
+med_results$z.score
+med_results$p.value
+```
+
+## Bootstrapping
+
+-   Last, let's get the bootstrapped results:
+
+```{r}
+med_results$boot.results
+```
+
+## Bootstrapping
+
+-   Returns several type of cis
+
+    -   Percentile bootstrap
+
+```{r}
+med_results$boot.ci$percent %>% kable()
+```
+
+-   The indirect effect would be reported as: *b* = -0.05, 95%
+    CI\[-0.147, -0.001\]
+
+## Mediation visualization
+
+```{r}
+#| fig-align: center
+#| 
+med_results$diagram
+
+```
+
+::: callout-note
+No good programs to create nice looking path models
+:::
+
+## Mediation visualization
+
+```{r}
+#| fig-align: center
+#| 
+library(flexplot) # mediation plot
+
+mediate_plot(exam~previous +facebook,data=master)
+
+```
+
+## JSmediation
+
+-   Incorporates `easystats`
+
+    ```{r}
+
+    library(JSmediation)
+
+    mediation_fit <- mdt_simple(master,
+                 IV =facebook,
+                 DV = exam,
+                 M  = previous)
+    ```
+
+## JSmediation results
+
+```{r}
+# Mediation Results
+mediation_fit
+```
+
+## JSmediation: Indirect effect
+
+```{r}
+# Testing Indirect Effect with `JSmediation`
+model_fit_with_index <- add_index(mediation_fit)
+model_fit_with_index
+```
+
+::: callout-note
+Take note of defaults and how how CIs are estimated. Here they use Monte
+Carlo CIs
+:::
+
+## JSmediation results: Assumptions
+
+::: panel-tabset
+## Step 1
+
+```{r}
+#| fig.width: 10
+#| fig.height: 8
+#| 
+first_model <- extract_model(mediation_fit, step = 1)
+performance::check_model(first_model)
+
+```
+
+## Step 2
+
+```{r}
+#| fig.width: 10
+#| fig.height: 8
+#| 
+second_model <- extract_model(mediation_fit, step = 2)
+performance::check_model(second_model)
+```
+
+## Step 3
+
+```{r}
+#| fig.width: 10
+#| fig.height: 8
+#| 
+third_model <- extract_model(mediation_fit, step = 3)
+performance::check_model(third_model)
+```
+:::
+
+## JSmediation results: Assumptions
+
+```{r}
+
+JSmediation::check_assumptions(model_fit_with_index)
+
+```
+
+# Complex Mediation Models
+
+![](sem.webp){fig-align="center"}
+
+## Multiple mediator model
+
+::::: columns
+::: {.column width="50%"}
+-   Test the influence of multiple mediator
+
+-   Specific indirect effect
+
+    -   X -\> M_1 -\> Y
+
+    -   X -\> M_2 -\> Y
+
+-   Total indirect effect
+
+    -   Overall influence of mediators
+
+-   Can determine which one has a stronger influence
+:::
+
+::: {.column width="50%"}
+<br>
+
+<br>
+
+```{r}
+#| echo: false
+#| fig.align: center
+#| fig.width: 8
+#| fig.height: 4
+#| 
+labels=list(X="Age",M1="tvhours", M2="cellhours", Y="bmi")
+statisticalDiagram(4.2,labels = labels )
+
+```
+:::
+:::::
+
+```{r}
+#| echo: false
+#| fig.align: center
+#| fig.width: 8
+#| fig.height: 4
+
+weight_behavior <-
+  read_csv("https://raw.githubusercontent.com/jgeller112/psy504-advanced-stats/main/slides/mediation_r/data/weight.csv") %>%
+  drop_na() 
+```
+
+## Lavaan
+
+-   Similar to popular MPlus software, but free!
+
+-   `~` regression; `*` labels; `:=` define variables
+
+```{r}
+library(lavaan)
+multipleMediation <- '
+bmi ~ b1 * tvhours + b2 * cellhours + cp * age
+tvhours ~ a1 * age
+cellhours ~ a2 * age
+# Fit indirect 1
+indirect1 := a1 * b1
+# Fit indirect 2
+indirect2 := a2 * b2
+# total
+total := cp + (a1 * b1) + (a2 * b2)
+total_indirect := (a1 * b1) + (a2 * b2)
+#test if size of med are different
+med_diff := indirect1 - indirect2
+#prob mediated
+##prop_indirect1
+prop_med_1 := indirect1 / (indirect1+cp)
+##prop_indirect2
+prop_med_2 := indirect2 / (indirect2+cp)
+prop_med := total_indirect /(total_indirect+cp)
+'
+fit <- sem(model = multipleMediation, data = weight_behavior, se = "bootstrap",  bootstrap = 500)
+```
+
+## Lavaan summary
+
+```{r}
+summary(fit, ci=TRUE, rsquare=TRUE) # output with 95% bootstrapped cis and rsqaure
+```
+
+## Lavaan summary
+
+::::: columns
+::: {.column width="50%"}
+-   `semoutput` <https://dr-jt.github.io/semoutput/>
+
+```{r}
+#| eval: false
+
+ semoutput::sem_paths(fit)
+```
+:::
+
+::: {.column width="50%"}
+```{r}
+#| echo: false
+#| 
+semoutput::sem_paths(fit, unstandardized = TRUE)
+```
+:::
+:::::
+
+## Lavaan Visualization
+
+```{r}
+#| fig-align: "center"
+#| 
+library(tidySEM)# plot models from lavaan
+
+parallel_map <- tidySEM::get_layout("", "tvhours", "", "age", "", "bmi", "", "cellhours",
+                                    "", rows = 3)
+tidySEM::graph_sem(model=fit, layout=parallel_map)
+
+```
+
+## Lavaan Practice
+
+-   Fit our simple facebook mediation model using Lavaan
+
+```{webr-r}
+'
+#bpath and cp paths
+
+# a path
+
+# indirect
+
+# total
+
+'
+```
+
+## Lavaan Practice
+
+-   Look at that! Same results as before
+
+```{r}
+#| echo: false
+sim_med <- '
+#bpath and cp paths
+exam ~ b*previous + cp*facebook
+# a path
+previous ~ a*facebook
+# indirect
+indirect := a*b
+# total
+total := cp + (a*b)
+'
+fit <- sem(model = sim_med, data = master, se = "bootstrap",  bootstrap = 500)
+
+semoutput::sem_paths(fit, unstandardized = TRUE)
+
+```
+
+## Within-participant mediation
+
+-   Mediation when X is a within-subject variable
+
+-   Dohle and Siegrist (2014, Exp 1)
+
+    -   Interested in the effect of name complexity on buying drugs
+
+        -   The specific hypothesis is that complex drug names are
+            perceived as more hazardous, which makes someone less likely
+            to buy the drug
+
+## Within-participant mediation
+
+$$
+Y_{2i} - Y_{1i} = c_{11}
+$$
+
+with $Y2_i$​−$Y1_i$ the difference score between DV conditions for the
+outcome variable for the *i*th observation
+
+$$
+M_{2i}-M_{1i} = a_{21}
+$$
+
+with $M_{2i}$​−$M1_{1i}​$ the difference score between DV conditions for
+the mediator variable for the *i*th observation,
+
+$$Y_{2i} - Y_{1i} = c'_{31} + b_{32}(M_{2i} - M_{1i}) +
+  d_{33}[0.5(M_{1i} + M_{2i}) - 0.5(\overline{M_{1} + M_{2}})]$$
+
+|     |
+|-----|
+|     |
+
+Where we have the direct path, mediator diff and mean_diff
+
+## Within-participant mediation
+
+```{r}
+data <- JSmediation::dohle_siegrist
+
+within_mdt <- mdt_within(data=data, IV=name, DV= willingness, M=hazardousness,grouping=participant)
+```
+
+::: callout-note
+-   Montoya, A. K., & Hayes, A. F. (2017). Two-condition
+    within-participant statistical mediation analysis: A path-analytic
+    framework. Psychological Methods, 22(1), 6-27. doi:
+    10.1037/met0000086
+:::
+
+## Within-participant indirect effect
+
+```{r}
+
+model_fit_with_index <- add_index(within_mdt)
+model_fit_with_index
+
+```
+
+## Summary: Mediation
+
+-   What it is: A method for testing hypotheses about why and how x
+    predicts y
+
+-   When you use it:
+
+    -   Whenever you would start using words like "because" in your
+        introduction section
+
+-   Best approach\*:
+
+    -   Bootstrapping
+
+## Write-up: Mediation
+
+-   a, b paths
+
+-   Direct effect (c')
+
+-   Total effect (c)
+
+-   Indirect effect
+
+-   How did you test indirect effect
+
+    -   Sobel test or Bootstrapping (# bootstrapped samples)
+
+-   Proportion mediated
+
+<!-- -->
+
+-   Figure of path diagram
+
+    -   Create in PPT 😱
+    -   Use DiagrammeR
+
+## Write up: Multiple mediators
+
+-   Include all indirect effects
+
+-   Total indirect effect
+
+-   Proportion mediated
+
+
+## Beyond Mediation: Structural Equation Modeling
+
+- What if your theory is more complex than X → M → Y?
+
+  - SEMs = the next level up
+
+    - Statistical technique for testing complex relationships
+  
+    - Combines path analysis + factor analysis
+  
+- Mediation: Building block for understanding causal paths
+
+- SEM: Expanded toolbox for complex theories
+
+
+## Questions Only SEMs Can Answer
+
+- "Does variable A affect outcomes through multiple pathways?"
+
+- "How do latent constructs influence each other?"
+
+- "Which theoretical model better fits our data?"
+
+- "Do variables have reciprocal relationships?"
+
+
+## SEMs : Challenges
+- Requires larger sample sizes
+
+- More complex to interpret
+
+- Easy to misspecify
+
+- Needs stronger theoretical guidance
+
+- Results depend on model specification
+
+## SEMs implementation
+
+- Software options: R (lavaan), AMOS, Mplus
+
+- Start simple - add complexity gradually
+
+## Moderation (attempts to) reveal conditions:
+
+In terms of a moderator variable Z:
+
+-   The effect of X on Y depends on Z
+
+-   X affects Y differently at different levels of Z
+
+    -   "Facebook usage → Exam scores (relationship strength depends on
+        self-discipline)"
+
+Moderation explains *when* / the "context in which" one thing affects
+another.
+
+##
+![](images/Moderation.png)
+
+## Moderation = just interaction with meaning
+
+- Math is the same, perspective is different.
+  
+  - In regression: "Is there an effect?"
+  
+  - In moderation: "When is the effect stronger?" 
+    -  Does Z change how X affects Y?
+
+## Moderation = just interaction with meaning
+
+$$Y = b_₀\ +\ b_₁X\ +\ b_₂Z\ +\ b_₃.XZ$$
+Assessment depends on estimates of $b_3$
+
+- Significant b₃? Effect changes across Z
+- Positive b₃? Effect stronger as Z increases
+- Negative b₃? Effect weaker as Z increases
+
+## Visualizations
+
+- Y-axis: Outcome
+- X-axis: Predictor
+
+- Break down your data by levels of 'moderator'
+
+  - Parallel => No moderation
+  - Buffering => M changes strength (negatively) with increasing levels
+  - Enhancement => M changes strength (positively) with increasing levels
+  - Cross-over => M changes direction across levels
+
+## Visualizations
+
+- Y-axis: Outcome
+- X-axis: Predictor
+
+- Break down your data by levels of 'moderator'
+
+  - Parallel => No moderation
+    - _"Facebook hurts everyone's scores equally, regardless of self-discipline."_
+  - Buffering => M changes strength (negatively) with increasing levels
+    - _"Facebook crushes undisciplined students' scores but barely affects disciplined ones."_
+  - Enhancement => M changes strength (positively) with increasing levels
+    - _"Facebook helps everyone - but high-discipline students transform it into a powerful learning tool."_
+  - Cross-over => M changes direction across levels
+    - _"Facebook destroys grades for low-discipline students but boosts scores for disciplined students who use it for study groups"_
+
+## Resources
+
+-   Other R packages
+
+    -   [mediation](%5Bhttps://cran.r-project.org/web/packages/mediation/vignettes/mediation.pdf%5D)
+        (ordinal or binary outcomes)
+
+    -   [manymome](https://link.springer.com/article/10.3758/s13428-023-02224-z)
+
+    -   [processR](https://github.com/cardiomoon/processR)
+
+    -   [bmlm](https://mvuorre.github.io/bmlm/) (Bayesian)
+
+    -   `bayestestR` (`mediation` function)
+
+## Wednesday and this week
+
+- Continuation of Bayes
+
+- Tutorial plans (will open up on Canvas)
