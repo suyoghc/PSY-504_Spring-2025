@@ -189,6 +189,7 @@ $$Y = Y_\text{obs} + Y_\text{mis}$$
 
 
 ## 
+
 ![](images/Mcelreath/Lecture_18_Page_11.png){fig-align="center"}
 
 
