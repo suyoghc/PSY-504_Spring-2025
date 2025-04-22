@@ -88,7 +88,7 @@ library(finalfit)# missing data visualization
 
 ```
 
-Here is the link to the .qmd document to follow along: <https://github.com/jgeller112/PSY504-Advanced-Stats-S24/blob/main/slides/03-Missing_Data/03-Missing_Data.qmd>.
+Here is the link to the .qmd document to follow along: <https://github.com/suyoghc/PSY-504_Spring-2025/blob/main/Missing_Data/Missing_Data_2025.qmd>.
 
 ## Missing data mechanisms
 
