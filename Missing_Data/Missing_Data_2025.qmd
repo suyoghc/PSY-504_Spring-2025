@@ -189,7 +189,6 @@ $$Y = Y_\text{obs} + Y_\text{mis}$$
 
 
 ## 
-
 ![](images/Mcelreath/Lecture_18_Page_11.png){fig-align="center"}
 
 
@@ -937,7 +936,6 @@ Implicit imputation
 ::::: columns
 ::: {.column width="50%"}
 **Without Missing Data**
-
 Model specification:
 
 - y_i ~ Normal(α + βx_i, σ²)  # Data model
